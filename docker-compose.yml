@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  # React Frontend Service
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: teqwa_frontend
+    restart: unless-stopped
+    environment:
+      # Vite configuration
+      VITE_API_URL: http://localhost:8000
+      # Development settings
+      CHOKIDAR_USEPOLLING: true
+      WATCHPACK_POLLING: true
+    volumes:
+      # Mount source code for hot reload in development
+      - .:/app
+      # Exclude node_modules for performance
+      - /app/node_modules
+      - /app/dist
+    ports:
+      - "5173:5173"
+    networks:
+      - teqwa_frontend_network
+    stdin_open: true
+    tty: true
+
+# Custom network for service communication
+networks:
+  teqwa_frontend_network:
+    driver: bridge
+    name: teqwa_frontend_network
