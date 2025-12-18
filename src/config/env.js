@@ -9,7 +9,8 @@ console.log('DEV:', import.meta.env.DEV);
 console.log('PROD:', import.meta.env.PROD);
 
 // Export the API URL with fallback
-export const API_URL = import.meta.env.VITE_API_URL;
+// Default to backend running on localhost:8000 if not set
+export const API_URL = import.meta.env.VITE_API_URL?.trim() || 'http://localhost:8000';
 
 // Export environment info
 export const ENV = {

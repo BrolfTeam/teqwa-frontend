@@ -24,8 +24,10 @@ React + Vite frontend for the Teqwa mosque management platform.
 
 3. **Configure environment variables**:
    ```bash
-   cp .env.example .env  # Create .env file if needed
-   # Edit .env with your backend API URL
+   cp .env.example .env  # Copy example file
+   # Or for development:
+   cp .env.development.example .env
+   # Edit .env with your backend API URL (VITE_API_URL)
    ```
 
 4. **Start development server**:

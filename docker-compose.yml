@@ -8,24 +8,21 @@ services:
       dockerfile: Dockerfile
     container_name: teqwa_frontend
     restart: unless-stopped
+    env_file:
+      - .env
     environment:
-      # Vite configuration
-      VITE_API_URL: http://localhost:8000
-      # Development settings
-      CHOKIDAR_USEPOLLING: true
-      WATCHPACK_POLLING: true
-    volumes:
-      # Mount source code for hot reload in development
-      - .:/app
-      # Exclude node_modules for performance
-      - /app/node_modules
-      - /app/dist
+      # Vite configuration - should be set via .env file
+      # VITE_API_URL should be in .env
     ports:
-      - "5173:5173"
+      - "${FRONTEND_PORT:-5173}:5173"
     networks:
       - teqwa_frontend_network
-    stdin_open: true
-    tty: true
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:5173', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
 # Custom network for service communication
 networks:

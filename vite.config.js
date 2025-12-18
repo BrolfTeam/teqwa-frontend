@@ -26,11 +26,12 @@ export default defineConfig({
     minify: 'terser',
   },
   server: {
-    port: 5173,
-    host: '0.0.0.0',
+    port: 3000,
+    host: '127.0.0.1', // Use IPv4 explicitly to avoid IPv6 permission issues on Windows
+    strictPort: true, // Try next available port if 5173 is busy
   },
   preview: {
     port: 4173,
-    host: '0.0.0.0',
+    host: '127.0.0.1',
   },
 });
