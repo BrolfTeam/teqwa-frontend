@@ -13,73 +13,75 @@ import {
 import IslamicPattern from '@/components/ui/IslamicPattern';
 import { Card } from '@/components/ui/Card';
 import authLogo from '@/assets/logo.png';
-
-const ROLE_OPTIONS = [
-  {
-    id: 'admin',
-    title: 'Admin',
-    description: 'System administrator with full access to manage the platform',
-    icon: <FiShield className="h-8 w-8" />,
-    color: 'from-red-600 to-red-800',
-    bgColor: 'bg-red-50 dark:bg-red-950/20',
-    borderColor: 'border-red-200 dark:border-red-800',
-    hoverColor: 'hover:border-red-500 dark:hover:border-red-500',
-    textColor: 'text-red-700 dark:text-red-300',
-    allowRegister: false, // Admin registration typically requires manual approval
-  },
-  {
-    id: 'staff',
-    title: 'Staff / Teacher',
-    description: 'Mosque staff, teachers, and other personnel',
-    icon: <FiUsers className="h-8 w-8" />,
-    color: 'from-blue-600 to-blue-800',
-    bgColor: 'bg-blue-50 dark:bg-blue-950/20',
-    borderColor: 'border-blue-200 dark:border-blue-800',
-    hoverColor: 'hover:border-blue-500 dark:hover:border-blue-500',
-    textColor: 'text-blue-700 dark:text-blue-300',
-    allowRegister: true,
-  },
-  {
-    id: 'student',
-    title: 'Student',
-    description: 'Students enrolled in educational programs',
-    icon: <FiBook className="h-8 w-8" />,
-    color: 'from-green-600 to-green-800',
-    bgColor: 'bg-green-50 dark:bg-green-950/20',
-    borderColor: 'border-green-200 dark:border-green-800',
-    hoverColor: 'hover:border-green-500 dark:hover:border-green-500',
-    textColor: 'text-green-700 dark:text-green-300',
-    allowRegister: true,
-  },
-  {
-    id: 'parent',
-    title: 'Parent',
-    description: 'Parents of students or community members',
-    icon: <FiUserCheck className="h-8 w-8" />,
-    color: 'from-purple-600 to-purple-800',
-    bgColor: 'bg-purple-50 dark:bg-purple-950/20',
-    borderColor: 'border-purple-200 dark:border-purple-800',
-    hoverColor: 'hover:border-purple-500 dark:hover:border-purple-500',
-    textColor: 'text-purple-700 dark:text-purple-300',
-    allowRegister: true,
-  },
-  {
-    id: 'member',
-    title: 'User / Member',
-    description: 'General community members and visitors',
-    icon: <FiUser className="h-8 w-8" />,
-    color: 'from-emerald-600 to-emerald-800',
-    bgColor: 'bg-emerald-50 dark:bg-emerald-950/20',
-    borderColor: 'border-emerald-200 dark:border-emerald-800',
-    hoverColor: 'hover:border-emerald-500 dark:hover:border-emerald-500',
-    textColor: 'text-emerald-700 dark:text-emerald-300',
-    allowRegister: true,
-  },
-];
+import { useTranslation } from 'react-i18next';
 
 const RoleSelection = memo(() => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [selectedRole, setSelectedRole] = useState(null);
+
+  const ROLE_OPTIONS = [
+    {
+      id: 'admin',
+      title: t('auth.roleSelection.admin.title'),
+      description: t('auth.roleSelection.admin.description'),
+      icon: <FiShield className="h-8 w-8" />,
+      color: 'from-red-600 to-red-800',
+      bgColor: 'bg-red-50 dark:bg-red-950/20',
+      borderColor: 'border-red-200 dark:border-red-800',
+      hoverColor: 'hover:border-red-500 dark:hover:border-red-500',
+      textColor: 'text-red-700 dark:text-red-300',
+      allowRegister: false,
+    },
+    {
+      id: 'staff',
+      title: t('auth.roleSelection.staff.title'),
+      description: t('auth.roleSelection.staff.description'),
+      icon: <FiUsers className="h-8 w-8" />,
+      color: 'from-blue-600 to-blue-800',
+      bgColor: 'bg-blue-50 dark:bg-blue-950/20',
+      borderColor: 'border-blue-200 dark:border-blue-800',
+      hoverColor: 'hover:border-blue-500 dark:hover:border-blue-500',
+      textColor: 'text-blue-700 dark:text-blue-300',
+      allowRegister: true,
+    },
+    {
+      id: 'student',
+      title: t('auth.roleSelection.student.title'),
+      description: t('auth.roleSelection.student.description'),
+      icon: <FiBook className="h-8 w-8" />,
+      color: 'from-green-600 to-green-800',
+      bgColor: 'bg-green-50 dark:bg-green-950/20',
+      borderColor: 'border-green-200 dark:border-green-800',
+      hoverColor: 'hover:border-green-500 dark:hover:border-green-500',
+      textColor: 'text-green-700 dark:text-green-300',
+      allowRegister: true,
+    },
+    {
+      id: 'parent',
+      title: t('auth.roleSelection.parent.title'),
+      description: t('auth.roleSelection.parent.description'),
+      icon: <FiUserCheck className="h-8 w-8" />,
+      color: 'from-purple-600 to-purple-800',
+      bgColor: 'bg-purple-50 dark:bg-purple-950/20',
+      borderColor: 'border-purple-200 dark:border-purple-800',
+      hoverColor: 'hover:border-purple-500 dark:hover:border-purple-500',
+      textColor: 'text-purple-700 dark:text-purple-300',
+      allowRegister: true,
+    },
+    {
+      id: 'member',
+      title: t('auth.roleSelection.member.title'),
+      description: t('auth.roleSelection.member.description'),
+      icon: <FiUser className="h-8 w-8" />,
+      color: 'from-emerald-600 to-emerald-800',
+      bgColor: 'bg-emerald-50 dark:bg-emerald-950/20',
+      borderColor: 'border-emerald-200 dark:border-emerald-800',
+      hoverColor: 'hover:border-emerald-500 dark:hover:border-emerald-500',
+      textColor: 'text-emerald-700 dark:text-emerald-300',
+      allowRegister: true,
+    },
+  ];
 
   const handleRoleSelect = (role) => {
     setSelectedRole(role);
@@ -135,13 +137,13 @@ const RoleSelection = memo(() => {
           </div>
 
           <h1 className="text-4xl md:text-5xl font-bold font-serif text-emerald-950 dark:text-emerald-50 mb-4">
-            Welcome to Teqwa
+            {t('auth.roleSelection.welcomeToTeqwa')}
           </h1>
           <p className="text-lg text-stone-600 dark:text-stone-300 max-w-2xl mx-auto mb-2">
-            Select your role to continue
+            {t('auth.roleSelection.selectRole')}
           </p>
           <p className="text-sm text-stone-500 dark:text-stone-400 max-w-xl mx-auto">
-            Choose the option that best describes your relationship with our community
+            {t('auth.roleSelection.chooseBestDescribes')}
           </p>
         </motion.div>
 
@@ -191,11 +193,11 @@ const RoleSelection = memo(() => {
                     {!role.allowRegister && (
                       <span className="text-xs text-stone-500 dark:text-stone-400 flex items-center gap-1">
                         <FiHelpCircle className="h-3 w-3" />
-                        Login only
+                        {t('auth.roleSelection.loginOnly')}
                       </span>
                     )}
                     <div className={`flex items-center gap-2 ${role.textColor} font-medium text-sm`}>
-                      {role.allowRegister ? 'Register or Login' : 'Login'}
+                      {role.allowRegister ? t('auth.roleSelection.registerOrLogin') : t('auth.roleSelection.login')}
                       <FiArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
                     </div>
                   </div>
@@ -213,12 +215,12 @@ const RoleSelection = memo(() => {
           className="text-center text-sm text-stone-500 dark:text-stone-400"
         >
           <p>
-            Already have an account?{' '}
+            {t('auth.roleSelection.alreadyHaveAccount')}{' '}
             <button
               onClick={() => navigate('/login')}
               className="text-emerald-700 dark:text-emerald-400 hover:text-emerald-800 dark:hover:text-emerald-300 font-medium underline"
             >
-              Sign in directly
+              {t('auth.roleSelection.signInDirectly')}
             </button>
           </p>
         </motion.div>

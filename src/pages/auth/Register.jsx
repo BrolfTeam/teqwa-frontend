@@ -8,17 +8,10 @@ import { toast } from 'sonner';
 import { apiService } from '@/lib/apiService';
 import IslamicPattern from '@/components/ui/IslamicPattern';
 import authLogo from '@/assets/logo.png';
-
-const ROLE_LABELS = {
-  admin: 'Administrator',
-  staff: 'Staff / Teacher',
-  student: 'Student',
-  parent: 'Parent',
-  member: 'Member / User',
-  teacher: 'Staff / Teacher',
-};
+import { useTranslation } from 'react-i18next';
 
 const Register = memo(() => {
+  const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const role = searchParams.get('role');
   const [formData, setFormData] = useState({
@@ -34,6 +27,15 @@ const Register = memo(() => {
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
+
+  const ROLE_LABELS = {
+    admin: t('auth.roleLabels.admin'),
+    staff: t('auth.roleLabels.staff'),
+    student: t('auth.roleLabels.student'),
+    parent: t('auth.roleLabels.parent'),
+    member: t('auth.roleLabels.member'),
+    teacher: t('auth.roleLabels.teacher'),
+  };
 
   const handleChange = (e) => {
     setFormData({
@@ -92,23 +94,23 @@ const Register = memo(() => {
       const response = await apiService.register(registerData);
 
       login(response.user, response.tokens);
-      toast.success('Account created successfully! Please check your email to verify your account.');
+      toast.success(t('auth.registerPage.accountCreatedSuccess'));
       navigate('/dashboard');
     } catch (error) {
       if (error.status === 400 && error.data) {
         const backendErrors = {};
         if (error.data.email) backendErrors.email = error.data.email[0];
-        if (error.data.username) backendErrors.email = "This email prefix is already taken."; // Mapping username to email field for simplicity
+        if (error.data.username) backendErrors.email = t('auth.registerPage.emailAlreadyTaken');
         if (error.data.password) backendErrors.password = error.data.password[0];
         if (error.data.first_name) backendErrors.name = error.data.first_name[0];
 
         if (Object.keys(backendErrors).length > 0) {
           setErrors(backendErrors);
         } else {
-          toast.error('Registration failed. Please check your details.');
+          toast.error(t('auth.registerPage.registrationFailed'));
         }
       } else {
-        toast.error(error.message || 'Registration failed. Please try again.');
+        toast.error(error.message || t('auth.registerPage.registrationFailed'));
       }
     } finally {
       setIsLoading(false);
@@ -140,10 +142,10 @@ const Register = memo(() => {
               />
             </div>
             <h1 className="text-4xl md:text-5xl font-bold font-serif mb-4 text-emerald-50">
-              Join Our Community
+              {t('auth.registerPage.joinCommunity')}
             </h1>
             <p className="text-emerald-200/80 text-lg leading-relaxed">
-              "The best among you are those who have the best manners and character."
+              "{t('auth.registerPage.quote')}"
             </p>
             {/* Feature List */}
             <div className="mt-12 space-y-4 text-left inline-block">
@@ -151,19 +153,19 @@ const Register = memo(() => {
                 <div className="w-6 h-6 rounded-full bg-emerald-800/50 flex items-center justify-center border border-emerald-500/30">
                   <FiCheck className="w-3 h-3 text-amber-400" />
                 </div>
-                <span>Access exclusive educational content</span>
+                <span>{t('auth.registerPage.accessExclusiveContent')}</span>
               </div>
               <div className="flex items-center space-x-3 text-emerald-100/90">
                 <div className="w-6 h-6 rounded-full bg-emerald-800/50 flex items-center justify-center border border-emerald-500/30">
                   <FiCheck className="w-3 h-3 text-amber-400" />
                 </div>
-                <span>Book facilities and events easily</span>
+                <span>{t('auth.registerPage.bookFacilities')}</span>
               </div>
               <div className="flex items-center space-x-3 text-emerald-100/90">
                 <div className="w-6 h-6 rounded-full bg-emerald-800/50 flex items-center justify-center border border-emerald-500/30">
                   <FiCheck className="w-3 h-3 text-amber-400" />
                 </div>
-                <span>Connect with the community</span>
+                <span>{t('auth.registerPage.connectCommunity')}</span>
               </div>
             </div>
           </motion.div>
@@ -188,14 +190,14 @@ const Register = memo(() => {
                   className="w-16 h-16 object-contain"
                 />
               </div>
-              <h2 className="text-2xl font-bold text-emerald-950 font-serif">Create Account</h2>
+              <h2 className="text-2xl font-bold text-emerald-950 font-serif">{t('auth.registerPage.createAccount')}</h2>
               {role && (
                 <div className="mt-2 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 text-sm">
                   <FiUser className="h-3 w-3" />
                   <span>{ROLE_LABELS[role] || role}</span>
                 </div>
               )}
-              <p className="text-stone-500 mt-2">Join us today</p>
+              <p className="text-stone-500 mt-2">{t('auth.registerPage.joinUsToday')}</p>
             </div>
 
             <div className="bg-white p-8 rounded-3xl shadow-xl border border-stone-100 relative overflow-hidden">
@@ -203,7 +205,7 @@ const Register = memo(() => {
 
               <div className="mb-8">
                 <div className="flex items-center justify-between mb-2">
-                  <h2 className="text-2xl font-bold text-emerald-950 font-serif">Sign Up</h2>
+                  <h2 className="text-2xl font-bold text-emerald-950 font-serif">{t('auth.registerPage.signUp')}</h2>
                   {role && (
                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 text-sm">
                       <FiUser className="h-3 w-3" />
@@ -211,7 +213,7 @@ const Register = memo(() => {
                     </div>
                   )}
                 </div>
-                <p className="text-stone-500 text-sm">Fill in your details to create your account</p>
+                <p className="text-stone-500 text-sm">{t('auth.registerPage.fillDetails')}</p>
                 {role && (
                   <div className="mt-3 flex items-center gap-2">
                     <button
@@ -220,7 +222,7 @@ const Register = memo(() => {
                       className="text-xs text-emerald-700 dark:text-emerald-400 hover:text-emerald-800 dark:hover:text-emerald-300 font-medium flex items-center gap-1"
                     >
                       <FiArrowLeft className="h-3 w-3" />
-                      Change role
+                      {t('auth.loginPage.changeRole')}
                     </button>
                   </div>
                 )}
@@ -245,7 +247,7 @@ const Register = memo(() => {
                           ? 'border-red-500 focus:ring-red-500/20 focus:border-red-600 text-red-900'
                           : 'border-stone-200 text-emerald-950 focus:ring-emerald-500/20 focus:border-emerald-600'
                         }`}
-                      placeholder="John Doe"
+                      placeholder={t('auth.registerPage.fullNamePlaceholder')}
                       required
                     />
                   </div>
@@ -278,7 +280,7 @@ const Register = memo(() => {
                           ? 'border-red-500 focus:ring-red-500/20 focus:border-red-600 text-red-900'
                           : 'border-stone-200 text-emerald-950 focus:ring-emerald-500/20 focus:border-emerald-600'
                         }`}
-                      placeholder="name@example.com"
+                      placeholder={t('auth.loginPage.emailPlaceholder')}
                       required
                     />
                   </div>
@@ -295,7 +297,7 @@ const Register = memo(() => {
 
                 <div className="space-y-2">
                   <label htmlFor="phone" className="text-sm font-medium text-emerald-900 block pl-1">
-                    Phone Number
+                    {t('auth.registerPage.phoneNumber')}
                   </label>
                   <div className="relative group">
                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -308,7 +310,7 @@ const Register = memo(() => {
                       value={formData.phone}
                       onChange={handleChange}
                       className="block w-full pl-11 pr-4 py-3 bg-stone-50 border border-stone-200 rounded-xl text-emerald-950 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 transition-all"
-                      placeholder="+1 (555) 000-0000"
+                      placeholder={t('auth.registerPage.phonePlaceholder')}
                     />
                   </div>
                 </div>
@@ -316,7 +318,7 @@ const Register = memo(() => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <label htmlFor="password" className="text-sm font-medium text-emerald-900 block pl-1">
-                      Password *
+                      {t('auth.password')} *
                     </label>
                     <div className="relative group">
                       <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -332,7 +334,7 @@ const Register = memo(() => {
                             ? 'border-red-500 focus:ring-red-500/20 focus:border-red-600 text-red-900'
                             : 'border-stone-200 text-emerald-950 focus:ring-emerald-500/20 focus:border-emerald-600'
                           }`}
-                        placeholder="Min. 8 chars"
+                        placeholder={t('auth.registerPage.passwordMinLength')}
                         required
                       />
                       <button
@@ -356,7 +358,7 @@ const Register = memo(() => {
 
                   <div className="space-y-2">
                     <label htmlFor="confirmPassword" className="text-sm font-medium text-emerald-900 block pl-1">
-                      Confirm *
+                      {t('auth.confirmPassword')} *
                     </label>
                     <div className="relative group">
                       <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -372,7 +374,7 @@ const Register = memo(() => {
                             ? 'border-red-500 focus:ring-red-500/20 focus:border-red-600 text-red-900'
                             : 'border-stone-200 text-emerald-950 focus:ring-emerald-500/20 focus:border-emerald-600'
                           }`}
-                        placeholder="Confirm"
+                        placeholder={t('auth.registerPage.confirmPlaceholder')}
                         required
                         onPaste={(e) => e.preventDefault()}
                       />
@@ -408,13 +410,13 @@ const Register = memo(() => {
                   </div>
                   <div className="text-sm leading-6">
                     <label htmlFor="terms" className="font-medium text-stone-600">
-                      I agree to the{' '}
+                      {t('auth.registerPage.agreeToTerms')}{' '}
                       <Link to="/terms" className="text-emerald-700 hover:text-amber-600 transition-colors underline decoration-emerald-700/30 underline-offset-2">
-                        Terms of Service
+                        {t('auth.registerPage.termsOfService')}
                       </Link>{' '}
-                      and{' '}
+                      {t('auth.registerPage.and')}{' '}
                       <Link to="/privacy" className="text-emerald-700 hover:text-amber-600 transition-colors underline decoration-emerald-700/30 underline-offset-2">
-                        Privacy Policy
+                        {t('auth.registerPage.privacyPolicy')}
                       </Link>
                     </label>
                   </div>
@@ -428,12 +430,12 @@ const Register = memo(() => {
                   {isLoading ? (
                     <div className="flex items-center justify-center space-x-2">
                       <div className="animate-spin rounded-full h-5 w-5 border-2 border-white/30 border-t-white"></div>
-                      <span>Creating Account...</span>
+                      <span>{t('auth.registerPage.creatingAccount')}</span>
                     </div>
                   ) : (
                     <div className="flex items-center justify-center space-x-2 font-medium">
                       <FiUserPlus className="h-5 w-5" />
-                      <span>Create Account</span>
+                      <span>{t('auth.registerPage.createAccountButton')}</span>
                     </div>
                   )}
                 </Button>
@@ -441,22 +443,22 @@ const Register = memo(() => {
 
               <div className="mt-8 text-center pt-6 border-t border-stone-100 space-y-2">
                 <p className="text-stone-500 text-sm">
-                  Already have an account?{' '}
+                  {t('auth.alreadyHaveAccount')}{' '}
                   <Link
                     to={role ? `/login?role=${role}` : "/login"}
                     className="font-semibold text-emerald-700 hover:text-amber-600 transition-colors"
                   >
-                    Sign in
+                    {t('auth.loginPage.signIn')}
                   </Link>
                 </p>
                 {!role && (
                   <p className="text-stone-500 text-xs">
-                    Need to select your role?{' '}
+                    {t('auth.roleSelection.selectRole')}{' '}
                     <Link
                       to="/role-selection"
                       className="font-medium text-emerald-700 hover:text-amber-600 transition-colors"
                     >
-                      Choose Role
+                      {t('auth.loginPage.chooseRole')}
                     </Link>
                   </p>
                 )}

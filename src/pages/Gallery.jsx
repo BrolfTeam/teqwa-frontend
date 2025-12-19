@@ -4,23 +4,23 @@ import { MdClose } from 'react-icons/md';
 import { motion, AnimatePresence } from 'framer-motion';
 import { apiService } from '@/lib/apiService';
 import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
 import mosque1 from '@/assets/background.png';
 import mosque2 from '@/assets/logo.png';
 import { API_BASE_URL } from '@/config/constants';
 
-
-
-// Categories for filtering
-const categories = [
-  { id: 'all', name: 'All Media' },
-  { id: 'prayer', name: 'Prayer' },
-  { id: 'events', name: 'Events' },
-  { id: 'education', name: 'Education' },
-  { id: 'lectures', name: 'Lectures' },
-  { id: 'mosque', name: 'Mosque' },
-];
-
 const Gallery = () => {
+  const { t } = useTranslation();
+  
+  // Categories for filtering
+  const categories = [
+    { id: 'all', name: t('gallery.allMedia') },
+    { id: 'prayer', name: t('prayer.prayerTimes') },
+    { id: 'events', name: t('events.title') },
+    { id: 'education', name: t('education.title') },
+    { id: 'lectures', name: t('ders.title') },
+    { id: 'mosque', name: t('gallery.mosque') },
+  ];
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedMedia, setSelectedMedia] = useState(null);
@@ -163,7 +163,7 @@ const Gallery = () => {
             {isFilterOpen && (
               <div className="md:hidden mt-4 p-4 bg-card rounded-lg shadow-lg border border-border">
                 <div className="flex justify-between items-center mb-3">
-                  <h3 className="font-medium text-foreground">Filter by Category</h3>
+                  <h3 className="font-medium text-foreground">{t('gallery.filter')}</h3>
                   <button
                     onClick={() => setIsFilterOpen(false)}
                     className="text-muted-foreground hover:text-foreground"
@@ -277,7 +277,7 @@ const Gallery = () => {
             </div>
           ) : (
             <div className="text-center py-16">
-              <h3 className="text-2xl font-bold text-foreground mb-2">No images available yet</h3>
+              <h3 className="text-2xl font-bold text-foreground mb-2">{t('gallery.noMediaFound')}</h3>
               <p className="text-muted-foreground mb-6">
                 {searchTerm || selectedCategory !== 'all'
                   ? 'Try adjusting your search or filter criteria'
@@ -291,7 +291,7 @@ const Gallery = () => {
                   }}
                   className="btn btn-md btn-primary"
                 >
-                  Clear All Filters
+                  {t('common.clear')}
                 </button>
               )}
             </div>

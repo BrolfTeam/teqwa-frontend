@@ -1,6 +1,7 @@
-import { lazy, Suspense, memo } from 'react';
+import { lazy, Suspense, memo, useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { Toaster } from 'sonner';
+import { useTranslation } from 'react-i18next';
 import { ThemeProvider } from '@/context/ThemeContext';
 import { AuthProvider } from '@/context/AuthContext';
 import MainLayout from '@/components/layout/MainLayout';
@@ -63,12 +64,19 @@ const LoadingFallback = memo(() => (
 ));
 LoadingFallback.displayName = 'LoadingFallback';
 
-const App = memo(() => {
+const AppContent = memo(() => {
+  const { i18n } = useTranslation();
+  const isRTL = ['ar', 'he', 'fa', 'ur'].includes(i18n.language);
+
+  useEffect(() => {
+    document.documentElement.dir = isRTL ? 'rtl' : 'ltr';
+    document.documentElement.lang = i18n.language;
+  }, [i18n.language, isRTL]);
+
   return (
-    <ThemeProvider>
-      <AuthProvider>
-        <ScrollToTop />
-        <Suspense fallback={<LoadingFallback />}>
+    <div className={isRTL ? 'rtl' : 'ltr'}>
+      <ScrollToTop />
+      <Suspense fallback={<LoadingFallback />}>
           <Routes>
             {/* Public Routes */}
             <Route path="/" element={<MainLayout />}>
@@ -189,17 +197,27 @@ const App = memo(() => {
             {/* 404 */}
             <Route path="*" element={<MainLayout><NotFound /></MainLayout>} />
           </Routes>
-        </Suspense>
+      </Suspense>
 
-        <Toaster
-          position="top-center"
-          richColors
-          closeButton
-          toastOptions={{
-            className: 'font-sans',
-            duration: 5000,
-          }}
-        />
+      <Toaster
+        position="top-center"
+        richColors
+        closeButton
+        toastOptions={{
+          className: 'font-sans',
+          duration: 5000,
+        }}
+      />
+    </div>
+  );
+});
+AppContent.displayName = 'AppContent';
+
+const App = memo(() => {
+  return (
+    <ThemeProvider>
+      <AuthProvider>
+        <AppContent />
       </AuthProvider>
     </ThemeProvider>
   );

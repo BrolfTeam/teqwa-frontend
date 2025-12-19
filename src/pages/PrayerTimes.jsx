@@ -14,9 +14,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import IslamicPattern from '@/components/ui/IslamicPattern';
 import { prayerTimesService, PRAYER_INFO, MOSQUE_LOCATION } from '@/lib/prayerTimesService';
 import { format, addMonths, subMonths, addDays, subDays } from 'date-fns';
+import { useTranslation } from 'react-i18next';
 import mesjidBg from '@/assets/mesjid2.jpg';
 
 const PrayerTimes = memo(() => {
+  const { t } = useTranslation();
   const location = useLocation();
   const [currentTime, setCurrentTime] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -246,7 +248,7 @@ const PrayerTimes = memo(() => {
               transition={{ duration: 0.8 }}
             >
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 sm:mb-4 tracking-tight">
-                Prayer Times
+                {t('prayerTimes.title')}
               </h1>
               <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-white/90 mb-1.5 sm:mb-2 font-light">
                 {format(currentMonth, 'MMMM yyyy')}
@@ -264,7 +266,7 @@ const PrayerTimes = memo(() => {
                   className="bg-white text-primary hover:bg-white/90 shadow-lg text-xs sm:text-sm h-9 sm:h-10 md:h-11 px-4 sm:px-6"
                 >
                   <FaDownload className="mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                  Download Schedule
+                  {t('prayerTimes.downloadMonthlySchedule')}
                 </Button>
                 <Button
                   onClick={sharePrayerTimes}
@@ -273,7 +275,7 @@ const PrayerTimes = memo(() => {
                   className="border-white/30 text-white hover:bg-white/10 backdrop-blur-sm text-xs sm:text-sm h-9 sm:h-10 md:h-11 px-4 sm:px-6"
                 >
                   <FaShare className="mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                  Share
+                  {t('common.share')}
                 </Button>
               </div>
             </motion.div>
@@ -293,7 +295,7 @@ const PrayerTimes = memo(() => {
                 className="w-full flex items-center justify-center mb-5 sm:mb-6 px-4"
               >
                 <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-center text-white dark:text-white">
-                  Today's Prayer Times
+                  {t('prayerTimes.todaysPrayerTimes')}
                 </h2>
               </motion.div>
 
@@ -457,7 +459,7 @@ const PrayerTimes = memo(() => {
               <div>
                 <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground mb-1">Monthly Timetable</h2>
                 <p className="text-xs sm:text-sm text-muted-foreground">
-                  {MOSQUE_LOCATION.name} • {locationStatus === 'found' ? 'Current Location' : 'Default Location'}
+                  {MOSQUE_LOCATION.name} • {locationStatus === 'found' ? t('prayerTimes.currentLocation') : t('prayerTimes.defaultLocation')}
                 </p>
               </div>
 
@@ -490,7 +492,7 @@ const PrayerTimes = memo(() => {
                   size="sm"
                   className="flex-shrink-0 text-xs sm:text-sm h-9"
                 >
-                  Today
+                  {t('prayerTimes.today')}
                 </Button>
               </div>
             </div>
@@ -532,7 +534,7 @@ const PrayerTimes = memo(() => {
                               <div className="text-[10px] sm:text-xs text-muted-foreground">{day.gregorianDate}</div>
                               {day.isToday && (
                                 <span className="inline-block px-1.5 py-0.5 text-[9px] sm:text-[10px] bg-primary text-primary-foreground rounded-full font-medium w-fit mt-0.5">
-                                  Today
+                                  {t('prayerTimes.today')}
                                 </span>
                               )}
                             </div>
@@ -588,7 +590,7 @@ const PrayerTimes = memo(() => {
               viewport={{ once: true }}
               className="text-center mb-5 sm:mb-6"
             >
-              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-1 text-foreground">Qibla Direction</h2>
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-1 text-foreground">{t('prayerTimes.qiblaDirection')}</h2>
               <p className="text-xs sm:text-sm text-muted-foreground">Find the direction to the Kaaba</p>
             </motion.div>
 
@@ -597,7 +599,7 @@ const PrayerTimes = memo(() => {
               <CardHeader className="text-center pb-3 sm:pb-4 relative z-10">
                 <CardTitle className="flex items-center justify-center gap-2 text-lg sm:text-xl md:text-2xl">
                   <FaCompass className="text-primary h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6" />
-                  <span>Qibla Compass</span>
+                  <span>{t('prayerTimes.qiblaCompass')}</span>
                 </CardTitle>
               </CardHeader>
               <CardContent className="text-center pb-5 sm:pb-6 md:pb-8 relative z-10">
@@ -654,7 +656,7 @@ const PrayerTimes = memo(() => {
                 <div className="space-y-3 sm:space-y-4">
                   <div className="bg-primary/10 rounded-xl p-3 sm:p-4 border border-primary/20">
                     <p className="text-xs sm:text-sm md:text-base text-foreground">
-                      Qibla is <span className="font-bold text-primary text-base sm:text-lg md:text-xl">{qiblaDirection}°</span> from North
+                      {t('prayerTimes.qiblaFromNorth')} <span className="font-bold text-primary text-base sm:text-lg md:text-xl">{qiblaDirection}°</span> {t('prayerTimes.fromNorth')}
                     </p>
                   </div>
 
@@ -662,7 +664,7 @@ const PrayerTimes = memo(() => {
                     <div className="bg-accent/10 rounded-xl p-3 sm:p-4 border border-accent/20">
                       <p className="text-xs sm:text-sm md:text-base text-foreground flex items-center justify-center gap-2">
                         <FiNavigation className="h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-5 md:w-5 text-accent flex-shrink-0" />
-                        <span>Compass active - align with the green arrow</span>
+                        <span>{t('prayerTimes.compassActive')}</span>
                       </p>
                     </div>
                   ) : (
@@ -677,7 +679,7 @@ const PrayerTimes = memo(() => {
                         className="w-full sm:w-auto text-xs sm:text-sm h-9 sm:h-10"
                       >
                         <FiNavigation className="mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                        Enable Compass
+                        {t('prayerTimes.enableCompass')}
                       </Button>
                     </div>
                   )}
@@ -700,7 +702,7 @@ const PrayerTimes = memo(() => {
                   <div>
                     <h3 className="text-base sm:text-lg md:text-xl font-bold mb-3 sm:mb-4 flex items-center gap-2 text-foreground">
                       <FaMapMarkerAlt className="h-4 w-4 sm:h-5 sm:w-5 text-primary flex-shrink-0" />
-                      <span>Location Information</span>
+                      <span>{t('prayerTimes.locationInformation')}</span>
                     </h3>
                     <div className="space-y-3 sm:space-y-4">
                       <div className="p-2.5 sm:p-3 rounded-lg bg-muted/50 border border-border/50">
@@ -732,7 +734,7 @@ const PrayerTimes = memo(() => {
                         variant="default"
                       >
                         <FaDownload className="mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                        Download Monthly Schedule
+                        {t('prayerTimes.downloadMonthlySchedule')}
                       </Button>
                       <Button 
                         onClick={sharePrayerTimes} 
@@ -740,7 +742,7 @@ const PrayerTimes = memo(() => {
                         className="w-full justify-start h-10 sm:h-11 text-xs sm:text-sm"
                       >
                         <FaShare className="mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                        Share Prayer Times
+                        {t('prayerTimes.sharePrayerTimes')}
                       </Button>
                       <Button 
                         onClick={initializePrayerTimes} 
@@ -748,7 +750,7 @@ const PrayerTimes = memo(() => {
                         className="w-full justify-start h-10 sm:h-11 text-xs sm:text-sm"
                       >
                         <FiRefreshCw className="mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                        Refresh Location
+                        {t('prayerTimes.refreshLocation')}
                       </Button>
                     </div>
                   </div>

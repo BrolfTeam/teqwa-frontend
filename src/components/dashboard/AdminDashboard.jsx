@@ -10,8 +10,10 @@ import dashboardService from '@/services/dashboardService';
 import staffService from '@/services/staffService';
 import { dataService } from '@/lib/dataService';
 import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
 
 const AdminDashboard = memo(() => {
+    const { t } = useTranslation();
     const { user } = useAuth();
     const location = useLocation();
     const [stats, setStats] = useState(null);
@@ -188,9 +190,9 @@ const AdminDashboard = memo(() => {
     };
 
     const adminStats = [
-        { label: 'Total Users', value: (stats?.counts?.users || 0).toLocaleString(), icon: <FiUsers className="h-6 w-6" />, color: 'text-blue-500', bg: 'bg-blue-500/10' },
-        { label: 'Total Staff', value: (stats?.counts?.staff || 0).toLocaleString(), icon: <FiUsers className="h-6 w-6" />, color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
-        { label: 'Total Donations', value: `${(stats?.donation_stats?.total_amount || 0).toLocaleString()} ${stats?.donation_stats?.currency || 'ETB'}`, icon: <FiHeart className="h-6 w-6" />, color: 'text-rose-500', bg: 'bg-rose-500/10' },
+        { label: t('dashboard.admin.totalUsers'), value: (stats?.counts?.users || 0).toLocaleString(), icon: <FiUsers className="h-6 w-6" />, color: 'text-blue-500', bg: 'bg-blue-500/10' },
+        { label: t('dashboard.admin.totalStaff'), value: (stats?.counts?.staff || 0).toLocaleString(), icon: <FiUsers className="h-6 w-6" />, color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
+        { label: t('dashboard.admin.totalDonations'), value: `${(stats?.donation_stats?.total_amount || 0).toLocaleString()} ${stats?.donation_stats?.currency || 'ETB'}`, icon: <FiHeart className="h-6 w-6" />, color: 'text-rose-500', bg: 'bg-rose-500/10' },
     ];
 
     // Calculate Task Completion Rate
@@ -199,10 +201,10 @@ const AdminDashboard = memo(() => {
     const completionRate = taskTotal > 0 ? Math.round((taskCompleted / taskTotal) * 100) : 0;
 
     const staffOverview = [
-        { label: 'Present Today', value: staffReports?.today?.present_count || 0, sub: `${staffReports?.today?.total_staff || 0} Total`, icon: <FiUsers className="h-5 w-5" />, color: 'text-green-500', bg: 'bg-green-500/10' },
-        { label: 'Late / Absent', value: `${staffReports?.today?.late_count || 0} / ${staffReports?.today?.absent_count || 0}`, icon: <FiClock className="h-5 w-5" />, color: 'text-orange-500', bg: 'bg-orange-500/10' },
-        { label: 'Task Completion', value: `${completionRate}%`, sub: `${staffReports?.tasks?.completed || 0} / ${taskTotal} Tasks`, icon: <FiCheckSquare className="h-5 w-5" />, color: 'text-purple-500', bg: 'bg-purple-500/10' },
-        { label: 'Overdue Tasks', value: staffReports?.tasks?.overdue || 0, icon: <FiShield className="h-5 w-5" />, color: 'text-red-500', bg: 'bg-red-500/10' },
+        { label: t('dashboard.admin.present'), value: staffReports?.today?.present_count || 0, sub: `${staffReports?.today?.total_staff || 0} ${t('dashboard.admin.totalStaffCount')}`, icon: <FiUsers className="h-5 w-5" />, color: 'text-green-500', bg: 'bg-green-500/10' },
+        { label: `${t('dashboard.admin.late')} / ${t('dashboard.admin.absent')}`, value: `${staffReports?.today?.late_count || 0} / ${staffReports?.today?.absent_count || 0}`, icon: <FiClock className="h-5 w-5" />, color: 'text-orange-500', bg: 'bg-orange-500/10' },
+        { label: t('dashboard.admin.taskCompletionRate'), value: `${completionRate}%`, sub: `${staffReports?.tasks?.completed || 0} / ${taskTotal} ${t('staff.tasks.title')}`, icon: <FiCheckSquare className="h-5 w-5" />, color: 'text-purple-500', bg: 'bg-purple-500/10' },
+        { label: t('staff.tasks.title'), value: staffReports?.tasks?.overdue || 0, icon: <FiShield className="h-5 w-5" />, color: 'text-red-500', bg: 'bg-red-500/10' },
     ];
 
     if (loading) {
@@ -235,9 +237,9 @@ const AdminDashboard = memo(() => {
                     <div>
                         <div className="flex items-center gap-3 mb-2">
                             <FiShield className="h-8 w-8 text-red-500" />
-                            <h1 className="text-3xl font-bold">Admin Console</h1>
+                            <h1 className="text-3xl font-bold">{t('dashboard.admin.title')}</h1>
                         </div>
-                        <p className="text-zinc-400">System Overview & Management</p>
+                        <p className="text-zinc-400">{t('dashboard.overview')}</p>
                     </div>
                     <div className="flex gap-3">
                         <Button
@@ -248,10 +250,10 @@ const AdminDashboard = memo(() => {
                             className="bg-zinc-800 hover:bg-zinc-700 text-white"
                         >
                             <FiRefreshCw className={`h-4 w-4 ${refreshing ? 'animate-spin' : ''}`} />
-                            {refreshing ? 'Refreshing...' : 'Refresh'}
+                            {refreshing ? t('common.loading') : t('common.refresh')}
                         </Button>
                         <Link to="/profile" className="px-4 py-2 bg-zinc-800 rounded-lg hover:bg-zinc-700 transition flex items-center gap-2 text-sm">
-                            <FiUsers /> My Profile
+                            <FiUsers /> {t('common.profile')}
                         </Link>
                     </div>
                 </div>
@@ -259,7 +261,7 @@ const AdminDashboard = memo(() => {
 
             {/* Staff Overview Grid (New) */}
             <motion.div variants={itemVariants}>
-                <h3 className="text-lg font-semibold mb-3 flex items-center gap-2"><FiUsers /> Staff Performance</h3>
+                <h3 className="text-lg font-semibold mb-3 flex items-center gap-2"><FiUsers /> {t('dashboard.admin.todayAttendance')}</h3>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     {staffOverview.map((stat, i) => (
                         <Card key={i} className="border-border/50 bg-card/50 backdrop-blur-sm">
@@ -302,7 +304,7 @@ const AdminDashboard = memo(() => {
                 <Card className="shadow-md border-border/50 bg-card/50 backdrop-blur-sm">
                     <CardHeader className="border-b border-border/40 pb-4">
                         <CardTitle className="flex items-center gap-2 text-lg">
-                            <FiActivity className="text-blue-500" /> Recent System Activity (You)
+                            <FiActivity className="text-blue-500" /> {t('dashboard.recentActivity')}
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="pt-6">
@@ -323,7 +325,7 @@ const AdminDashboard = memo(() => {
                                 ))}
                             </div>
                         ) : (
-                            <p className="text-center text-muted-foreground py-6">No recent activity recorded.</p>
+                            <p className="text-center text-muted-foreground py-6">{t('dashboard.noActivity')}</p>
                         )}
                     </CardContent>
                 </Card>
@@ -407,14 +409,14 @@ const AdminDashboard = memo(() => {
                     <Card className="border-l-4 border-l-blue-500 shadow-md hover:shadow-lg transition-shadow">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
-                                <FiUsers className="text-blue-500" /> User Management
+                                <FiUsers className="text-blue-500" /> {t('dashboard.admin.userManagement')}
                             </CardTitle>
-                            <p className="text-sm text-muted-foreground mt-1">Manage users & roles</p>
+                            <p className="text-sm text-muted-foreground mt-1">{t('admin.userManagement.manageUsers')}</p>
                         </CardHeader>
                         <CardContent>
                             <Link to="/admin/users" className="block w-full p-3 rounded-lg bg-blue-50 dark:bg-blue-950/20 hover:bg-blue-100 dark:hover:bg-blue-950/40 transition text-center font-medium text-sm text-blue-700 dark:text-blue-300">
                                 <FiUsers className="inline mr-2" />
-                                Manage Users & Roles
+                                {t('admin.userManagement.manageUsers')}
                             </Link>
                         </CardContent>
                     </Card>
@@ -423,14 +425,14 @@ const AdminDashboard = memo(() => {
                     <Card className="border-l-4 border-l-green-500 shadow-md hover:shadow-lg transition-shadow">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
-                                <FiClock className="text-green-500" /> Attendance Management
+                                <FiClock className="text-green-500" /> {t('staff.attendance.title')}
                             </CardTitle>
-                            <p className="text-sm text-muted-foreground mt-1">View & edit all attendance</p>
+                            <p className="text-sm text-muted-foreground mt-1">{t('staff.attendance.viewEditRecords')}</p>
                         </CardHeader>
                         <CardContent>
                             <Link to="/staff/attendance" className="block w-full p-3 rounded-lg bg-green-50 dark:bg-green-950/20 hover:bg-green-100 dark:hover:bg-green-950/40 transition text-center font-medium text-sm text-green-700 dark:text-green-300">
                                 <FiClock className="inline mr-2" />
-                                View/Edit Attendance
+                                {t('staff.attendance.viewEditRecords')}
                             </Link>
                         </CardContent>
                     </Card>
@@ -439,14 +441,14 @@ const AdminDashboard = memo(() => {
                     <Card className="border-l-4 border-l-purple-500 shadow-md hover:shadow-lg transition-shadow">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
-                                <FiCheckSquare className="text-purple-500" /> Task Management
+                                <FiCheckSquare className="text-purple-500" /> {t('staff.tasks.title')}
                             </CardTitle>
-                            <p className="text-sm text-muted-foreground mt-1">Create & assign tasks</p>
+                            <p className="text-sm text-muted-foreground mt-1">{t('staff.tasks.manageAssignReview')}</p>
                         </CardHeader>
                         <CardContent>
                             <Link to="/staff/tasks" className="block w-full p-3 rounded-lg bg-purple-50 dark:bg-purple-950/20 hover:bg-purple-100 dark:hover:bg-purple-950/40 transition text-center font-medium text-sm text-purple-700 dark:text-purple-300">
                                 <FiCheckSquare className="inline mr-2" />
-                                Create & Assign Tasks
+                                {t('staff.tasks.manageAssignReview')}
                             </Link>
                         </CardContent>
                     </Card>
@@ -455,14 +457,14 @@ const AdminDashboard = memo(() => {
                     <Card className="border-l-4 border-l-orange-500 shadow-md hover:shadow-lg transition-shadow">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
-                                <FiActivity className="text-orange-500" /> Reports & Analytics
+                                <FiActivity className="text-orange-500" /> {t('staff.reports.title')}
                             </CardTitle>
-                            <p className="text-sm text-muted-foreground mt-1">View reports & analytics</p>
+                            <p className="text-sm text-muted-foreground mt-1">{t('staff.reports.viewReports')}</p>
                         </CardHeader>
                         <CardContent>
                             <Link to="/staff/reports" className="block w-full p-3 rounded-lg bg-orange-50 dark:bg-orange-950/20 hover:bg-orange-100 dark:hover:bg-orange-950/40 transition text-center font-medium text-sm text-orange-700 dark:text-orange-300">
                                 <FiActivity className="inline mr-2" />
-                                View Reports
+                                {t('staff.reports.viewReports')}
                             </Link>
                         </CardContent>
                     </Card>
@@ -471,14 +473,14 @@ const AdminDashboard = memo(() => {
                     <Card className="border-l-4 border-l-red-500 shadow-md hover:shadow-lg transition-shadow">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
-                                <FiSettings className="text-red-500" /> System Settings
+                                <FiSettings className="text-red-500" /> {t('dashboard.admin.systemSettings')}
                             </CardTitle>
-                            <p className="text-sm text-muted-foreground mt-1">Configure system settings</p>
+                            <p className="text-sm text-muted-foreground mt-1">{t('admin.settings.title')}</p>
                         </CardHeader>
                         <CardContent>
                             <Link to="/admin/settings" className="block w-full p-3 rounded-lg bg-red-50 dark:bg-red-950/20 hover:bg-red-100 dark:hover:bg-red-950/40 transition text-center font-medium text-sm text-red-700 dark:text-red-300">
                                 <FiSettings className="inline mr-2" />
-                                System Settings
+                                {t('dashboard.admin.systemSettings')}
                             </Link>
                         </CardContent>
                     </Card>
@@ -487,14 +489,14 @@ const AdminDashboard = memo(() => {
                     <Card className="border-l-4 border-l-amber-500 shadow-md hover:shadow-lg transition-shadow">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
-                                <FiUsers className="text-amber-500" /> Staff Operations
+                                <FiUsers className="text-amber-500" /> {t('dashboard.admin.staffManagement')}
                             </CardTitle>
-                            <p className="text-sm text-muted-foreground mt-1">Manage staff members</p>
+                            <p className="text-sm text-muted-foreground mt-1">{t('dashboard.admin.staffManagement')}</p>
                         </CardHeader>
                         <CardContent>
                             <Link to="/staff" className="block w-full p-3 rounded-lg bg-amber-50 dark:bg-amber-950/20 hover:bg-amber-100 dark:hover:bg-amber-950/40 transition text-center font-medium text-sm text-amber-700 dark:text-amber-300">
                                 <FiUsers className="inline mr-2" />
-                                Manage Staff
+                                {t('dashboard.admin.staffManagement')}
                             </Link>
                         </CardContent>
                     </Card>
@@ -506,19 +508,19 @@ const AdminDashboard = memo(() => {
                 <Card className="border-l-4 border-l-indigo-500 shadow-md">
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2">
-                            <FiDatabase className="text-indigo-500" /> Module Management
+                            <FiDatabase className="text-indigo-500" /> {t('dashboard.admin.moduleManagement')}
                         </CardTitle>
-                        <p className="text-sm text-muted-foreground mt-1">Manage all system modules and user activities</p>
+                        <p className="text-sm text-muted-foreground mt-1">{t('dashboard.admin.moduleManagement')}</p>
                     </CardHeader>
                     <CardContent className="space-y-6">
                         {/* Bookings Management */}
                         <div>
                             <div className="flex items-center justify-between mb-3">
                                 <h3 className="text-lg font-semibold flex items-center gap-2">
-                                    <FiCalendar className="text-blue-500" /> Futsal Bookings
+                                    <FiCalendar className="text-blue-500" /> {t('dashboard.admin.recentBookings')}
                                     <span className="text-sm font-normal text-muted-foreground">({bookings.length})</span>
                                 </h3>
-                                <Link to="/bookings" className="text-sm text-primary hover:underline">View All</Link>
+                                <Link to="/bookings" className="text-sm text-primary hover:underline">{t('dashboard.admin.viewAll')}</Link>
                             </div>
                             {moduleLoading.bookings ? (
                                 <div className="flex items-center justify-center py-8">
@@ -550,10 +552,10 @@ const AdminDashboard = memo(() => {
                                                             onClick={async () => {
                                                                 try {
                                                                     await dataService.updateFutsalBookingStatus(booking.id, 'approved');
-                                                                    toast.success('Booking approved');
+                                                                    toast.success(t('bookings.confirmed'));
                                                                     fetchModuleData();
                                                                 } catch (e) {
-                                                                    toast.error('Failed to update booking');
+                                                                    toast.error(t('bookings.errorUpdating'));
                                                                 }
                                                             }}
                                                             className="h-7 w-7 p-0 text-green-600 hover:text-green-700"
@@ -566,10 +568,10 @@ const AdminDashboard = memo(() => {
                                                             onClick={async () => {
                                                                 try {
                                                                     await dataService.updateFutsalBookingStatus(booking.id, 'rejected');
-                                                                    toast.success('Booking rejected');
+                                                                    toast.success(t('bookings.cancelled'));
                                                                     fetchModuleData();
                                                                 } catch (e) {
-                                                                    toast.error('Failed to update booking');
+                                                                    toast.error(t('bookings.errorUpdating'));
                                                                 }
                                                             }}
                                                             className="h-7 w-7 p-0 text-red-600 hover:text-red-700"
@@ -591,10 +593,10 @@ const AdminDashboard = memo(() => {
                         <div>
                             <div className="flex items-center justify-between mb-3">
                                 <h3 className="text-lg font-semibold flex items-center gap-2">
-                                    <FiHeart className="text-rose-500" /> Donations
+                                    <FiHeart className="text-rose-500" /> {t('dashboard.admin.recentDonations')}
                                     <span className="text-sm font-normal text-muted-foreground">({donations.length})</span>
                                 </h3>
-                                <Link to="/donations" className="text-sm text-primary hover:underline">View All</Link>
+                                <Link to="/donations" className="text-sm text-primary hover:underline">{t('dashboard.admin.viewAll')}</Link>
                             </div>
                             {moduleLoading.donations ? (
                                 <div className="flex items-center justify-center py-8">
@@ -626,7 +628,7 @@ const AdminDashboard = memo(() => {
                             ))}
                                 </div>
                             ) : (
-                                <p className="text-center text-muted-foreground py-4 text-sm">No donations found</p>
+                                <p className="text-center text-muted-foreground py-4 text-sm">{t('dashboard.admin.noDonations')}</p>
                             )}
                         </div>
 
@@ -634,10 +636,10 @@ const AdminDashboard = memo(() => {
                         <div>
                             <div className="flex items-center justify-between mb-3">
                                 <h3 className="text-lg font-semibold flex items-center gap-2">
-                                    <FiBookOpen className="text-purple-500" /> Education Enrollments
+                                    <FiBookOpen className="text-purple-500" /> {t('dashboard.admin.recentEnrollments')}
                                     <span className="text-sm font-normal text-muted-foreground">({enrollments.length})</span>
                                 </h3>
-                                <Link to="/education" className="text-sm text-primary hover:underline">View All</Link>
+                                <Link to="/education" className="text-sm text-primary hover:underline">{t('dashboard.admin.viewAll')}</Link>
                             </div>
                             {moduleLoading.enrollments ? (
                                 <div className="flex items-center justify-center py-8">
@@ -703,7 +705,7 @@ const AdminDashboard = memo(() => {
                                     ))}
                                 </div>
                             ) : (
-                                <p className="text-center text-muted-foreground py-4 text-sm">No enrollments found</p>
+                                <p className="text-center text-muted-foreground py-4 text-sm">{t('dashboard.admin.noEnrollments')}</p>
                             )}
                         </div>
                     </CardContent>

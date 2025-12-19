@@ -17,6 +17,8 @@ class ApiService {
     this.baseURL = `${API_BASE_URL}/api/v1`;
     this.isRefreshing = false;
     this.failedQueue = [];
+    this.pendingRequests = new Map(); // Track pending requests to prevent duplicates
+    this.rateLimitUntil = null; // Track when rate limit expires
   }
 
   processQueue(error, token = null) {
@@ -67,6 +69,20 @@ class ApiService {
   }
 
   async request(url, options = {}) {
+    // Check if we're rate limited
+    if (this.rateLimitUntil && Date.now() < this.rateLimitUntil) {
+      const waitTime = Math.ceil((this.rateLimitUntil - Date.now()) / 1000);
+      throw new ApiError(`Request was throttled. Expected available in ${waitTime} seconds.`, { retryAfter: waitTime }, 429);
+    }
+
+    // Create a unique key for this request to prevent duplicates
+    const requestKey = `${options.method || 'GET'}_${url}_${JSON.stringify(options.body || {})}`;
+    
+    // If the same request is already pending, return the existing promise
+    if (this.pendingRequests.has(requestKey)) {
+      return this.pendingRequests.get(requestKey);
+    }
+
     const token = localStorage.getItem('authToken');
 
     const config = {
@@ -81,9 +97,25 @@ class ApiService {
       config.headers.Authorization = `Bearer ${token}`;
     }
 
+    // Create the request promise
+    const requestPromise = this._makeRequest(url, config, requestKey);
+    
+    // Store it to prevent duplicates
+    this.pendingRequests.set(requestKey, requestPromise);
+    
+    // Remove from pending when done
+    requestPromise.finally(() => {
+      this.pendingRequests.delete(requestKey);
+    });
+
+    return requestPromise;
+  }
+
+  async _makeRequest(url, config, requestKey) {
     try {
       // console.log('Making request to:', `${this.baseURL}${url}`);
       const response = await fetch(`${this.baseURL}${url}`, config);
+      const token = config.headers?.Authorization?.replace('Bearer ', '');
 
       if (response.status === 401 && token && !url.includes('/auth/')) {
         if (this.isRefreshing) {
@@ -143,6 +175,40 @@ class ApiService {
         } finally {
           this.isRefreshing = false;
         }
+      }
+
+      // Handle 429 Rate Limiting
+      if (response.status === 429) {
+        const retryAfter = response.headers.get('Retry-After');
+        let waitTime = 60; // Default 60 seconds
+        
+        if (retryAfter) {
+          waitTime = parseInt(retryAfter, 10);
+        } else {
+          // Try to parse from response body
+          try {
+            const text = await response.text();
+            if (text) {
+              const errorData = JSON.parse(text);
+              if (errorData.retry_after) {
+                waitTime = parseInt(errorData.retry_after, 10);
+              } else if (errorData.message && errorData.message.includes('Expected available in')) {
+                // Parse from message like "Expected available in 78 seconds"
+                const match = errorData.message.match(/(\d+)\s+seconds?/);
+                if (match) {
+                  waitTime = parseInt(match[1], 10);
+                }
+              }
+            }
+          } catch (e) {
+            // Use default
+          }
+        }
+        
+        // Set rate limit expiration time
+        this.rateLimitUntil = Date.now() + (waitTime * 1000);
+        
+        throw new ApiError(`Request was throttled. Expected available in ${waitTime} seconds.`, { retryAfter: waitTime }, 429);
       }
 
       if (!response.ok) {

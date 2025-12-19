@@ -9,6 +9,7 @@ import { useAuth } from '@/context/AuthContext';
 import { apiService } from '@/lib/apiService';
 import paymentService from '@/services/paymentService';
 import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
 import IslamicPattern from '@/components/ui/IslamicPattern';
 import { DONATION_AMOUNTS } from '@/config/constants';
 import { API_URL } from '@/config/env';
@@ -18,6 +19,7 @@ import { API_URL } from '@/config/env';
 const donationAmounts = DONATION_AMOUNTS;
 
 const Donations = memo(() => {
+  const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const causeParam = searchParams.get('cause');
   const [activeTab, setActiveTab] = useState('overview');
@@ -112,17 +114,17 @@ const Donations = memo(() => {
     const amount = isCustom ? parseFloat(customAmount) : selectedAmount;
 
     if (!amount || amount < 1) {
-      toast.error('Please enter a valid donation amount');
+      toast.error(t('donations.pleaseEnterAmount'));
       return;
     }
 
     if (!selectedCategory) {
-      toast.error('Please select a donation category');
+      toast.error(t('donations.pleaseSelectCategory'));
       return;
     }
 
     if (!isAuthenticated && (!donorInfo.name || !donorInfo.email)) {
-      toast.error('Please fill in your contact information');
+      toast.error(t('donations.pleaseFillContact'));
       return;
     }
 
@@ -216,17 +218,17 @@ const Donations = memo(() => {
   return (
     <div className="space-y-0 pb-16 min-h-screen bg-background font-sans selection:bg-primary/20">
       <Hero
-        title="Support Our Community"
-        subtitle="Your generous donations help us serve our community better and maintain our sacred space"
+        title={t('donations.supportCommunity')}
+        subtitle={t('donations.donationSubtitle')}
         backgroundImage="/assets/mesjid2.jpg"
         actions={[
           {
-            label: 'Make a Donation',
+            label: t('donations.makeDonation'),
             onClick: () => handleHeroAction('donate'),
             variant: 'primary',
           },
           {
-            label: 'View Causes',
+            label: t('donations.viewCauses'),
             onClick: () => handleHeroAction('causes'),
             variant: 'secondary',
           },
@@ -237,9 +239,9 @@ const Donations = memo(() => {
       <div id="donation-tabs" className="sticky top-6 z-40 flex justify-center px-4 mb-12 mt-8 pointer-events-none">
         <div className="bg-background/80 backdrop-blur-lg border border-border/50 shadow-lg rounded-full p-1.5 pointer-events-auto flex items-center gap-1">
           {[
-            { id: 'overview', label: 'Overview' },
-            { id: 'causes', label: 'Our Causes' },
-            { id: 'donate', label: 'Donate Now' }
+            { id: 'overview', label: t('common.view') },
+            { id: 'causes', label: t('donations.activeCampaigns') },
+            { id: 'donate', label: t('donations.donateNow') }
           ].map((tab) => (
             <button
               key={tab.id}
@@ -505,7 +507,7 @@ const Donations = memo(() => {
                         )}
                         
                         <Button variant="ghost" className="w-full mt-4 text-primary hover:text-primary/80 group-hover:underline">
-                          Donate Now
+                          {t('donations.donateNow')}
                         </Button>
                       </CardContent>
                     </Card>
@@ -545,8 +547,8 @@ const Donations = memo(() => {
                       {/* Amount Selection */}
                       <div className="space-y-4">
                         <div className="flex items-center justify-between">
-                          <label className="text-base font-semibold text-foreground">Select Amount (ETB)</label>
-                          <span className="text-xs text-muted-foreground">Or enter custom amount</span>
+                          <label className="text-base font-semibold text-foreground">{t('donations.selectAmount')}</label>
+                          <span className="text-xs text-muted-foreground">{t('donations.customAmount')}</span>
                         </div>
                         
                         {/* Quick Amount Buttons */}
@@ -614,14 +616,14 @@ const Donations = memo(() => {
 
                       {/* Category Selection */}
                       <div className="space-y-3">
-                        <label className="text-base font-semibold text-foreground">Select Cause</label>
+                        <label className="text-base font-semibold text-foreground">{t('donations.viewCauses')}</label>
                         <div className="relative">
                           <select
                             value={selectedCategory}
                             onChange={(e) => setSelectedCategory(e.target.value)}
                             className="w-full px-4 py-4 rounded-xl border-2 border-border bg-background text-foreground appearance-none cursor-pointer transition-all duration-200 focus:ring-2 focus:ring-primary/20 focus:border-primary hover:border-primary/50"
                           >
-                            <option value="">General Fund</option>
+                            <option value="">{t('donations.activeCampaigns')}</option>
                             {donationCategories.map(c => (
                               <option key={c.id} value={c.id}>{c.title}</option>
                             ))}
@@ -641,13 +643,13 @@ const Donations = memo(() => {
                         >
                           <h3 className="text-base font-semibold text-foreground flex items-center gap-2">
                             <FiUsers className="w-5 h-5 text-primary" />
-                            Contact Information
+                            {t('contact.sendUsMessage')}
                           </h3>
                           <div className="grid md:grid-cols-2 gap-4">
                             <div className="space-y-2">
                               <input
                                 type="text"
-                                placeholder="Full Name *"
+                                placeholder={t('donations.fullName')}
                                 value={donorInfo.name}
                                 onChange={(e) => setDonorInfo({ ...donorInfo, name: e.target.value })}
                                 className="w-full px-4 py-3.5 rounded-xl border-2 border-border bg-background text-foreground placeholder:text-muted-foreground transition-all duration-200 focus:ring-2 focus:ring-primary/20 focus:border-primary"
@@ -657,7 +659,7 @@ const Donations = memo(() => {
                             <div className="space-y-2">
                               <input
                                 type="email"
-                                placeholder="Email Address *"
+                                placeholder={t('donations.emailAddress')}
                                 value={donorInfo.email}
                                 onChange={(e) => setDonorInfo({ ...donorInfo, email: e.target.value })}
                                 className="w-full px-4 py-3.5 rounded-xl border-2 border-border bg-background text-foreground placeholder:text-muted-foreground transition-all duration-200 focus:ring-2 focus:ring-primary/20 focus:border-primary"
@@ -668,7 +670,7 @@ const Donations = memo(() => {
                           <div className="space-y-2">
                             <input
                               type="tel"
-                              placeholder="Phone Number (Optional)"
+                              placeholder={t('donations.phoneNumber')}
                               value={donorInfo.phone}
                               onChange={(e) => setDonorInfo({ ...donorInfo, phone: e.target.value })}
                               className="w-full px-4 py-3.5 rounded-xl border-2 border-border bg-background text-foreground placeholder:text-muted-foreground transition-all duration-200 focus:ring-2 focus:ring-primary/20 focus:border-primary"
@@ -682,8 +684,8 @@ const Donations = memo(() => {
                               className="w-5 h-5 rounded border-2 border-border text-primary focus:ring-2 focus:ring-primary/20 cursor-pointer"
                             />
                             <div className="flex-1">
-                              <span className="text-sm font-medium text-foreground block">Make this donation anonymous</span>
-                              <span className="text-xs text-muted-foreground">Your name will not be displayed publicly</span>
+                              <span className="text-sm font-medium text-foreground block">{t('donations.anonymous')}</span>
+                              <span className="text-xs text-muted-foreground">{t('donations.anonymous')}</span>
                             </div>
                             <FiShield className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
                           </label>
@@ -702,12 +704,12 @@ const Donations = memo(() => {
                           {isProcessing ? (
                             <div className="flex items-center justify-center gap-3">
                               <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                              <span>Processing...</span>
+                              <span>{t('donations.processing')}</span>
                             </div>
                           ) : (
                             <div className="flex items-center justify-center gap-3">
                               <FiCreditCard className="w-6 h-6" />
-                              <span>Donate {finalAmount} ETB</span>
+                              <span>{t('donations.donate')} {finalAmount} ETB</span>
                             </div>
                           )}
                         </Button>
@@ -739,7 +741,7 @@ const Donations = memo(() => {
                         {/* Amount Display */}
                         <div className="space-y-2">
                           <div className="flex items-center justify-between text-sm text-muted-foreground">
-                            <span>Donation Amount</span>
+                            <span>{t('donations.donationAmount')}</span>
                           </div>
                           <div className="text-3xl font-bold text-primary">
                             {finalAmount > 0 ? `${finalAmount}` : '0'} <span className="text-lg text-muted-foreground">ETB</span>

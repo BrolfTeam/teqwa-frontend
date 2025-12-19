@@ -372,10 +372,40 @@
     @apply w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin;
   }
 
+  /* RTL Support */
+  [dir="rtl"] {
+    direction: rtl;
+    text-align: right;
+  }
+
+  [dir="ltr"] {
+    direction: ltr;
+    text-align: left;
+  }
+
   /* Arabic text */
   .arabic {
-    @apply font-arabic text-right leading-loose;
+    @apply font-arabic leading-loose;
     direction: rtl;
+  }
+
+  /* Amharic text */
+  .amharic {
+    @apply font-amharic;
+  }
+
+  /* RTL-specific adjustments */
+  [dir="rtl"] .container {
+    text-align: right;
+  }
+
+  [dir="rtl"] nav {
+    direction: rtl;
+  }
+
+  /* Flip icons and arrows in RTL */
+  [dir="rtl"] .flip-rtl {
+    transform: scaleX(-1);
   }
 
   /* Glass effect */

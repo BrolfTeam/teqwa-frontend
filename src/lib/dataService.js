@@ -57,6 +57,13 @@ class DataService {
     } catch (error) {
       console.error(`API call failed for ${apiMethod.name}:`, error);
 
+      // Handle rate limiting (429) - don't show error, just return empty data
+      if (error.status === 429) {
+        console.warn(`Rate limited for ${apiMethod.name}, returning empty data`);
+        // Return empty data structure instead of throwing
+        return [];
+      }
+
       // Handle network errors gracefully
       if (error.message && (error.message.includes('Network error') || error.message.includes('Failed to fetch') || error.message.includes('ERR_EMPTY_RESPONSE'))) {
         console.warn(`Network error for ${apiMethod.name}, returning empty data`);
@@ -69,7 +76,7 @@ class DataService {
 
       // Don't show error toast for 403 (Forbidden) or 401 (Unauthorized) - these are permission issues
       // that should be handled gracefully by the calling code
-      if (showError && error.status !== 403 && error.status !== 401) {
+      if (showError && error.status !== 403 && error.status !== 401 && error.status !== 429) {
         const errorMessage = error.data?.message || error.message || 'An error occurred';
         toast.error(errorMessage);
       }

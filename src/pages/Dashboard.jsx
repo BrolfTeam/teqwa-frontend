@@ -8,14 +8,16 @@ import StudentDashboard from '@/components/dashboard/StudentDashboard';
 import ParentDashboard from '@/components/dashboard/ParentDashboard';
 import TeacherDashboard from '@/components/dashboard/TeacherDashboard';
 import IslamicPattern from '@/components/ui/IslamicPattern';
+import { useTranslation } from 'react-i18next';
 
 const Dashboard = memo(() => {
+  const { t } = useTranslation();
   const { user, loading } = useAuth();
 
   if (loading) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
-        <LoadingSpinner size="lg" text="Loading dashboard..." />
+        <LoadingSpinner size="lg" text={t('dashboard.loadingDashboard')} />
       </div>
     );
   }

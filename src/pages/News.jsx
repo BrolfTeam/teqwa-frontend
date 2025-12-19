@@ -25,9 +25,11 @@ import EmptyState from '@/components/ui/EmptyState';
 import IslamicPattern from '@/components/ui/IslamicPattern';
 import { apiService } from '@/lib/apiService';
 import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
 import mesjidBg from '@/assets/mesjid2.jpg';
 
 const News = memo(() => {
+  const { t } = useTranslation();
   const [news, setNews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -159,10 +161,10 @@ const News = memo(() => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-muted/20 to-background">
       <Hero
-        title="Community"
-        titleHighlight="News & Updates"
+        title={t('news.title')}
+        titleHighlight={t('news.latestNews')}
         align="center"
-        description="Stay informed with the latest announcements, news, and updates from MuJemea At-Tekwa."
+        description={t('news.latestNews')}
         backgroundImage={mesjidBg}
       />
 
@@ -180,7 +182,7 @@ const News = memo(() => {
                 <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                 <input
                   type="text"
-                  placeholder="Search news by title, content, or author..."
+                  placeholder={t('news.searchNews')}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="w-full pl-12 pr-4 py-3 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
@@ -202,7 +204,7 @@ const News = memo(() => {
                   <div className="flex-1 flex flex-wrap gap-2">
                     <span className="text-sm font-medium text-muted-foreground flex items-center gap-2 self-center">
                       <FiTag className="w-4 h-4" />
-                      Filter by tags:
+                      {t('news.filter')}:
                     </span>
                     {allTags.map(tag => (
                       <Badge
@@ -224,9 +226,9 @@ const News = memo(() => {
                     onChange={(e) => setSortBy(e.target.value)}
                     className="px-4 py-2 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
                   >
-                    <option value="newest">Newest First</option>
-                    <option value="oldest">Oldest First</option>
-                    <option value="trending">Trending</option>
+                    <option value="newest">{t('news.newest')}</option>
+                    <option value="oldest">{t('news.oldest')}</option>
+                    <option value="trending">{t('news.trending')}</option>
                   </select>
 
                   <Button
@@ -235,7 +237,7 @@ const News = memo(() => {
                     onClick={() => setShowFeaturedOnly(!showFeaturedOnly)}
                   >
                     <FiStar className="w-4 h-4 mr-2" />
-                    Featured Only
+                    {t('news.featured')}
                   </Button>
 
                   {(searchTerm || selectedTags.length > 0 || showFeaturedOnly) && (
@@ -245,7 +247,7 @@ const News = memo(() => {
                       onClick={clearFilters}
                     >
                       <FiX className="w-4 h-4 mr-2" />
-                      Clear Filters
+                      {t('news.clearFilters')}
                     </Button>
                   )}
                 </div>
@@ -297,14 +299,14 @@ const News = memo(() => {
         ) : filteredNews.length === 0 ? (
           <EmptyState
             icon={FiBell}
-            title="No News Found"
+            title={t('news.noNewsFound')}
             description={searchTerm || selectedTags.length > 0 || showFeaturedOnly
-              ? "Try adjusting your filters to see more results."
-              : "No announcements available at the moment. Check back later for updates."}
+              ? t('news.noNewsFound')
+              : t('news.noNewsFound')}
             action={
               (searchTerm || selectedTags.length > 0 || showFeaturedOnly) ? (
                 <Button onClick={clearFilters} variant="primary">
-                  Clear Filters
+                  {t('news.clearFilters')}
                 </Button>
               ) : undefined
             }
@@ -320,7 +322,7 @@ const News = memo(() => {
               >
                 <div className="flex items-center gap-3 mb-6">
                   <FiTrendingUp className="w-6 h-6 text-primary" />
-                  <h2 className="text-2xl md:text-3xl font-bold text-foreground">Featured News</h2>
+                  <h2 className="text-2xl md:text-3xl font-bold text-foreground">{t('news.featured')} {t('news.title')}</h2>
                 </div>
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {featuredNews.map((item, index) => (
@@ -337,7 +339,7 @@ const News = memo(() => {
               transition={{ delay: 0.1 }}
             >
               {featuredNews.length > 0 && !showFeaturedOnly && (
-                <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-6">All News</h2>
+                <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-6">{t('news.allNews')}</h2>
               )}
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <AnimatePresence>
@@ -392,7 +394,7 @@ const NewsCard = memo(({ item, featured = false, index = 0 }) => {
                   {featured && (
                     <Badge variant="primary" className="flex items-center gap-1">
                       <FiStar className="w-3 h-3" />
-                      Featured
+                      {t('news.featured')}
                     </Badge>
                   )}
                   <Badge variant="outline" className="text-xs">
@@ -459,7 +461,7 @@ const NewsCard = memo(({ item, featured = false, index = 0 }) => {
               to={`/news/${item.id}`}
               className="flex items-center gap-2 text-primary group-hover:gap-3 transition-all"
             >
-              <span className="text-sm font-medium">Read More</span>
+              <span className="text-sm font-medium">{t('news.readMore')}</span>
               <FiChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Link>
           </div>

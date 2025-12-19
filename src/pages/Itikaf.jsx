@@ -11,6 +11,7 @@ import IslamicPattern from '@/components/ui/IslamicPattern';
 import { dataService } from '@/lib/dataService';
 import { format, parseISO, isValid } from 'date-fns';
 import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
 import mesjidBg from '@/assets/mesjid2.jpg';
 import { useAuth } from '@/context/AuthContext';
 import Hero from '@/components/ui/Hero';
@@ -29,6 +30,7 @@ const safeFormatDate = (date, formatStr = 'MMM dd, yyyy') => {
 };
 
 const Itikaf = memo(() => {
+  const { t } = useTranslation();
   const { isAuthenticated, logout } = useAuth();
   const [programs, setPrograms] = useState([]);
   const [selectedProgram, setSelectedProgram] = useState(null);
@@ -103,7 +105,7 @@ const Itikaf = memo(() => {
   const handleRegister = useCallback(async (programId) => {
     const token = localStorage.getItem('authToken');
     if (!token) {
-      toast.error('Please log in to register for Iʿtikāf');
+      toast.error(t('itikaf.pleaseLoginToRegister'));
       return;
     }
 
@@ -146,7 +148,7 @@ const Itikaf = memo(() => {
           <IslamicPattern className="opacity-5" color="currentColor" />
           <div className="relative z-10 flex flex-col items-center">
             <div className="w-16 h-16 border-4 border-primary/20 border-t-primary rounded-full animate-spin mb-4" />
-            <p className="text-lg text-muted-foreground font-medium animate-pulse">Loading Iʿtikāf Programs...</p>
+            <p className="text-lg text-muted-foreground font-medium animate-pulse">{t('itikaf.loadingPrograms')}</p>
           </div>
         </div>
       </div>
@@ -157,13 +159,13 @@ const Itikaf = memo(() => {
     <div className="min-h-screen bg-background font-sans selection:bg-primary/20">
       {/* Hero Section */}
       <Hero
-        title="Iʿtikāf"
-        titleHighlight="الاعتكاف"
-        description="Disconnect from the world to reconnect with your Creator. Experience profound tranquility and spiritual renewal in the House of Allah."
+        title={t('itikaf.title')}
+        titleHighlight={t('itikaf.spiritualRetreat')}
+        description={t('itikaf.itikafSubtitle')}
         backgroundImage={mesjidBg}
-        primaryAction="Find a Program"
+        primaryAction={t('itikaf.findProgram')}
         onPrimaryActionClick={() => setActiveSection('programs')}
-        secondaryAction="Learn More"
+        secondaryAction={t('itikaf.learnMore')}
         onSecondaryActionClick={() => setActiveSection('about')}
       />
 
@@ -171,8 +173,8 @@ const Itikaf = memo(() => {
       <div className="sticky top-6 z-40 flex justify-center px-4 mb-12 pointer-events-none mt-8">
         <div className="bg-background/80 backdrop-blur-lg border border-border/50 shadow-lg rounded-full p-1.5 pointer-events-auto flex items-center gap-1">
           {[
-            { id: 'about', label: 'About Iʿtikāf' },
-            { id: 'programs', label: 'Programs & Registration' }
+            { id: 'about', label: t('itikaf.aboutItikaf') },
+            { id: 'programs', label: t('itikaf.programsRegistration') }
           ].map((tab) => (
             <button
               key={tab.id}
@@ -212,17 +214,16 @@ const Itikaf = memo(() => {
                   <div className="inline-flex bg-primary/10 text-primary p-3 rounded-2xl">
                     <FiMoon className="w-8 h-8" />
                   </div>
-                  <h2 className="text-3xl md:text-4xl font-bold">What is Iʿtikāf?</h2>
+                  <h2 className="text-3xl md:text-4xl font-bold">{t('itikaf.whatIsItikaf')}</h2>
                   <p className="text-lg text-muted-foreground leading-relaxed">
-                    Iʿtikāf is the practice of secluding oneself in the mosque for a specific period to worship Allah exclusively.
-                    It is a time to pause your worldly life, detach from distractions, and focus entirely on prayer, Quran, and reflection.
+                    {t('itikaf.itikafDescription')}
                   </p>
                   <ul className="space-y-3">
                     {[
-                      "Sunnah of the Prophet (ﷺ)",
-                      "Spiritual purification",
-                      "Seeking Laylat al-Qadr",
-                      "Strengthening connection with Allah"
+                      t('itikaf.sunnahOfProphet'),
+                      t('itikaf.spiritualPurification'),
+                      t('itikaf.seekingLaylatAlQadr'),
+                      t('itikaf.strengtheningConnection')
                     ].map((item, i) => (
                       <li key={i} className="flex items-center gap-3 text-foreground/80">
                         <FiCheckCircle className="text-primary w-5 h-5 flex-shrink-0" />
@@ -351,11 +352,11 @@ const Itikaf = memo(() => {
                 <div className="bg-primary/5 border border-primary/10 rounded-2xl p-6 md:p-8">
                   <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
                     <FiCheckCircle className="text-primary" />
-                    My Registrations
+                    {t('itikaf.myRegistrations')}
                   </h3>
                   <div className="grid gap-4">
-                    {myRegistrations.map((registration) => (
-                      <div key={registration.id} className="bg-background rounded-xl p-5 border border-border/50 shadow-sm flex flex-col sm:flex-row gap-5 items-start sm:items-center justify-between">
+                    {(myRegistrations || []).map((registration, regIdx) => (
+                      <div key={registration.id || registration.program_id || `registration-${regIdx}`} className="bg-background rounded-xl p-5 border border-border/50 shadow-sm flex flex-col sm:flex-row gap-5 items-start sm:items-center justify-between">
                         <div>
                           <h4 className="font-bold text-lg mb-1">{registration.program_title || 'Iʿtikāf Program'}</h4>
                           <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
@@ -389,19 +390,19 @@ const Itikaf = memo(() => {
 
               {/* Available Programs */}
               <div>
-                <h3 className="text-2xl font-bold mb-8">Available Programs</h3>
+                <h3 className="text-2xl font-bold mb-8">{t('itikaf.availablePrograms')}</h3>
                 {programs.length === 0 ? (
                   <Card className="py-16 text-center bg-muted/20 border-border/60">
                     <div className="w-20 h-20 bg-muted/50 rounded-full flex items-center justify-center mx-auto mb-6">
                       <FiCalendar className="w-10 h-10 text-muted-foreground/50" />
                     </div>
-                    <h4 className="text-xl font-semibold mb-2">No Upcoming Programs</h4>
+                    <h4 className="text-xl font-semibold mb-2">{t('itikaf.noUpcomingPrograms')}</h4>
                     <p className="text-muted-foreground">Please check back later for updates.</p>
                   </Card>
                 ) : (
                   <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {programs.map((program) => (
-                      <Card key={program.id} hoverable className="h-full flex flex-col group overflow-hidden bg-white shadow-md border-border/40">
+                    {(programs || []).map((program, progIdx) => (
+                      <Card key={program.id || program.program_id || `program-${progIdx}`} hoverable className="h-full flex flex-col group overflow-hidden bg-white shadow-md border-border/40">
                         <div className="relative h-56 overflow-hidden">
                           {program.image ? (
                             <img
@@ -436,7 +437,7 @@ const Itikaf = memo(() => {
                               {safeFormatDate(program.start_date)}
                             </span>
                             <span className={`font-semibold ${program.fee > 0 ? "text-foreground" : "text-primary/90"}`}>
-                              {program.fee > 0 ? `${program.fee} ETB` : "Free Registration"}
+                              {program.fee > 0 ? `${program.fee} ETB` : t('itikaf.freeRegistration')}
                             </span>
                           </div>
 
@@ -446,7 +447,7 @@ const Itikaf = memo(() => {
 
                           <div className="mt-auto space-y-3">
                             <div className="flex items-center justify-end text-xs font-medium text-muted-foreground mb-1">
-                              {program.participant_count} / {program.capacity} Registered
+                              {program.participant_count} / {program.capacity} {t('itikaf.registered')}
                             </div>
                             <div className="w-full bg-muted rounded-full h-1.5 overflow-hidden">
                               <div
@@ -463,7 +464,7 @@ const Itikaf = memo(() => {
                             variant="outline"
                             onClick={() => loadProgramDetails(program.id)}
                           >
-                            Read More
+                            {t('common.readMore')}
                           </Button>
 
                           {program.is_registration_open && !program.is_full && (
@@ -479,7 +480,7 @@ const Itikaf = memo(() => {
                               }}
                               variant={isRegistered(program.id) ? "secondary" : "primary"}
                             >
-                              {isRegistered(program.id) ? "Registered" : "Register"}
+                              {isRegistered(program.id) ? t('itikaf.registered') : t('itikaf.registerNow')}
                             </Button>
                           )}
                         </CardFooter>
@@ -543,7 +544,7 @@ const Itikaf = memo(() => {
                   <div className="md:col-span-2 space-y-8">
                     <div>
                       <h3 className="text-xl font-bold mb-3 flex items-center gap-2">
-                        <FiInfo className="text-primary" /> About
+                        <FiInfo className="text-primary" /> {t('common.about')}
                       </h3>
                       <p className="text-muted-foreground leading-relaxed whitespace-pre-wrap">
                         {selectedProgram.description}
@@ -553,11 +554,11 @@ const Itikaf = memo(() => {
                     {schedules.length > 0 && (
                       <div>
                         <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
-                          <FiClock className="text-primary" /> Daily Schedule
+                          <FiClock className="text-primary" /> {t('common.today')} {t('common.schedule')}
                         </h3>
                         <div className="relative border-l-2 border-primary/20 ml-3 space-y-8 pb-4">
-                          {schedules.map((schedule, idx) => (
-                            <div key={schedule.id} className="relative pl-8">
+                          {(schedules || []).map((schedule, idx) => (
+                            <div key={schedule.id || `schedule-${idx}`} className="relative pl-8">
                               <div className="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-background border-2 border-primary" />
                               <div className="mb-2">
                                 <span className="text-sm font-semibold text-primary uppercase tracking-wider">Day {schedule.day_number}</span>
@@ -586,11 +587,11 @@ const Itikaf = memo(() => {
                           <span className="font-medium">{selectedProgram.capacity} People</span>
                         </div>
                         <div className="flex justify-between py-2 border-b border-border/50">
-                          <span className="text-muted-foreground">Registered</span>
+                          <span className="text-muted-foreground">{t('itikaf.registered')}</span>
                           <span className="font-medium">{selectedProgram.participant_count} People</span>
                         </div>
                         <div className="flex justify-between py-2 border-b border-border/50">
-                          <span className="text-muted-foreground">Registration Fee</span>
+                          <span className="text-muted-foreground">{t('itikaf.registrationFee')}</span>
                           <span className="font-medium">{selectedProgram.fee > 0 ? `${selectedProgram.fee} ETB` : 'Free'}</span>
                         </div>
                       </div>
@@ -607,10 +608,10 @@ const Itikaf = memo(() => {
                           disabled={isRegistered(selectedProgram.id)}
                           variant={isRegistered(selectedProgram.id) ? "outline" : "primary"}
                         >
-                          {isRegistered(selectedProgram.id) ? "Already Registered" : "Register Now"}
+                          {isRegistered(selectedProgram.id) ? t('itikaf.alreadyRegistered') : t('itikaf.registerNow')}
                         </Button>
                       ) : (
-                        <Button className="w-full mt-6" disabled variant="outline">Registration Closed</Button>
+                        <Button className="w-full mt-6" disabled variant="outline">{t('itikaf.registrationClosed')}</Button>
                       )}
                     </div>
 
@@ -655,7 +656,7 @@ const Itikaf = memo(() => {
               className="bg-background w-full max-w-lg rounded-2xl shadow-xl overflow-hidden"
             >
               <div className="p-6 border-b border-border/50 flex justify-between items-center bg-muted/10">
-                <h3 className="font-bold text-xl">Register for {selectedProgram.title}</h3>
+                <h3 className="font-bold text-xl">{t('itikaf.registerForItikaf')} {selectedProgram.title}</h3>
                 <button onClick={() => setShowRegistrationForm(false)} className="text-muted-foreground hover:text-foreground">
                   <FiX className="w-5 h-5" />
                 </button>
@@ -663,16 +664,16 @@ const Itikaf = memo(() => {
               <div className="p-6 space-y-4">
                 <div className="space-y-4">
                   <div>
-                    <label className="text-sm font-medium mb-1.5 block">Emergency Contact Name <span className="text-red-500">*</span></label>
+                    <label className="text-sm font-medium mb-1.5 block">{t('itikaf.emergencyContact')} <span className="text-red-500">*</span></label>
                     <input
                       className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                      placeholder="Full Name"
+                      placeholder={t('contact.fullName')}
                       value={registrationData.emergency_contact}
                       onChange={(e) => setRegistrationData({ ...registrationData, emergency_contact: e.target.value })}
                     />
                   </div>
                   <div>
-                    <label className="text-sm font-medium mb-1.5 block">Emergency Contact Phone <span className="text-red-500">*</span></label>
+                    <label className="text-sm font-medium mb-1.5 block">{t('itikaf.emergencyPhone')} <span className="text-red-500">*</span></label>
                     <input
                       className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                       placeholder="+251..."
@@ -681,19 +682,19 @@ const Itikaf = memo(() => {
                     />
                   </div>
                   <div>
-                    <label className="text-sm font-medium mb-1.5 block">Special Requirements</label>
+                    <label className="text-sm font-medium mb-1.5 block">{t('itikaf.specialRequirements')}</label>
                     <textarea
                       className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                      placeholder="Dietary needs, etc."
+                      placeholder={t('itikaf.specialRequirements')}
                       value={registrationData.special_requirements}
                       onChange={(e) => setRegistrationData({ ...registrationData, special_requirements: e.target.value })}
                     />
                   </div>
                   <div>
-                    <label className="text-sm font-medium mb-1.5 block">Notes</label>
+                    <label className="text-sm font-medium mb-1.5 block">{t('itikaf.notes')}</label>
                     <textarea
                       className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                      placeholder="Any other info..."
+                      placeholder={t('itikaf.notes')}
                       value={registrationData.notes}
                       onChange={(e) => setRegistrationData({ ...registrationData, notes: e.target.value })}
                     />
@@ -701,14 +702,14 @@ const Itikaf = memo(() => {
                 </div>
               </div>
               <div className="p-6 pt-0 flex gap-3">
-                <Button variant="outline" className="flex-1" onClick={() => setShowRegistrationForm(false)}>Cancel</Button>
+                <Button variant="outline" className="flex-1" onClick={() => setShowRegistrationForm(false)}>{t('common.cancel')}</Button>
                 <Button
                   className="flex-1"
                   onClick={() => handleRegister(selectedProgram.id)}
                   disabled={!registrationData.emergency_contact || !registrationData.emergency_phone || registering}
                   isLoading={registering}
                 >
-                  Complete Registration
+                  {t('itikaf.completeRegistration')}
                 </Button>
               </div>
             </motion.div>

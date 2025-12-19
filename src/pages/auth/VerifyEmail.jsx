@@ -7,13 +7,15 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { toast } from 'sonner';
 import { apiService } from '@/lib/apiService';
 import { useAuth } from '@/context/AuthContext';
+import { useTranslation } from 'react-i18next';
 
 const VerifyEmail = memo(() => {
+    const { t } = useTranslation();
     const { token } = useParams();
     const navigate = useNavigate();
     const { updateUser } = useAuth();
     const [status, setStatus] = useState('verifying'); // verifying, success, error
-    const [message, setMessage] = useState('Verifying your email...');
+    const [message, setMessage] = useState(t('auth.verifyEmail.verifyingMessage'));
     const [email, setEmail] = useState('');
     const [isResending, setIsResending] = useState(false);
 
@@ -22,14 +24,14 @@ const VerifyEmail = memo(() => {
             try {
                 const response = await apiService.verifyEmail(token);
                 setStatus('success');
-                setMessage(response.message || 'Email verified successfully!');
+                setMessage(response.message || t('auth.verifyEmail.verifiedSuccessfully'));
 
                 // Update user in context if they're logged in
                 if (response.user && updateUser) {
                     updateUser(response.user);
                 }
 
-                toast.success('Email verified successfully!');
+                toast.success(t('auth.verifyEmail.verifiedSuccessfully'));
 
                 // Redirect to login after 3 seconds
                 setTimeout(() => {
@@ -37,8 +39,8 @@ const VerifyEmail = memo(() => {
                 }, 3000);
             } catch (error) {
                 setStatus('error');
-                setMessage(error.message || 'Failed to verify email. The link may be invalid or expired.');
-                toast.error('Email verification failed');
+                setMessage(error.message || t('auth.verifyEmail.linkExpired'));
+                toast.error(t('auth.verifyEmail.verificationFailed'));
             }
         };
 
@@ -86,9 +88,9 @@ const VerifyEmail = memo(() => {
                             )}
                         </div>
                         <CardTitle className="text-2xl font-bold">
-                            {status === 'verifying' && 'Verifying Email'}
-                            {status === 'success' && 'Email Verified!'}
-                            {status === 'error' && 'Verification Failed'}
+                            {status === 'verifying' && t('auth.verifyEmail.verifying')}
+                            {status === 'success' && t('auth.verifyEmail.emailVerified')}
+                            {status === 'error' && t('auth.verifyEmail.verificationFailed')}
                         </CardTitle>
                         <p className="text-muted-foreground mt-2">{message}</p>
                     </CardHeader>
@@ -97,13 +99,13 @@ const VerifyEmail = memo(() => {
                             <div className="space-y-4">
                                 <div className="p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
                                     <p className="text-sm text-green-800 dark:text-green-200">
-                                        Your email has been verified successfully. You will be redirected to the login page shortly.
+                                        {t('auth.verifyEmail.verifiedSuccessfully')}
                                     </p>
                                 </div>
 
                                 <Link to="/login" className="block">
                                     <Button className="w-full">
-                                        Go to Login
+                                        {t('auth.verifyEmail.goToLogin')}
                                     </Button>
                                 </Link>
                             </div>
@@ -113,13 +115,13 @@ const VerifyEmail = memo(() => {
                             <div className="space-y-4">
                                 <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
                                     <p className="text-sm text-red-800 dark:text-red-200">
-                                        The verification link may have expired or is invalid. You can request a new verification email below.
+                                        {t('auth.verifyEmail.linkExpired')}
                                     </p>
                                 </div>
 
                                 <div>
                                     <label htmlFor="email" className="block text-sm font-medium mb-2">
-                                        Email Address
+                                        {t('auth.verifyEmail.emailAddress')}
                                     </label>
                                     <div className="relative">
                                         <FiMail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -129,7 +131,7 @@ const VerifyEmail = memo(() => {
                                             value={email}
                                             onChange={(e) => setEmail(e.target.value)}
                                             className="w-full pl-10 pr-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                                            placeholder="Enter your email"
+                                            placeholder={t('auth.verifyEmail.emailPlaceholder')}
                                         />
                                     </div>
                                 </div>
@@ -139,12 +141,12 @@ const VerifyEmail = memo(() => {
                                     disabled={isResending}
                                     className="w-full"
                                 >
-                                    {isResending ? 'Sending...' : 'Resend Verification Email'}
+                                    {isResending ? t('auth.verifyEmail.sending') : t('auth.verifyEmail.resendVerificationEmail')}
                                 </Button>
 
                                 <Link to="/login" className="block">
                                     <Button variant="outline" className="w-full">
-                                        Back to Login
+                                        {t('auth.forgotPassword.backToLogin')}
                                     </Button>
                                 </Link>
                             </div>
@@ -153,7 +155,7 @@ const VerifyEmail = memo(() => {
                         {status === 'verifying' && (
                             <div className="text-center">
                                 <p className="text-sm text-muted-foreground">
-                                    Please wait while we verify your email address...
+                                    {t('auth.verifyEmail.pleaseWait')}
                                 </p>
                             </div>
                         )}

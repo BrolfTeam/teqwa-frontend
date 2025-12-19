@@ -14,6 +14,7 @@ import { dataService } from '@/lib/dataService';
 import { toast } from 'sonner';
 import Modal from '@/components/ui/Modal';
 import FormField from '@/components/ui/FormField';
+import { useTranslation } from 'react-i18next';
 
 const StudentDashboard = memo(() => {
     const { user } = useAuth();
@@ -100,7 +101,7 @@ const StudentDashboard = memo(() => {
             fetchDashboardData();
         } catch (error) {
             console.error('Failed to send message:', error);
-            toast.error('Failed to send message');
+            toast.error(t('common.error'));
         }
     };
 
@@ -163,9 +164,9 @@ const StudentDashboard = memo(() => {
                 <div className="relative z-10">
                     <div className="flex items-center gap-3 mb-2">
                         <FiBookOpen className="h-8 w-8" />
-                        <h1 className="text-3xl font-bold">Student Dashboard</h1>
+                        <h1 className="text-3xl font-bold">{t('dashboard.student.studentDashboard')}</h1>
                     </div>
-                    <p className="text-blue-100">Welcome back, {user?.first_name || user?.username}! Manage your studies and track your progress.</p>
+                    <p className="text-blue-100">{t('dashboard.student.welcomeBack')}, {user?.first_name || user?.username}! {t('dashboard.student.studentDashboard')}</p>
                 </div>
             </motion.div>
 
@@ -194,7 +195,7 @@ const StudentDashboard = memo(() => {
                         <Card className="shadow-md border-border/50">
                             <CardHeader className="border-b border-border/40 pb-4">
                                 <CardTitle className="flex items-center gap-2">
-                                    <FiClock className="text-blue-500" /> Today's Schedule
+                                    <FiClock className="text-blue-500" /> {t('dashboard.student.todayTimetable')}
                                 </CardTitle>
                             </CardHeader>
                             <CardContent className="pt-6">
@@ -204,7 +205,7 @@ const StudentDashboard = memo(() => {
                                             <div key={item.id} className="flex items-center justify-between p-4 rounded-lg bg-secondary/30 border border-border/50">
                                                 <div className="flex-1">
                                                     <div className="font-semibold">{item.course?.code || 'N/A'}</div>
-                                                    <div className="text-sm text-muted-foreground">{item.course?.service?.title || 'Course'}</div>
+                                                    <div className="text-sm text-muted-foreground">{item.course?.service?.title || t('education.title')}</div>
                                                     <div className="text-xs text-muted-foreground mt-1">
                                                         {item.start_time} - {item.end_time} {item.location && `• ${item.location}`}
                                                     </div>
@@ -214,7 +215,7 @@ const StudentDashboard = memo(() => {
                                         ))}
                                     </div>
                                 ) : (
-                                    <p className="text-center text-muted-foreground py-6">No classes scheduled for today</p>
+                                    <p className="text-center text-muted-foreground py-6">{t('dashboard.student.noClassesScheduled')}</p>
                                 )}
                             </CardContent>
                         </Card>
@@ -226,9 +227,9 @@ const StudentDashboard = memo(() => {
                             <CardHeader className="border-b border-border/40 pb-4">
                                 <div className="flex items-center justify-between">
                                     <CardTitle className="flex items-center gap-2">
-                                        <FiFileText className="text-yellow-500" /> Assignments
+                                        <FiFileText className="text-yellow-500" /> {t('dashboard.student.assignments')}
                                     </CardTitle>
-                                    <Link to="/student/assignments" className="text-sm text-primary hover:underline">View All</Link>
+                                    <Link to="/student/assignments" className="text-sm text-primary hover:underline">{t('dashboard.student.viewAll')}</Link>
                                 </div>
                             </CardHeader>
                             <CardContent className="pt-6">
@@ -245,12 +246,12 @@ const StudentDashboard = memo(() => {
                                                                 <h4 className="font-semibold">{assignment.title}</h4>
                                                                 {isOverdue && (
                                                                     <span className="px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400">
-                                                                        Overdue
+                                                                        {t('dashboard.student.overdue')}
                                                                     </span>
                                                                 )}
                                                             </div>
                                                             <div className="text-sm text-muted-foreground">
-                                                                {assignment.course?.code || 'N/A'} • Due: {dueDate.toLocaleDateString()} {dueDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                                                {assignment.course?.code || 'N/A'} • {t('dashboard.student.due')}: {dueDate.toLocaleDateString()} {dueDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                                             </div>
                                                             <div className="text-xs text-muted-foreground mt-1">{assignment.description?.substring(0, 100)}...</div>
                                                         </div>
@@ -264,7 +265,7 @@ const StudentDashboard = memo(() => {
                                                                 }}
                                                             >
                                                                 <FiUpload className="w-4 h-4 mr-1" />
-                                                                Submit
+                                                                {t('dashboard.student.submit')}
                                                             </Button>
                                                             <Button size="sm" variant="ghost" asChild>
                                                                 <Link to={`/student/assignments/${assignment.id}`}>
@@ -278,7 +279,7 @@ const StudentDashboard = memo(() => {
                                         })}
                                     </div>
                                 ) : (
-                                    <p className="text-center text-muted-foreground py-6">No assignments available</p>
+                                    <p className="text-center text-muted-foreground py-6">{t('dashboard.student.noAssignments')}</p>
                                 )}
                             </CardContent>
                         </Card>
@@ -292,7 +293,7 @@ const StudentDashboard = memo(() => {
                         <Card className="shadow-md border-border/50">
                             <CardHeader className="border-b border-border/40 pb-4">
                                 <CardTitle className="flex items-center gap-2">
-                                    <FiCalendar className="text-purple-500" /> Upcoming Exams
+                                    <FiCalendar className="text-purple-500" /> {t('dashboard.student.upcomingExams')}
                                 </CardTitle>
                             </CardHeader>
                             <CardContent className="pt-6">
@@ -306,13 +307,13 @@ const StudentDashboard = memo(() => {
                                                     <div className="text-xs text-muted-foreground">
                                                         {exam.course?.code || 'N/A'} • {examDate.toLocaleDateString()} {examDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                                     </div>
-                                                    <div className="text-xs text-muted-foreground mt-1">Duration: {exam.duration_minutes} minutes</div>
+                                                    <div className="text-xs text-muted-foreground mt-1">{t('dashboard.student.duration')}: {exam.duration_minutes} {t('dashboard.student.minutes')}</div>
                                                 </div>
                                             );
                                         })}
                                     </div>
                                 ) : (
-                                    <p className="text-center text-muted-foreground py-6 text-sm">No upcoming exams</p>
+                                    <p className="text-center text-muted-foreground py-6 text-sm">{t('dashboard.student.noUpcomingExams')}</p>
                                 )}
                             </CardContent>
                         </Card>
@@ -324,9 +325,9 @@ const StudentDashboard = memo(() => {
                             <CardHeader className="border-b border-border/40 pb-4">
                                 <div className="flex items-center justify-between">
                                     <CardTitle className="flex items-center gap-2">
-                                        <FiAward className="text-green-500" /> Grades
+                                        <FiAward className="text-green-500" /> {t('dashboard.student.grades')}
                                     </CardTitle>
-                                    <Link to="/student/grades" className="text-sm text-primary hover:underline">View All</Link>
+                                    <Link to="/student/grades" className="text-sm text-primary hover:underline">{t('dashboard.student.viewAll')}</Link>
                                 </div>
                             </CardHeader>
                             <CardContent className="pt-6">
@@ -334,14 +335,14 @@ const StudentDashboard = memo(() => {
                                     <div className="space-y-4">
                                         <div className="text-center">
                                             <div className="text-4xl font-bold text-primary">{grades.average_percentage.toFixed(1)}%</div>
-                                            <div className="text-sm text-muted-foreground mt-1">Average Grade</div>
+                                            <div className="text-sm text-muted-foreground mt-1">{t('dashboard.student.averageGrade')}</div>
                                         </div>
                                         <div className="text-sm text-muted-foreground text-center">
-                                            {grades.data?.length || 0} graded items
+                                            {grades.data?.length || 0} {t('dashboard.student.gradedItems')}
                                         </div>
                                     </div>
                                 ) : (
-                                    <p className="text-center text-muted-foreground py-6 text-sm">No grades available yet</p>
+                                    <p className="text-center text-muted-foreground py-6 text-sm">{t('dashboard.student.noGrades')}</p>
                                 )}
                             </CardContent>
                         </Card>
@@ -351,25 +352,25 @@ const StudentDashboard = memo(() => {
                     <motion.div variants={itemVariants}>
                         <Card className="shadow-md border-border/50">
                             <CardHeader className="border-b border-border/40 pb-4">
-                                <CardTitle className="flex items-center gap-2">
-                                    <FiActivity className="text-indigo-500" /> Quick Actions
-                                </CardTitle>
+                                    <CardTitle className="flex items-center gap-2">
+                                        <FiActivity className="text-indigo-500" /> {t('dashboard.quickActions')}
+                                    </CardTitle>
                             </CardHeader>
                             <CardContent className="pt-6 space-y-2">
                                 <Button variant="outline" className="w-full justify-start" onClick={() => setShowMessageModal(true)}>
                                     <FiSend className="w-4 h-4 mr-2" />
-                                    Message Teacher
+                                    {t('dashboard.student.messageTeacher')}
                                 </Button>
                                 <Button variant="outline" className="w-full justify-start" asChild>
                                     <Link to="/student/timetable">
                                         <FiClock className="w-4 h-4 mr-2" />
-                                        View Full Timetable
+                                        {t('dashboard.student.viewFullTimetable')}
                                     </Link>
                                 </Button>
                                 <Button variant="outline" className="w-full justify-start" asChild>
                                     <Link to="/student/submissions">
                                         <FiFileText className="w-4 h-4 mr-2" />
-                                        My Submissions
+                                        {t('dashboard.student.mySubmissions')}
                                     </Link>
                                 </Button>
                             </CardContent>

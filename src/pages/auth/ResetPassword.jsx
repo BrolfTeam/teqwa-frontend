@@ -6,8 +6,10 @@ import { Button } from '@/components/ui/Button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { toast } from 'sonner';
 import { apiService } from '@/lib/apiService';
+import { useTranslation } from 'react-i18next';
 
 const ResetPassword = memo(() => {
+    const { t } = useTranslation();
     const { token } = useParams();
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
@@ -29,17 +31,17 @@ const ResetPassword = memo(() => {
         e.preventDefault();
 
         if (!formData.password || !formData.confirmPassword) {
-            toast.error('Please fill in all fields');
+            toast.error(t('auth.resetPassword.fillAllFields'));
             return;
         }
 
         if (formData.password !== formData.confirmPassword) {
-            toast.error('Passwords do not match');
+            toast.error(t('auth.resetPassword.passwordsDoNotMatch'));
             return;
         }
 
         if (formData.password.length < 8) {
-            toast.error('Password must be at least 8 characters long');
+            toast.error(t('auth.resetPassword.minLength'));
             return;
         }
 
@@ -47,12 +49,12 @@ const ResetPassword = memo(() => {
 
         try {
             await apiService.confirmPasswordReset(token, formData.password);
-            toast.success('Password reset successful! You can now login.');
+            toast.success(t('auth.resetPassword.resetSuccessful'));
             setTimeout(() => {
                 navigate('/login');
             }, 2000);
         } catch (error) {
-            toast.error(error.message || 'Failed to reset password. The link may have expired.');
+            toast.error(error.message || t('auth.resetPassword.resetFailed'));
         } finally {
             setIsLoading(false);
         }
@@ -75,7 +77,7 @@ const ResetPassword = memo(() => {
                         <form onSubmit={handleSubmit} className="space-y-4">
                             <div>
                                 <label htmlFor="password" className="block text-sm font-medium mb-2">
-                                    New Password
+                                    {t('auth.resetPassword.newPassword')}
                                 </label>
                                 <div className="relative">
                                     <FiLock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -86,7 +88,7 @@ const ResetPassword = memo(() => {
                                         value={formData.password}
                                         onChange={handleChange}
                                         className="w-full pl-10 pr-12 py-3 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                                        placeholder="Enter new password"
+                                        placeholder={t('auth.resetPassword.newPasswordPlaceholder')}
                                         required
                                     />
                                     <button
@@ -101,7 +103,7 @@ const ResetPassword = memo(() => {
 
                             <div>
                                 <label htmlFor="confirmPassword" className="block text-sm font-medium mb-2">
-                                    Confirm New Password
+                                    {t('auth.resetPassword.confirmNewPassword')}
                                 </label>
                                 <div className="relative">
                                     <FiLock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -112,7 +114,7 @@ const ResetPassword = memo(() => {
                                         value={formData.confirmPassword}
                                         onChange={handleChange}
                                         className="w-full pl-10 pr-12 py-3 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                                        placeholder="Confirm new password"
+                                        placeholder={t('auth.resetPassword.confirmNewPasswordPlaceholder')}
                                         required
                                     />
                                     <button
@@ -126,11 +128,11 @@ const ResetPassword = memo(() => {
                             </div>
 
                             <div className="text-sm text-muted-foreground">
-                                <p>Password must:</p>
+                                <p>{t('auth.resetPassword.passwordRequirements')}</p>
                                 <ul className="list-disc list-inside space-y-1 mt-2">
-                                    <li>Be at least 8 characters long</li>
-                                    <li>Contain uppercase and lowercase letters</li>
-                                    <li>Include at least one number</li>
+                                    <li>{t('auth.resetPassword.minLength')}</li>
+                                    <li>{t('auth.resetPassword.uppercaseLowercase')}</li>
+                                    <li>{t('auth.resetPassword.includeNumber')}</li>
                                 </ul>
                             </div>
 
@@ -143,12 +145,12 @@ const ResetPassword = memo(() => {
                                 {isLoading ? (
                                     <div className="flex items-center space-x-2">
                                         <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                                        <span>Resetting...</span>
+                                        <span>{t('auth.resetPassword.resetting')}</span>
                                     </div>
                                 ) : (
                                     <div className="flex items-center space-x-2">
                                         <FiCheck className="h-4 w-4" />
-                                        <span>Reset Password</span>
+                                        <span>{t('auth.resetPassword.resetPasswordButton')}</span>
                                     </div>
                                 )}
                             </Button>
@@ -156,12 +158,12 @@ const ResetPassword = memo(() => {
 
                         <div className="mt-6 text-center">
                             <p className="text-sm text-muted-foreground">
-                                Remember your password?{' '}
+                                {t('auth.resetPassword.rememberPassword')}{' '}
                                 <Link
                                     to="/login"
                                     className="text-primary hover:text-primary/80 font-medium transition-colors"
                                 >
-                                    Sign in
+                                    {t('auth.resetPassword.signIn')}
                                 </Link>
                             </p>
                         </div>

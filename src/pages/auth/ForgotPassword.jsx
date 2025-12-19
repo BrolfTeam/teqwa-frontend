@@ -6,8 +6,10 @@ import { Button } from '@/components/ui/Button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { toast } from 'sonner';
 import { apiService } from '@/lib/apiService';
+import { useTranslation } from 'react-i18next';
 
 const ForgotPassword = memo(() => {
+    const { t } = useTranslation();
     const [email, setEmail] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [emailSent, setEmailSent] = useState(false);
@@ -16,7 +18,7 @@ const ForgotPassword = memo(() => {
         e.preventDefault();
 
         if (!email) {
-            toast.error('Please enter your email address');
+            toast.error(t('auth.forgotPassword.enterEmailAddress'));
             return;
         }
 
@@ -25,9 +27,9 @@ const ForgotPassword = memo(() => {
         try {
             await apiService.requestPasswordReset(email);
             setEmailSent(true);
-            toast.success('Password reset link sent! Check your email.');
+            toast.success(t('auth.forgotPassword.passwordResetSent'));
         } catch (error) {
-            toast.error(error.message || 'Failed to send reset email. Please try again.');
+            toast.error(error.message || t('auth.forgotPassword.failedToSend'));
         } finally {
             setIsLoading(false);
         }
@@ -43,11 +45,11 @@ const ForgotPassword = memo(() => {
             >
                 <Card className="shadow-xl">
                     <CardHeader className="text-center pb-6">
-                        <CardTitle className="text-2xl font-bold">Forgot Password?</CardTitle>
+                        <CardTitle className="text-2xl font-bold">{t('auth.forgotPassword.title')}</CardTitle>
                         <p className="text-muted-foreground">
                             {emailSent
-                                ? "Check your email for reset instructions"
-                                : "Enter your email to receive a password reset link"
+                                ? t('auth.forgotPassword.checkEmail')
+                                : t('auth.forgotPassword.enterEmail')
                             }
                         </p>
                     </CardHeader>
@@ -82,12 +84,12 @@ const ForgotPassword = memo(() => {
                                     {isLoading ? (
                                         <div className="flex items-center space-x-2">
                                             <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                                            <span>Sending...</span>
+                                            <span>{t('auth.forgotPassword.sending')}</span>
                                         </div>
                                     ) : (
                                         <div className="flex items-center space-x-2">
                                             <FiSend className="h-4 w-4" />
-                                            <span>Send Reset Link</span>
+                                            <span>{t('auth.forgotPassword.sendResetLink')}</span>
                                         </div>
                                     )}
                                 </Button>
@@ -96,8 +98,8 @@ const ForgotPassword = memo(() => {
                             <div className="space-y-4">
                                 <div className="p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
                                     <p className="text-sm text-green-800 dark:text-green-200">
-                                        We've sent a password reset link to <strong>{email}</strong>.
-                                        Please check your inbox and follow the instructions.
+                                        {t('auth.forgotPassword.resetLinkSent')} <strong>{email}</strong>.
+                                        {t('auth.forgotPassword.checkInbox')}
                                     </p>
                                 </div>
 
@@ -106,7 +108,7 @@ const ForgotPassword = memo(() => {
                                     variant="outline"
                                     className="w-full"
                                 >
-                                    Send Another Link
+                                    {t('auth.forgotPassword.sendAnotherLink')}
                                 </Button>
                             </div>
                         )}
@@ -117,7 +119,7 @@ const ForgotPassword = memo(() => {
                                 className="inline-flex items-center space-x-2 text-sm text-primary hover:text-primary/80 transition-colors"
                             >
                                 <FiArrowLeft className="h-4 w-4" />
-                                <span>Back to Login</span>
+                                <span>{t('auth.forgotPassword.backToLogin')}</span>
                             </Link>
                         </div>
                     </CardContent>

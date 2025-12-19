@@ -4,12 +4,14 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/Button';
 import { CONTACT_INFO } from '@/config/constants';
 import { apiService } from '@/lib/apiService';
+import { useTranslation } from 'react-i18next';
 
 // Simple validation helpers
 const validateEmail = (email) => /\S+@\S+\.\S+/.test(email);
 const validateNotEmpty = (v) => typeof v === 'string' && v.trim().length > 0;
 
 const Contact = () => {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -33,9 +35,9 @@ const Contact = () => {
     e.preventDefault();
     // client-side validation
     const newErrors = {};
-    if (!validateNotEmpty(formData.name)) newErrors.name = 'Please enter your full name.';
-    if (!validateEmail(formData.email)) newErrors.email = 'Please enter a valid email address.';
-    if (!validateNotEmpty(formData.message)) newErrors.message = 'Please enter a message.';
+    if (!validateNotEmpty(formData.name)) newErrors.name = t('contact.pleaseEnterName');
+    if (!validateEmail(formData.email)) newErrors.email = t('contact.pleaseEnterEmail');
+    if (!validateNotEmpty(formData.message)) newErrors.message = t('contact.pleaseEnterMessage');
 
     setErrors(newErrors);
     if (Object.keys(newErrors).length > 0) return;
@@ -47,7 +49,7 @@ const Contact = () => {
 
       setSubmitStatus({
         success: true,
-        message: 'Jazaakallahu khairan — your message has been sent. We will get back to you soon.'
+        message: t('contact.messageSent')
       });
 
       // Reset form
@@ -57,7 +59,7 @@ const Contact = () => {
       setTimeout(() => setSubmitStatus({ success: null, message: '' }), 6000);
     } catch (error) {
       console.error('Contact submission error:', error);
-      setSubmitStatus({ success: false, message: 'Failed to send message. Please try again later.' });
+      setSubmitStatus({ success: false, message: t('contact.messageFailed') });
     } finally {
       setIsSubmitting(false);
     }
@@ -66,32 +68,32 @@ const Contact = () => {
   const contactInfo = [
     {
       icon: <FaMapMarkerAlt className="text-2xl text-brand-green" />,
-      title: 'Our Location',
+      title: t('contact.ourLocation'),
       content: CONTACT_INFO.address,
       link: CONTACT_INFO.mapLink,
-      linkText: 'View on Map'
+      linkText: t('contact.viewOnMap')
     },
     {
       icon: <FaPhone className="text-2xl text-brand-green" />,
-      title: 'Phone Number',
+      title: t('contact.phoneNumber'),
       content: CONTACT_INFO.phone,
       link: `tel:${CONTACT_INFO.phone.replace(/[^0-9+]/g, '')}`,
-      linkText: 'Call Now'
+      linkText: t('contact.callNow')
     },
     {
       icon: <FaEnvelope className="text-2xl text-brand-green" />,
-      title: 'Email Address',
+      title: t('contact.emailAddress'),
       content: CONTACT_INFO.email,
       link: `mailto:${CONTACT_INFO.email}`,
-      linkText: 'Send Email'
+      linkText: t('contact.sendEmail')
     },
     {
       icon: <FaClock className="text-2xl text-brand-green" />,
-      title: 'Working Hours',
-      content: 'Monday - Sunday: 5:00 AM - 10:00 PM',
-      subContent: 'Friday: Special hours for Jumu\'ah prayer',
+      title: t('contact.workingHours'),
+      content: t('contact.workingHoursContent'),
+      subContent: t('contact.fridayHours'),
       link: '/prayer-times',
-      linkText: 'View Prayer Times'
+      linkText: t('contact.viewPrayerTimes')
     }
   ];
 
@@ -107,8 +109,8 @@ const Contact = () => {
       {/* Hero Section */}
       <section className="bg-gradient-to-r from-brand-deep to-brand-green text-white py-12">
         <div className="container mx-auto px-4 text-center">
-          <h1 className="text-3xl md:text-4xl font-bold mb-4">Contact Us</h1>
-          <p className="text-lg max-w-2xl mx-auto">We'd love to hear from you. Reach out to us with any questions or feedback.</p>
+          <h1 className="text-3xl md:text-4xl font-bold mb-4">{t('contact.title')}</h1>
+          <p className="text-lg max-w-2xl mx-auto">{t('contact.subtitle')}</p>
         </div>
       </section>
 
@@ -152,8 +154,8 @@ const Contact = () => {
               <div className="md:flex">
                 {/* Contact Form */}
                 <div className="md:w-1/2 p-6 md:p-10 bg-gradient-to-br from-card/5 to-primary/5">
-                  <h2 className="text-2xl font-extrabold text-card-foreground mb-3">Send Us a Message</h2>
-                  <p className="text-sm text-muted-foreground mb-6">MuJemea At-Tekwa — Addis Ababa, Ethiopia. We're here to help the community. Please share your inquiry and we'll reply soon.</p>
+                  <h2 className="text-2xl font-extrabold text-card-foreground mb-3">{t('contact.sendUsMessage')}</h2>
+                  <p className="text-sm text-muted-foreground mb-6">{t('contact.contactDescription')}</p>
 
                   {submitStatus.message && (
                     <div
@@ -166,7 +168,7 @@ const Contact = () => {
 
                   <form onSubmit={handleSubmit} noValidate>
                     <div className="mb-4">
-                      <label htmlFor="name" className="block text-card-foreground font-medium mb-1">Full Name <span className="text-rose-500">*</span></label>
+                      <label htmlFor="name" className="block text-card-foreground font-medium mb-1">{t('contact.fullName')} <span className="text-rose-500">*</span></label>
                       <input
                         type="text"
                         id="name"
@@ -181,7 +183,7 @@ const Contact = () => {
                     </div>
 
                     <div className="mb-4">
-                      <label htmlFor="email" className="block text-card-foreground font-medium mb-1">Email Address <span className="text-rose-500">*</span></label>
+                      <label htmlFor="email" className="block text-card-foreground font-medium mb-1">{t('contact.emailAddress')} <span className="text-rose-500">*</span></label>
                       <input
                         type="email"
                         id="email"
@@ -208,7 +210,7 @@ const Contact = () => {
                     </div>
 
                     <div className="mb-4">
-                      <label htmlFor="message" className="block text-card-foreground font-medium mb-1">Message <span className="text-rose-500">*</span></label>
+                      <label htmlFor="message" className="block text-card-foreground font-medium mb-1">{t('contact.message')} <span className="text-rose-500">*</span></label>
                       <textarea
                         id="message"
                         name="message"
@@ -249,8 +251,8 @@ const Contact = () => {
                 {/* Map */}
                 <div className="md:w-1/2 p-4 bg-card">
                   <div className="h-full p-6">
-                    <h3 className="text-lg font-semibold text-card-foreground mb-3">Visit MuJemea At-Tekwa</h3>
-                    <p className="text-sm text-muted-foreground mb-4">MuJemea At-Tekwa, Addis Ababa, Ethiopia — find us at the center of the community.</p>
+                    <h3 className="text-lg font-semibold text-card-foreground mb-3">{t('contact.visitMuJemea')}</h3>
+                    <p className="text-sm text-muted-foreground mb-4">{t('contact.visitDescription')}</p>
 
                     {/* Google Maps embed */}
                     <div className="w-full rounded-lg overflow-hidden shadow-sm border border-border/50 bg-card">
@@ -266,12 +268,12 @@ const Contact = () => {
                     <div className="mt-4 flex gap-3">
                       <Button asChild variant="outline" size="sm">
                         <a href={CONTACT_INFO.mapLink} target="_blank" rel="noopener noreferrer">
-                          Open in Google Maps
+                          {t('contact.openInGoogleMaps')}
                         </a>
                       </Button>
                       <Button asChild variant="ghost" size="sm">
                         <a href={`tel:${CONTACT_INFO.phone.replace(/[^0-9+]/g, '')}`}>
-                          Call Us
+                          {t('contact.callUs')}
                         </a>
                       </Button>
                     </div>
@@ -287,31 +289,31 @@ const Contact = () => {
       <section className="py-12">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center mb-8">
-            <h2 className="text-2xl md:text-3xl font-bold text-card-foreground mb-4">Frequently Asked Questions</h2>
-            <p className="text-muted-foreground">Find answers to common questions about our services and facilities.</p>
+            <h2 className="text-2xl md:text-3xl font-bold text-card-foreground mb-4">{t('contact.frequentlyAskedQuestions')}</h2>
+            <p className="text-muted-foreground">{t('contact.faqSubtitle')}</p>
           </div>
 
           <div className="max-w-3xl mx-auto space-y-4">
             {[
               {
-                question: 'What are the prayer times at the mosque?',
-                answer: 'Our prayer times vary throughout the year. Please check our Prayer Times page for the most up-to-date schedule.'
+                question: t('contact.prayerTimesQuestion'),
+                answer: t('contact.prayerTimesAnswer')
               },
               {
-                question: 'Do you offer Quran classes for children?',
-                answer: 'Yes, we offer Quran classes for children of all ages. Please visit our Education page for more information.'
+                question: t('contact.quranClassesQuestion'),
+                answer: t('contact.quranClassesAnswer')
               },
               {
-                question: 'How can I donate to the mosque?',
-                answer: 'You can donate online through our secure portal or visit the mosque office to make a donation in person.'
+                question: t('contact.donateQuestion'),
+                answer: t('contact.donateAnswer')
               },
               {
-                question: 'Is there parking available?',
-                answer: 'Yes, we have a dedicated parking lot for visitors. Additional street parking is also available.'
+                question: t('contact.parkingQuestion'),
+                answer: t('contact.parkingAnswer')
               },
               {
-                question: 'Do you offer marriage services?',
-                answer: 'Yes, we provide Islamic marriage services. Please contact the office to schedule an appointment with the Imam.'
+                question: t('contact.marriageQuestion'),
+                answer: t('contact.marriageAnswer')
               }
             ].map((faq, index) => (
               <div key={index} className="bg-card rounded-lg shadow-md overflow-hidden border border-border/50">
@@ -335,7 +337,7 @@ const Contact = () => {
       {/* Social Media */}
       <section className="py-10">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-xl md:text-2xl font-bold text-card-foreground mb-6">Connect With Us</h2>
+          <h2 className="text-xl md:text-2xl font-bold text-card-foreground mb-6">{t('contact.connectWithUs')}</h2>
           <div className="flex justify-center space-x-4">
             {socialLinks.map((social, index) => (
               <motion.a
@@ -353,15 +355,15 @@ const Contact = () => {
           </div>
 
           <div className="mt-6">
-            <h3 className="text-base font-medium text-card-foreground mb-2">Join Our Mailing List</h3>
+            <h3 className="text-base font-medium text-card-foreground mb-2">{t('contact.joinMailingList')}</h3>
             <div className="max-w-md mx-auto flex">
               <input
                 type="email"
-                placeholder="Your email address"
+                placeholder={t('contact.yourEmailAddress')}
                 className="flex-grow px-4 py-2 border border-input rounded-l-lg bg-background focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
               />
               <Button variant="primary" className="rounded-l-none">
-                Subscribe
+                {t('contact.subscribe')}
               </Button>
             </div>
           </div>

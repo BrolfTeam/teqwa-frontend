@@ -27,8 +27,10 @@ import { dataService } from '@/lib/dataService';
 import { apiService } from '@/lib/apiService';
 import { toast } from 'sonner';
 import verses from '@/lib/verses.json';
+import { useTranslation } from 'react-i18next';
 
 const TeacherDashboard = memo(() => {
+    const { t } = useTranslation();
     const { user } = useAuth();
     const [loading, setLoading] = useState(true);
     const [myCourses, setMyCourses] = useState([]);
@@ -160,7 +162,7 @@ const TeacherDashboard = memo(() => {
 
     const dashboardStats = [
         { 
-            label: 'My Courses', 
+            label: t('dashboard.teacher.myCourses'), 
             value: stats.totalCourses, 
             icon: <FiBookOpen className="h-6 w-6" />, 
             color: 'text-blue-500', 
@@ -168,21 +170,21 @@ const TeacherDashboard = memo(() => {
             to: '/education'
         },
         { 
-            label: 'Total Students', 
+            label: t('dashboard.teacher.totalStudents'), 
             value: stats.totalStudents, 
             icon: <FiUsers className="h-6 w-6" />, 
             color: 'text-green-500', 
             bg: 'bg-green-500/10' 
         },
         { 
-            label: 'Total Enrollments', 
+            label: t('dashboard.teacher.totalEnrollments'), 
             value: studentEnrollments.length, 
             icon: <FiUsers className="h-6 w-6" />, 
             color: 'text-orange-500', 
             bg: 'bg-orange-500/10'
         },
         { 
-            label: 'My Courses', 
+            label: t('dashboard.teacher.myCoursesList'), 
             value: myCourses.length, 
             icon: <FiBookOpen className="h-6 w-6" />, 
             color: 'text-purple-500', 
@@ -203,10 +205,10 @@ const TeacherDashboard = memo(() => {
                 <IslamicPattern color="white" className="mix-blend-overlay" opacity={0.1} />
                 <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                     <div>
-                        <span className="font-arabic text-xl mb-1 block opacity-90">As-salamu alaykum</span>
-                        <h1 className="text-3xl font-bold mb-2">Teacher Dashboard</h1>
+                        <span className="font-arabic text-xl mb-1 block opacity-90">{t('dashboard.greeting')}</span>
+                        <h1 className="text-3xl font-bold mb-2">{t('dashboard.teacher.teacherDashboard')}</h1>
                         <p className="opacity-90 max-w-xl">
-                            Welcome back, {user?.first_name || user?.username}! Manage your courses and students.
+                            {t('dashboard.teacher.welcome')}, {user?.first_name || user?.username}! {t('dashboard.teacher.teacherDashboard')}
                         </p>
                         <p className="opacity-75 text-sm mt-2">
                             {dailyVerse.text} <span className="italic">- {dailyVerse.reference}</span>
@@ -256,12 +258,12 @@ const TeacherDashboard = memo(() => {
                         <Card className="shadow-md border-border/50">
                             <CardHeader className="border-b border-border/40 pb-4 flex flex-row items-center justify-between">
                                 <CardTitle className="flex items-center gap-2">
-                                    <FiBookOpen className="text-blue-500" /> My Courses
+                                    <FiBookOpen className="text-blue-500" /> {t('dashboard.teacher.myCoursesList')}
                                 </CardTitle>
                                 <Button asChild size="sm" variant="outline">
                                     <Link to="/education">
                                         <FiPlus className="h-4 w-4 mr-2" />
-                                        Manage Courses
+                                        {t('dashboard.teacher.manageCourse')}
                                     </Link>
                                 </Button>
                             </CardHeader>
@@ -275,7 +277,7 @@ const TeacherDashboard = memo(() => {
                                                     <div className="flex-1">
                                                         <div className="font-semibold text-sm">{course.title}</div>
                                                         <div className="text-xs text-muted-foreground mt-1">
-                                                            {course.service_type_display || course.service_type} • {enrollmentsCount} students
+                                                            {course.service_type_display || course.service_type} • {enrollmentsCount} {t('dashboard.teacher.students')}
                                                         </div>
                                                         <div className="flex items-center gap-2 mt-2">
                                                             <span className={`text-[10px] px-2 py-0.5 rounded-full uppercase ${
@@ -298,7 +300,7 @@ const TeacherDashboard = memo(() => {
                                         {myCourses.length > 5 && (
                                             <div className="text-center pt-2">
                                                 <Link to="/education" className="text-sm text-primary hover:underline">
-                                                    View all {myCourses.length} courses
+                                                    {t('common.viewAll')} {myCourses.length} {t('dashboard.teacher.myCoursesList')}
                                                 </Link>
                                             </div>
                                         )}
@@ -306,11 +308,11 @@ const TeacherDashboard = memo(() => {
                                 ) : (
                                     <div className="text-center py-8">
                                         <FiBookOpen className="h-12 w-12 text-muted-foreground/50 mx-auto mb-4" />
-                                        <p className="text-muted-foreground mb-4">No courses assigned yet</p>
+                                        <p className="text-muted-foreground mb-4">{t('dashboard.teacher.noCourses')}</p>
                                         <Button asChild variant="outline">
                                             <Link to="/education">
                                                 <FiPlus className="h-4 w-4 mr-2" />
-                                                Create Course
+                                                {t('dashboard.teacher.createAssignment')}
                                             </Link>
                                         </Button>
                                     </div>
@@ -390,30 +392,30 @@ const TeacherDashboard = memo(() => {
                         <Card className="shadow-md border-border/50">
                             <CardHeader className="border-b border-border/40 pb-4">
                                 <CardTitle className="flex items-center gap-2">
-                                    <FiActivity className="text-indigo-500" /> Quick Actions
+                                    <FiActivity className="text-indigo-500" /> {t('dashboard.quickActions')}
                                 </CardTitle>
                             </CardHeader>
                             <CardContent className="pt-6 space-y-2">
                                 <Button variant="outline" className="w-full justify-start" asChild>
                                     <Link to="/education">
                                         <FiPlus className="w-4 h-4 mr-2" />
-                                        Create New Course
+                                        {t('dashboard.teacher.createAssignment')}
                                     </Link>
                                 </Button>
                                 <Button variant="outline" className="w-full justify-start" disabled>
                                     <FiFileText className="w-4 h-4 mr-2" />
-                                    Create Assignment
-                                    <span className="ml-auto text-xs text-muted-foreground">Coming soon</span>
+                                    {t('dashboard.teacher.createAssignment')}
+                                    <span className="ml-auto text-xs text-muted-foreground">{t('common.comingSoon')}</span>
                                 </Button>
                                 <Button variant="outline" className="w-full justify-start" disabled>
                                     <FiAward className="w-4 h-4 mr-2" />
-                                    Schedule Exam
-                                    <span className="ml-auto text-xs text-muted-foreground">Coming soon</span>
+                                    {t('dashboard.student.upcomingExams')}
+                                    <span className="ml-auto text-xs text-muted-foreground">{t('common.comingSoon')}</span>
                                 </Button>
                                 <Button variant="outline" className="w-full justify-start" disabled>
                                     <FiTrendingUp className="w-4 h-4 mr-2" />
-                                    View Grades
-                                    <span className="ml-auto text-xs text-muted-foreground">Coming soon</span>
+                                    {t('dashboard.teacher.viewReports')}
+                                    <span className="ml-auto text-xs text-muted-foreground">{t('common.comingSoon')}</span>
                                 </Button>
                             </CardContent>
                         </Card>

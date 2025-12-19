@@ -7,6 +7,7 @@ import Hero from '@/components/ui/Hero';
 import EmptyState from '@/components/ui/EmptyState';
 import { dataService } from '@/lib/dataService';
 import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
 import eventBg from '@/assets/mesjid2.jpg';
 
 // Small helper: get events grouped by date string
@@ -19,6 +20,7 @@ const groupEventsByDate = (events) => events.reduce((acc, e) => {
 
 
 const Events = () => {
+  const { t } = useTranslation();
   const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'list'
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
@@ -49,7 +51,7 @@ const Events = () => {
   }, []);
 
   // Get unique categories from events
-  const categories = ['All', ...new Set(events.map(event => event.category).filter(Boolean))];
+  const categories = [t('events.allCategories'), ...new Set(events.map(event => event.category).filter(Boolean))];
 
   // Filter events based on search term, selected category, and date
   const filteredEvents = events.filter(event => {
@@ -83,11 +85,11 @@ const Events = () => {
   return (
     <div className="min-h-screen bg-background font-sans">
       <Hero
-        title="Community Events"
-        description="Join us for spiritual, educational, and community-building events at MuJemea At-Tekwa."
+        title={t('events.communityEvents')}
+        description={t('events.joinUsDescription')}
         backgroundImage={eventBg}
-        primaryAction={<Link to="/contact">Contact Us</Link>}
-        secondaryAction={<Link to="/calendar">View Calendar</Link>}
+        primaryAction={<Link to="/contact">{t('contact.title')}</Link>}
+        secondaryAction={<Link to="/calendar">{t('events.viewCalendar')}</Link>}
       />
 
       {/* Search and Filter Section */}
@@ -98,7 +100,7 @@ const Events = () => {
             <div className="relative mb-4">
               <input
                 type="text"
-                placeholder="Search events..."
+                placeholder={t('events.searchEvents')}
                 className="w-full py-3 px-4 pl-12 rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary placeholder:text-muted-foreground"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -110,7 +112,7 @@ const Events = () => {
               <div className="flex-1 flex flex-wrap gap-2">
                 <div className="flex items-center bg-white/10 px-3 py-1 rounded-full">
                   <FaFilter className="mr-2 text-sm" />
-                  <span className="text-sm font-medium">Filter:</span>
+                  <span className="text-sm font-medium">{t('common.search')}:</span>
                 </div>
                 {categories.map(category => (
                   <button
@@ -136,11 +138,11 @@ const Events = () => {
                 >
                   {showPastEvents ? (
                     <>
-                      <FaCalendarDay className="mr-1" /> Upcoming Only
+                      <FaCalendarDay className="mr-1" /> {t('events.upcomingEvents')}
                     </>
                   ) : (
                     <>
-                      <FaRegCalendarCheck className="mr-1" /> Include Past
+                      <FaRegCalendarCheck className="mr-1" /> {t('events.pastEvents')}
                     </>
                   )}
                 </button>
@@ -150,7 +152,7 @@ const Events = () => {
                     onClick={() => setViewMode('grid')}
                     className={`p-2 rounded-md transition-colors ${viewMode === 'grid' ? 'bg-white text-brand-deep' : 'text-white hover:bg-white/20'
                       }`}
-                    aria-label="Grid view"
+                    aria-label={t('events.gridView')}
                   >
                     <BsGridFill />
                   </button>
@@ -158,7 +160,7 @@ const Events = () => {
                     onClick={() => setViewMode('list')}
                     className={`p-2 rounded-md transition-colors ${viewMode === 'list' ? 'bg-white text-brand-deep' : 'text-white hover:bg-white/20'
                       }`}
-                    aria-label="List view"
+                    aria-label={t('events.listView')}
                   >
                     <BsListUl />
                   </button>
@@ -369,7 +371,7 @@ const EventCard = ({ event }) => {
             to={`/events/${event.id}`}
             className="text-brand-green font-medium hover:text-brand-deep transition-colors text-sm"
           >
-            View Details
+            {t('events.viewDetails')}
           </Link>
 
           {isEventFull ? (
@@ -453,7 +455,7 @@ const EventListItem = ({ event }) => {
                 to={`/events/${event.id}`}
                 className="btn btn-sm btn-outline"
               >
-                View Details
+                {t('events.viewDetails')}
               </Link>
 
               {!isEventFull && (

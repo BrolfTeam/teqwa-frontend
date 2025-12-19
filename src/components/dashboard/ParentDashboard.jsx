@@ -22,8 +22,10 @@ import IslamicPattern from '@/components/ui/IslamicPattern';
 import { prayerTimesService } from '@/lib/prayerTimesService';
 import dashboardService from '@/services/dashboardService';
 import verses from '@/lib/verses.json';
+import { useTranslation } from 'react-i18next';
 
 const ParentDashboard = memo(() => {
+    const { t } = useTranslation();
     const { user } = useAuth();
 
     // State for dynamic content
@@ -88,36 +90,36 @@ const ParentDashboard = memo(() => {
     }, [fetchData]);
 
     const today = new Date();
-    const greeting = "As-salamu alaykum";
+    const greeting = t('dashboard.greeting');
 
     const quickStats = [
         { 
-            label: 'My Children', 
+            label: t('dashboard.parent.myChildren'), 
             value: children.length || '0', 
             icon: <FiUsers className="h-6 w-6" />, 
             color: 'primary',
-            description: 'Registered students'
+            description: t('dashboard.parent.registeredStudents')
         },
         { 
-            label: 'Upcoming Events', 
+            label: t('dashboard.parent.upcomingEvents'), 
             value: dashboardStats?.counts?.upcoming_events || '0', 
             icon: <FiCalendar className="h-6 w-6" />, 
             color: 'primary',
-            description: 'Community events'
+            description: t('dashboard.parent.communityEvents')
         },
         { 
-            label: 'Total Donations', 
+            label: t('dashboard.parent.totalDonations'), 
             value: `${(dashboardStats?.donation_stats?.total_amount || 0).toLocaleString()} ETB`, 
             icon: <FiHeart className="h-6 w-6" />, 
             color: 'accent',
-            description: 'Your contributions'
+            description: t('dashboard.parent.yourContributions')
         },
         { 
-            label: 'Messages', 
+            label: t('dashboard.parent.messages'), 
             value: dashboardStats?.unread_messages || '0', 
             icon: <FiMail className="h-6 w-6" />, 
             color: 'secondary',
-            description: 'Unread notifications'
+            description: t('dashboard.parent.unreadNotifications')
         },
     ];
 
@@ -158,9 +160,9 @@ const ParentDashboard = memo(() => {
                 <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                     <div>
                         <span className="font-arabic text-xl mb-1 block opacity-90">{greeting}</span>
-                        <h1 className="text-3xl font-bold mb-2">Parent Dashboard</h1>
+                        <h1 className="text-3xl font-bold mb-2">{t('dashboard.parent.parentDashboard')}</h1>
                         <p className="opacity-90 max-w-xl">
-                            Welcome back, {user?.first_name || user?.username}! Stay connected with your children's education and community activities.
+                            {t('dashboard.parent.welcomeBack')}, {user?.first_name || user?.username}! {t('dashboard.parent.stayConnected')}
                         </p>
                         <p className="opacity-75 text-sm mt-2">
                             {dailyVerse.text} <span className="italic">- {dailyVerse.reference}</span>
@@ -184,14 +186,14 @@ const ParentDashboard = memo(() => {
                     <Card className="h-full border-primary/20 shadow-lg bg-card/80 backdrop-blur-sm relative overflow-hidden group hover:border-primary/40 transition-colors">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-wider flex items-center gap-2">
-                                <FiClock className="h-4 w-4 text-primary" /> Next Prayer
+                                <FiClock className="h-4 w-4 text-primary" /> {t('dashboard.nextPrayer')}
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
                             <div className="mt-2">
                                 <span className="text-3xl font-bold text-primary">{nextPrayer?.name || 'Fajr'}</span>
                                 <p className="text-2xl font-mono text-foreground/80 mt-1">{nextPrayer?.formatted || '--:--'}</p>
-                                <p className="text-xs text-muted-foreground mt-2">Time remaining: {timeRemaining}</p>
+                                <p className="text-xs text-muted-foreground mt-2">{t('dashboard.timeRemaining')}: {timeRemaining}</p>
                             </div>
                         </CardContent>
                     </Card>
@@ -229,10 +231,10 @@ const ParentDashboard = memo(() => {
                         <CardHeader className="flex flex-row items-center justify-between border-b border-border/50 pb-4">
                             <CardTitle className="flex items-center space-x-2 text-lg">
                                 <FiUsers className="h-5 w-5 text-purple-500" />
-                                <span>My Children</span>
+                                <span>{t('dashboard.parent.myChildren')}</span>
                             </CardTitle>
                             <Button asChild variant="ghost" size="sm" className="hover:text-primary">
-                                <Link to="/profile">Manage</Link>
+                                <Link to="/profile">{t('common.edit')}</Link>
                             </Button>
                         </CardHeader>
                         <CardContent className="pt-6 space-y-4">
@@ -244,7 +246,7 @@ const ParentDashboard = memo(() => {
                                                 {child.name}
                                             </h3>
                                             <span className="text-xs font-medium px-2 py-1 rounded-full bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400">
-                                                {child.role || 'Student'}
+                                                {child.role || t('dashboard.student.studentDashboard')}
                                             </span>
                                         </div>
                                         <div className="flex items-center space-x-4 text-sm text-muted-foreground">
@@ -262,7 +264,7 @@ const ParentDashboard = memo(() => {
                             ) : (
                                 <div className="text-center py-8">
                                     <FiUsers className="h-12 w-12 text-muted-foreground/50 mx-auto mb-4" />
-                                    <p className="text-muted-foreground mb-4">No children registered yet</p>
+                                    <p className="text-muted-foreground mb-4">{t('dashboard.parent.noChildrenRegistered')}</p>
                                     <Button asChild size="sm" variant="outline">
                                         <Link to="/profile">Register Your Child</Link>
                                     </Button>

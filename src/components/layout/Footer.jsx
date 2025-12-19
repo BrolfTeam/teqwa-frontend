@@ -17,8 +17,10 @@ import { FiMessageCircle } from 'react-icons/fi';
 import logo from '@/assets/logo.png';
 import IslamicPattern from '@/components/ui/IslamicPattern';
 import { siteConfig } from '@/config/site';
+import { useTranslation } from '@/hooks/useTranslation';
 
 const Footer = memo(() => {
+  const { t } = useTranslation();
   const currentYear = new Date().getFullYear();
 
   const scrollToTop = () => {
@@ -53,25 +55,25 @@ const Footer = memo(() => {
   ];
 
   const quickLinks = [
-    { name: 'Home', href: '/' },
-    { name: 'About Us', href: '/about' },
-    { name: 'Prayer Times', href: '/prayer-times' },
-    { name: 'Events', href: '/events' },
-    { name: 'Contact', href: '/contact' }
+    { name: t('footer.home'), href: '/' },
+    { name: t('footer.aboutUs'), href: '/about' },
+    { name: t('footer.prayerTimes'), href: '/prayer-times' },
+    { name: t('footer.events'), href: '/events' },
+    { name: t('footer.contact'), href: '/contact' }
   ];
 
   const services = [
-    { name: 'Donations', href: '/donate' },
-    { name: 'Futsal Booking', href: '/futsal' },
-    { name: 'Educational Services', href: '/education' },
-    { name: 'Iʿtikāf Programs', href: '/itikaf' },
-    { name: 'Gallery', href: '/gallery' }
+    { name: t('footer.donations'), href: '/donate' },
+    { name: t('footer.futsalBooking'), href: '/futsal' },
+    { name: t('footer.educationalServices'), href: '/education' },
+    { name: t('footer.itikafPrograms'), href: '/itikaf' },
+    { name: t('footer.gallery'), href: '/gallery' }
   ];
 
   const resources = [
-    { name: 'Qibla Direction', href: '/qibla' },
-    { name: 'Islamic Calendar', href: '/islamic-calendar' },
-    { name: 'News & Updates', href: '/news' }
+    { name: t('footer.qiblaDirection'), href: '/qibla' },
+    { name: t('footer.islamicCalendar'), href: '/islamic-calendar' },
+    { name: t('footer.newsUpdates'), href: '/news' }
   ];
 
   return (
@@ -154,7 +156,7 @@ const Footer = memo(() => {
 
           {/* Services */}
           <div className="space-y-4">
-            <h4 className="text-base font-bold text-foreground mb-4">Services</h4>
+            <h4 className="text-base font-bold text-foreground mb-4">{t('footer.services')}</h4>
             <ul className="space-y-3">
               {services.map((service) => (
                 <li key={service.href}>
@@ -172,7 +174,7 @@ const Footer = memo(() => {
 
           {/* Contact Info */}
           <div className="space-y-4">
-            <h4 className="text-base font-bold text-foreground mb-4">Contact Us</h4>
+            <h4 className="text-base font-bold text-foreground mb-4">{t('footer.contactUs')}</h4>
             <div className="space-y-4">
               {/* Address */}
               <div className="flex items-start gap-3 group">
@@ -199,7 +201,7 @@ const Footer = memo(() => {
                   <p className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">
                     {siteConfig.contact?.email || 'info@mujea-at-tekwa.org'}
                   </p>
-                  <p className="text-xs text-muted-foreground mt-1">General inquiries</p>
+                  <p className="text-xs text-muted-foreground mt-1">{t('footer.generalInquiries')}</p>
                 </div>
               </a>
 
@@ -215,7 +217,7 @@ const Footer = memo(() => {
                   <p className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">
                     {siteConfig.contact?.phone || '+251 11 123 4567'}
                   </p>
-                  <p className="text-xs text-muted-foreground mt-1">Office hours</p>
+                  <p className="text-xs text-muted-foreground mt-1">{t('footer.officeHours')}</p>
                 </div>
               </a>
 
@@ -225,7 +227,7 @@ const Footer = memo(() => {
                   <FiClock className="h-4 w-4 text-primary flex-shrink-0" />
                 </div>
                 <div className="flex-1">
-                  <p className="text-sm font-medium text-foreground">Open Daily</p>
+                  <p className="text-sm font-medium text-foreground">{t('footer.openDaily')}</p>
                   <p className="text-xs text-muted-foreground mt-1">5:00 AM - 10:00 PM</p>
                 </div>
               </div>
@@ -238,7 +240,7 @@ const Footer = memo(() => {
           <div className="pt-8 border-t border-border/50 mb-8">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               <div>
-                <h4 className="text-sm font-semibold text-foreground mb-3">Resources</h4>
+                <h4 className="text-sm font-semibold text-foreground mb-3">{t('footer.resources')}</h4>
                 <div className="flex flex-wrap gap-x-6 gap-y-2">
                   {resources.map((resource) => (
                     <Link
@@ -261,11 +263,11 @@ const Footer = memo(() => {
             {/* Copyright */}
             <div className="flex flex-col md:flex-row items-center gap-2 md:gap-4 text-sm text-muted-foreground">
               <p className="flex items-center gap-2">
-                © {currentYear} <span className="font-semibold text-foreground">{siteConfig.name}</span>. All rights reserved.
+                © {currentYear} <span className="font-semibold text-foreground">{siteConfig.name}</span>. {t('footer.allRightsReserved')}.
               </p>
               <span className="hidden md:inline">•</span>
               <p className="flex items-center gap-1.5">
-                Built with <FiHeart className="w-4 h-4 text-red-500" /> for our community
+                {t('footer.builtWith')} <FiHeart className="w-4 h-4 text-red-500" /> {t('footer.forCommunity')}
               </p>
             </div>
 
@@ -277,21 +279,21 @@ const Footer = memo(() => {
               className="flex items-center gap-2 px-4 py-2 rounded-lg bg-muted border border-border/50 text-sm text-muted-foreground hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all duration-200"
               aria-label="Scroll to top"
             >
-              <span>Back to Top</span>
+              <span>{t('footer.backToTop')}</span>
               <FiArrowUp className="w-4 h-4" />
             </motion.button>
           </div>
 
           {/* Additional Info */}
           <div className="mt-4 pt-4 border-t border-border/30 flex flex-col md:flex-row justify-between items-center gap-2 text-xs text-muted-foreground/80">
-            <p>Powered by Teqwa Builders at Brolf</p>
+            <p>{t('footer.poweredBy')}</p>
             <div className="flex items-center gap-4">
               <Link to="/privacy" className="hover:text-primary transition-colors">
-                Privacy Policy
+                {t('footer.privacyPolicy')}
               </Link>
               <span>•</span>
               <Link to="/terms" className="hover:text-primary transition-colors">
-                Terms of Service
+                {t('footer.termsOfService')}
               </Link>
             </div>
           </div>

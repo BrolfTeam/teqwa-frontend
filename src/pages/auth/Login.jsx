@@ -8,17 +8,10 @@ import { toast } from 'sonner';
 import { apiService } from '@/lib/apiService';
 import IslamicPattern from '@/components/ui/IslamicPattern';
 import authLogo from '@/assets/logo.png';
-
-const ROLE_LABELS = {
-  admin: 'Administrator',
-  staff: 'Staff / Teacher',
-  student: 'Student',
-  parent: 'Parent',
-  member: 'Member / User',
-  teacher: 'Staff / Teacher',
-};
+import { useTranslation } from 'react-i18next';
 
 const Login = memo(() => {
+  const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const role = searchParams.get('role');
   const [formData, setFormData] = useState({
@@ -30,6 +23,15 @@ const Login = memo(() => {
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
+
+  const ROLE_LABELS = {
+    admin: t('auth.roleLabels.admin'),
+    staff: t('auth.roleLabels.staff'),
+    student: t('auth.roleLabels.student'),
+    parent: t('auth.roleLabels.parent'),
+    member: t('auth.roleLabels.member'),
+    teacher: t('auth.roleLabels.teacher'),
+  };
 
   const handleChange = (e) => {
     setFormData({
@@ -50,7 +52,7 @@ const Login = memo(() => {
     setErrors({});
 
     if (!formData.email || !formData.password) {
-      toast.error('Please fill in all fields');
+      toast.error(t('auth.loginPage.fillAllFields'));
       return;
     }
 
@@ -63,7 +65,7 @@ const Login = memo(() => {
       });
 
       login(response.user, response.tokens);
-      toast.success('Login successful!');
+      toast.success(t('auth.loginPage.loginSuccessful'));
       navigate('/dashboard');
     } catch (error) {
       if (error.status === 400 || error.status === 401) {
@@ -77,13 +79,13 @@ const Login = memo(() => {
           if (Object.keys(newErrors).length > 0) {
             setErrors(newErrors);
           } else if (!error.data.detail) {
-            toast.error('Invalid credentials. Please try again.');
+            toast.error(t('auth.loginPage.invalidCredentials'));
           }
         } else {
-          toast.error('Invalid credentials. Please try again.');
+          toast.error(t('auth.loginPage.invalidCredentials'));
         }
       } else {
-        toast.error(error.message || 'Login failed. Please try again.');
+        toast.error(error.message || t('auth.loginPage.loginFailed'));
       }
     } finally {
       setIsLoading(false);
@@ -115,10 +117,10 @@ const Login = memo(() => {
               />
             </div>
             <h1 className="text-4xl md:text-5xl font-bold font-serif mb-4 text-emerald-50">
-              Welcome Back
+              {t('auth.loginPage.welcomeBack')}
             </h1>
             <p className="text-emerald-200/80 text-lg leading-relaxed">
-              "Seek knowledge from the cradle to the grave."
+              "{t('auth.loginPage.quote')}"
             </p>
             <div className="w-24 h-1 bg-gradient-to-r from-transparent via-amber-500 to-transparent mx-auto mt-8 opacity-50" />
           </motion.div>
@@ -158,7 +160,7 @@ const Login = memo(() => {
 
               <div className="mb-8">
                 <div className="flex items-center justify-between mb-2">
-                  <h2 className="text-2xl font-bold text-emerald-950 font-serif">Sign In</h2>
+                  <h2 className="text-2xl font-bold text-emerald-950 font-serif">{t('auth.loginPage.signIn')}</h2>
                   {role && (
                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 text-sm">
                       <FiUser className="h-3 w-3" />
@@ -166,7 +168,7 @@ const Login = memo(() => {
                     </div>
                   )}
                 </div>
-                <p className="text-stone-500 text-sm">Please enter your details to access your account</p>
+                <p className="text-stone-500 text-sm">{t('auth.loginPage.pleaseEnterDetails')}</p>
                 {role && (
                   <div className="mt-3 flex items-center gap-2">
                     <button
@@ -175,7 +177,7 @@ const Login = memo(() => {
                       className="text-xs text-emerald-700 dark:text-emerald-400 hover:text-emerald-800 dark:hover:text-emerald-300 font-medium flex items-center gap-1"
                     >
                       <FiArrowLeft className="h-3 w-3" />
-                      Change role
+                      {t('auth.loginPage.changeRole')}
                     </button>
                   </div>
                 )}
@@ -200,7 +202,7 @@ const Login = memo(() => {
                         ? 'border-red-500 focus:ring-red-500/20 focus:border-red-600 text-red-900'
                         : 'border-stone-200 text-emerald-950 focus:ring-emerald-500/20 focus:border-emerald-600'
                         }`}
-                      placeholder="name@example.com"
+                      placeholder={t('auth.loginPage.emailPlaceholder')}
                       required
                     />
                   </div>
@@ -218,13 +220,13 @@ const Login = memo(() => {
                 <div className="space-y-2">
                   <div className="flex items-center justify-between pl-1">
                     <label htmlFor="password" className="text-sm font-medium text-emerald-900">
-                      Password
+                      {t('auth.password')}
                     </label>
                     <Link
                       to="/forgot-password"
                       className="text-xs font-medium text-amber-600 hover:text-amber-700 transition-colors"
                     >
-                      Forgot password?
+                      {t('auth.forgotPassword')}
                     </Link>
                   </div>
                   <div className="relative group">
@@ -241,7 +243,7 @@ const Login = memo(() => {
                         ? 'border-red-500 focus:ring-red-500/20 focus:border-red-600 text-red-900'
                         : 'border-stone-200 text-emerald-950 focus:ring-emerald-500/20 focus:border-emerald-600'
                         }`}
-                      placeholder="••••••••"
+                      placeholder={t('auth.loginPage.passwordPlaceholder')}
                       required
                     />
                     <button
@@ -271,11 +273,11 @@ const Login = memo(() => {
                   {isLoading ? (
                     <div className="flex items-center justify-center space-x-2">
                       <div className="animate-spin rounded-full h-5 w-5 border-2 border-white/30 border-t-white"></div>
-                      <span>Signing in...</span>
+                      <span>{t('auth.loginPage.signingIn')}</span>
                     </div>
                   ) : (
                     <div className="flex items-center justify-center space-x-2 font-medium">
-                      <span>Sign In</span>
+                      <span>{t('auth.loginPage.signInButton')}</span>
                       <FiArrowRight className="h-5 w-5 text-amber-400" />
                     </div>
                   )}
@@ -284,22 +286,22 @@ const Login = memo(() => {
 
               <div className="mt-8 text-center pt-6 border-t border-stone-100 space-y-2">
                 <p className="text-stone-500 text-sm">
-                  Don't have an account?{' '}
+                  {t('auth.dontHaveAccount')}{' '}
                   <Link
                     to={role ? `/register?role=${role}` : "/role-selection"}
                     className="font-semibold text-emerald-700 hover:text-amber-600 transition-colors"
                   >
-                    Create Account
+                    {t('auth.loginPage.createAccount')}
                   </Link>
                 </p>
                 {!role && (
                   <p className="text-stone-500 text-xs">
-                    Need to select your role?{' '}
+                    {t('auth.roleSelection.selectRole')}{' '}
                     <Link
                       to="/role-selection"
                       className="font-medium text-emerald-700 hover:text-amber-600 transition-colors"
                     >
-                      Choose Role
+                      {t('auth.loginPage.chooseRole')}
                     </Link>
                   </p>
                 )}

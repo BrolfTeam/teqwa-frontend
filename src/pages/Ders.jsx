@@ -4,8 +4,10 @@ import background from '@/assets/background.png';
 import { lectureService } from '@/services/lecture';
 import LectureCard from '@/components/education/LectureCard';
 import { FiSearch, FiFilter, FiLoader, FiX } from 'react-icons/fi';
+import { useTranslation } from 'react-i18next';
 
 const Ders = () => {
+    const { t } = useTranslation();
     const [lectures, setLectures] = useState([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
@@ -13,14 +15,14 @@ const Ders = () => {
     const [selectedLecture, setSelectedLecture] = useState(null);
 
     const subjects = [
-        { value: '', label: 'All Subjects' },
-        { value: 'quran_recitation', label: 'Quran Recitation' },
-        { value: 'tafseer', label: 'Tafseer' },
-        { value: 'hadith', label: 'Hadith' },
-        { value: 'fiqh', label: 'Fiqh' },
-        { value: 'seerah', label: 'Seerah' },
-        { value: 'aqidah', label: 'Aqidah' },
-        { value: 'general', label: 'General' },
+        { value: '', label: t('ders.allSubjects') },
+        { value: 'quran_recitation', label: t('ders.quranRecitation') },
+        { value: 'tafseer', label: t('ders.tafseer') },
+        { value: 'hadith', label: t('ders.hadith') },
+        { value: 'fiqh', label: t('ders.fiqh') },
+        { value: 'seerah', label: t('ders.seerah') },
+        { value: 'aqidah', label: t('ders.aqidah') },
+        { value: 'general', label: t('ders.general') },
     ];
 
     const fetchLectures = async () => {
@@ -79,8 +81,8 @@ const Ders = () => {
     return (
         <div className="min-h-screen bg-background font-sans">
             <Hero
-                title="Ders & Lecture Archive"
-                description="Explore our collection of Islamic lectures, Tafseer, and educational recordings."
+                title={t('ders.title')}
+                description={t('ders.description')}
                 backgroundImage={background}
             />
 
@@ -92,7 +94,7 @@ const Ders = () => {
                             <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-5 h-5" />
                             <input
                                 type="text"
-                                placeholder="Search lectures by title or description..."
+                                placeholder={t('ders.searchLectures')}
                                 className="w-full pl-10 pr-4 py-2 border border-input bg-background rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all placeholder:text-muted-foreground"
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
@@ -132,8 +134,8 @@ const Ders = () => {
                     </div>
                 ) : (
                     <div className="text-center py-20 bg-card rounded-xl border border-dashed border-border">
-                        <h3 className="text-lg font-medium text-foreground mb-1">No lectures found</h3>
-                        <p className="text-muted-foreground">Try adjusting your search or filters</p>
+                        <h3 className="text-lg font-medium text-foreground mb-1">{t('ders.noLecturesFound')}</h3>
+                        <p className="text-muted-foreground">{t('ders.tryAdjusting')}</p>
                     </div>
                 )}
             </div>
@@ -192,7 +194,7 @@ const Ders = () => {
                                 </div>
                             </div>
                         ) : (
-                            <div className="text-white">Media not found</div>
+                            <div className="text-white">{t('ders.mediaNotFound')}</div>
                         )}
                     </div>
                 </div>

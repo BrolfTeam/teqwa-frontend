@@ -12,6 +12,7 @@ import staffService from '@/services/staffService';
 import verses from '@/lib/verses.json';
 import AttendanceWidget from '@/components/staff/AttendanceWidget';
 import { hasPermission, getAccessLevel, getAccessibleFeatures } from '@/lib/permissions';
+import { useTranslation } from 'react-i18next';
 
 const StaffDashboard = memo(() => {
     const { user } = useAuth();
@@ -130,19 +131,19 @@ const StaffDashboard = memo(() => {
                 <IslamicPattern color="white" className="mix-blend-overlay" opacity={0.1} />
                 <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                     <div>
-                        <span className="font-arabic text-xl mb-1 block opacity-90 text-amber-400">JazakAllah Khair</span>
-                        <h1 className="text-3xl font-bold mb-2">Welcome, {user?.first_name || 'Staff Member'}</h1>
+                        <span className="font-arabic text-xl mb-1 block opacity-90 text-amber-400">{t('dashboard.staff.jazakAllahKhair')}</span>
+                        <h1 className="text-3xl font-bold mb-2">{t('dashboard.staff.welcome')}, {user?.first_name || t('dashboard.staff.staffMember')}</h1>
                         <div className="flex items-center gap-2 mt-2 flex-wrap">
                             <span className="px-3 py-1 bg-white/10 rounded-full text-xs font-medium uppercase tracking-wider border border-white/20">
-                                {user?.staff_profile?.role ? `${user.staff_profile.role.charAt(0).toUpperCase() + user.staff_profile.role.slice(1)}` : (user?.role || 'Staff')} Panel
+                                {user?.staff_profile?.role ? `${user.staff_profile.role.charAt(0).toUpperCase() + user.staff_profile.role.slice(1)}` : (user?.role || t('dashboard.staff.staffMember'))} {t('dashboard.staff.panel')}
                             </span>
                             <span className="px-3 py-1 bg-white/10 rounded-full text-xs font-medium uppercase tracking-wider border border-white/20">
-                                {accessLevel.charAt(0).toUpperCase() + accessLevel.slice(1)} Access
+                                {accessLevel.charAt(0).toUpperCase() + accessLevel.slice(1)} {t('dashboard.staff.access')}
                             </span>
                             {staffReports?.today?.attendance_status && (
                                 <span className={`px-3 py-1 rounded-full text-xs font-medium uppercase tracking-wider border ${staffReports.today.attendance_status === 'present' ? 'bg-green-500/20 border-green-400 text-green-200' : 'bg-red-500/20 border-red-400 text-red-200'
                                     }`}>
-                                    Status: {staffReports.today.attendance_status}
+                                    {t('dashboard.staff.status')}: {staffReports.today.attendance_status}
                                 </span>
                             )}
                         </div>
@@ -178,13 +179,13 @@ const StaffDashboard = memo(() => {
                         <Card className="h-full border-primary/20 shadow-lg relative overflow-hidden flex flex-col justify-center">
                             <CardHeader className="pb-2">
                                 <CardTitle className="text-sm font-medium text-muted-foreground uppercase flex items-center gap-2">
-                                    <FiClock className="h-4 w-4 text-primary" /> Next Prayer
+                                    <FiClock className="h-4 w-4 text-primary" /> {t('dashboard.nextPrayer')}
                                 </CardTitle>
                             </CardHeader>
                             <CardContent>
                                 <div className="mt-2">
                                     <span className="text-4xl font-bold text-primary">{nextPrayer?.name || 'Fajr'}</span>
-                                    <p className="text-lg text-muted-foreground mt-1">Time remaining: {timeRemaining}</p>
+                                    <p className="text-lg text-muted-foreground mt-1">{t('dashboard.timeRemaining')}: {timeRemaining}</p>
                                 </div>
                             </CardContent>
                         </Card>
@@ -193,21 +194,21 @@ const StaffDashboard = memo(() => {
                         <Card className="h-full border-border/50 shadow-md">
                             <CardHeader className="pb-2 border-b border-border/30">
                                 <CardTitle className="text-sm font-medium text-muted-foreground uppercase flex justify-between items-center">
-                                    <span className="flex items-center gap-2"><FiCheckSquare className="h-4 w-4 text-violet-500" /> Tasks Overview</span>
-                                    <Link to="/staff/tasks" className="text-xs text-primary hover:underline">View All</Link>
+                                    <span className="flex items-center gap-2"><FiCheckSquare className="h-4 w-4 text-violet-500" /> {t('dashboard.staff.tasksOverview')}</span>
+                                    <Link to="/staff/tasks" className="text-xs text-primary hover:underline">{t('common.viewAll')}</Link>
                                 </CardTitle>
                             </CardHeader>
                             <CardContent className="pt-4 space-y-3">
                                 <div className="flex justify-between items-center">
-                                    <span className="text-sm text-muted-foreground">Pending</span>
+                                    <span className="text-sm text-muted-foreground">{t('dashboard.staff.pending')}</span>
                                     <span className="font-bold text-lg">{staffReports?.tasks?.pending || 0}</span>
                                 </div>
                                 <div className="flex justify-between items-center">
-                                    <span className="text-sm text-muted-foreground">Completed Today</span>
+                                    <span className="text-sm text-muted-foreground">{t('dashboard.staff.completedToday')}</span>
                                     <span className="font-bold text-lg text-green-600">{staffReports?.tasks?.completed || 0}</span>
                                 </div>
                                 <div className="flex justify-between items-center">
-                                    <span className="text-sm text-muted-foreground">Detailed Report</span>
+                                    <span className="text-sm text-muted-foreground">{t('dashboard.staff.detailedReport')}</span>
                                     <Link to="/staff/reports"><FiArrowRight className="h-4 w-4 text-muted-foreground hover:text-primary" /></Link>
                                 </div>
                             </CardContent>
@@ -217,7 +218,7 @@ const StaffDashboard = memo(() => {
                     {/* Active Tasks List */}
                     <Card className="flex-1 shadow-md border-border/50">
                         <CardHeader className="border-b border-border/40 pb-4">
-                            <CardTitle className="text-lg font-bold">Today's Priority Tasks</CardTitle>
+                            <CardTitle className="text-lg font-bold">{t('dashboard.staff.todaysPriorityTasks')}</CardTitle>
                         </CardHeader>
                         <CardContent className="pt-4">
                             {todaysTasks.length > 0 ? (
@@ -230,7 +231,7 @@ const StaffDashboard = memo(() => {
                                                     <span className={`text-[10px] px-2 py-0.5 rounded-full uppercase border ${task.priority === 'urgent' ? 'border-red-200 text-red-600 bg-red-50' : task.priority === 'high' ? 'border-orange-200 text-orange-600 bg-orange-50' : 'border-slate-200 text-slate-500 bg-slate-50'
                                                         }`}>{task.priority || 'normal'}</span>
                                                     {task.due_date && (
-                                                        <span className="text-xs text-muted-foreground">Due: {new Date(task.due_date).toLocaleDateString()}</span>
+                                                        <span className="text-xs text-muted-foreground">{t('dashboard.student.due')}: {new Date(task.due_date).toLocaleDateString()}</span>
                                                     )}
                                                     <span className={`text-[10px] px-2 py-0.5 rounded-full uppercase ${task.status === 'in_progress' ? 'bg-blue-100 text-blue-600' : 'bg-yellow-100 text-yellow-600'}`}>
                                                         {task.status}
@@ -243,13 +244,13 @@ const StaffDashboard = memo(() => {
                                         </div>
                                     ))}
                                     {todaysTasks.length > 3 && (
-                                        <p className="text-center text-xs text-muted-foreground mt-2">+{todaysTasks.length - 3} more tasks</p>
+                                        <p className="text-center text-xs text-muted-foreground mt-2">+{todaysTasks.length - 3} {t('staff.tasks.title')}</p>
                                     )}
                                 </div>
                             ) : (
                                 <div className="text-center py-6 text-muted-foreground">
                                     <FiCheckSquare className="mx-auto h-8 w-8 mb-2 opacity-20" />
-                                    <p>No active tasks for today!</p>
+                                    <p>{t('dashboard.staff.noActiveTasks')}</p>
                                 </div>
                             )}
                         </CardContent>
@@ -263,7 +264,7 @@ const StaffDashboard = memo(() => {
                     <Card className="shadow-lg border-border/50 bg-card/80 backdrop-blur-sm">
                         <CardHeader className="border-b border-border/40 pb-4">
                             <CardTitle className="flex items-center gap-2 text-lg">
-                                <FiActivity className="text-blue-500" /> Quick Access
+                                <FiActivity className="text-blue-500" /> {t('dashboard.quickActions')}
                             </CardTitle>
                         </CardHeader>
                         <CardContent className="pt-6">
@@ -273,7 +274,7 @@ const StaffDashboard = memo(() => {
                                         <Card className="hover:shadow-lg transition-all border-l-4 border-l-green-500 cursor-pointer">
                                             <CardContent className="p-4 flex flex-col items-center text-center">
                                                 <FiClock className="h-8 w-8 text-green-500 mb-2" />
-                                                <span className="font-medium text-sm">Attendance</span>
+                                                <span className="font-medium text-sm">{t('dashboard.staff.attendance')}</span>
                                             </CardContent>
                                         </Card>
                                     </Link>
@@ -284,7 +285,7 @@ const StaffDashboard = memo(() => {
                                         <Card className="hover:shadow-lg transition-all border-l-4 border-l-purple-500 cursor-pointer">
                                             <CardContent className="p-4 flex flex-col items-center text-center">
                                                 <FiCheckSquare className="h-8 w-8 text-purple-500 mb-2" />
-                                                <span className="font-medium text-sm">Tasks</span>
+                                                <span className="font-medium text-sm">{t('dashboard.staff.tasks')}</span>
                                             </CardContent>
                                         </Card>
                                     </Link>
@@ -295,7 +296,7 @@ const StaffDashboard = memo(() => {
                                         <Card className="hover:shadow-lg transition-all border-l-4 border-l-blue-500 cursor-pointer">
                                             <CardContent className="p-4 flex flex-col items-center text-center">
                                                 <FiFileText className="h-8 w-8 text-blue-500 mb-2" />
-                                                <span className="font-medium text-sm">Reports</span>
+                                                <span className="font-medium text-sm">{t('dashboard.staff.reports')}</span>
                                             </CardContent>
                                         </Card>
                                     </Link>
@@ -306,7 +307,7 @@ const StaffDashboard = memo(() => {
                                         <Card className="hover:shadow-lg transition-all border-l-4 border-l-orange-500 cursor-pointer">
                                             <CardContent className="p-4 flex flex-col items-center text-center">
                                                 <FiCalendar className="h-8 w-8 text-orange-500 mb-2" />
-                                                <span className="font-medium text-sm">Bookings</span>
+                                                <span className="font-medium text-sm">{t('dashboard.staff.bookings')}</span>
                                             </CardContent>
                                         </Card>
                                     </Link>
@@ -317,7 +318,7 @@ const StaffDashboard = memo(() => {
                                         <Card className="hover:shadow-lg transition-all border-l-4 border-l-indigo-500 cursor-pointer">
                                             <CardContent className="p-4 flex flex-col items-center text-center">
                                                 <FiUsers className="h-8 w-8 text-indigo-500 mb-2" />
-                                                <span className="font-medium text-sm">Students</span>
+                                                <span className="font-medium text-sm">{t('dashboard.staff.students')}</span>
                                             </CardContent>
                                         </Card>
                                     </Link>
@@ -328,7 +329,7 @@ const StaffDashboard = memo(() => {
                                         <Card className="hover:shadow-lg transition-all border-l-4 border-l-amber-500 cursor-pointer">
                                             <CardContent className="p-4 flex flex-col items-center text-center">
                                                 <FiBookOpen className="h-8 w-8 text-amber-500 mb-2" />
-                                                <span className="font-medium text-sm">Courses</span>
+                                                <span className="font-medium text-sm">{t('dashboard.staff.courses')}</span>
                                             </CardContent>
                                         </Card>
                                     </Link>
@@ -345,7 +346,7 @@ const StaffDashboard = memo(() => {
                     <Card className="shadow-lg border-border/50 bg-card/80 backdrop-blur-sm">
                         <CardHeader className="border-b border-border/40 pb-4">
                             <CardTitle className="flex items-center gap-2 text-lg">
-                                <FiActivity className="text-blue-500" /> Recent Activity
+                                <FiActivity className="text-blue-500" /> {t('dashboard.recentActivity')}
                             </CardTitle>
                         </CardHeader>
                         <CardContent className="pt-6">
@@ -364,7 +365,7 @@ const StaffDashboard = memo(() => {
                                     ))}
                                 </div>
                             ) : (
-                                <p className="text-center text-muted-foreground py-6">No recent activity recorded.</p>
+                                <p className="text-center text-muted-foreground py-6">{t('dashboard.staff.noRecentActivity')}</p>
                             )}
                         </CardContent>
                     </Card>

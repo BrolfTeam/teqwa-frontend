@@ -35,6 +35,7 @@ import { dataService } from '@/lib/dataService';
 import paymentService from '@/services/paymentService';
 import { formSchemas } from '@/lib/validation';
 import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/context/AuthContext';
 import headerBg from '@/assets/futsal4.png';
 
@@ -193,6 +194,7 @@ CalendarView.displayName = 'CalendarView';
 
 // Time Slot Card Component
 const TimeSlotCard = memo(({ slot, onSelect, isSelected }) => {
+    const { t } = useTranslation();
     const status = slot.available ? 'available' : 'booked';
     const StatusIcon = STATUS_ICONS[status];
     
@@ -224,7 +226,7 @@ const TimeSlotCard = memo(({ slot, onSelect, isSelected }) => {
                                 </div>
                                 <div>
                                     <div className="text-2xl font-bold">{slot.time}</div>
-                                    <div className="text-xs text-muted-foreground uppercase tracking-wide">Time Slot</div>
+                                    <div className="text-xs text-muted-foreground uppercase tracking-wide">{t('futsal.timeSlot')}</div>
                                 </div>
                             </div>
                             
@@ -241,7 +243,7 @@ const TimeSlotCard = memo(({ slot, onSelect, isSelected }) => {
                         
                         <Badge className={STATUS_COLORS[status]}>
                             <StatusIcon className="w-3.5 h-3.5 mr-1" />
-                            {slot.available ? 'Available' : 'Booked'}
+                            {slot.available ? t('futsal.available') : t('futsal.booked')}
                         </Badge>
                     </div>
                     
@@ -261,7 +263,7 @@ const TimeSlotCard = memo(({ slot, onSelect, isSelected }) => {
                             {slot.available ? (
                                 <>
                                     <FiCheckCircle className="w-4 h-4 mr-2" />
-                                    Book Now
+                                    {t('futsal.bookNow')}
                                 </>
                             ) : (
                                 <>
@@ -361,6 +363,7 @@ const BookingHistory = memo(({ bookings, onRefresh }) => {
 BookingHistory.displayName = 'BookingHistory';
 
 const Futsal = memo(() => {
+    const { t } = useTranslation();
     const { user, isAuthenticated } = useAuth();
     const navigate = useNavigate();
     const today = useMemo(() => new Date().toISOString().split('T')[0], []);
@@ -573,13 +576,13 @@ const Futsal = memo(() => {
         <div className="min-h-screen bg-gradient-to-b from-background via-muted/20 to-background">
             {/* Hero Section */}
             <Hero
-                title="Futsal"
-                titleHighlight="Booking"
+                title={t('futsal.title')}
+                titleHighlight={t('futsal.bookNow')}
                 align="left"
-                description="Book your preferred time slot and enjoy the game with friends and community members."
+                description={t('futsal.bookSubtitle')}
                 backgroundImage={headerBg}
-                primaryAction={<a href="#booking-section">Book Now</a>}
-                secondaryAction={<a href="#features">Learn More</a>}
+                primaryAction={<a href="#booking-section">{t('futsal.bookNow')}</a>}
+                secondaryAction={<a href="#features">{t('common.learnMore')}</a>}
             />
             
             {/* Features Section */}
@@ -588,17 +591,17 @@ const Futsal = memo(() => {
                     <IslamicPattern className="opacity-[0.02]" />
                     <div className="max-w-5xl mx-auto relative z-10">
                         <div className="text-center mb-12">
-                            <h2 className="text-3xl md:text-4xl font-bold mb-4">Why Play Here?</h2>
+                            <h2 className="text-3xl md:text-4xl font-bold mb-4">{t('futsal.whyPlayHere.title')}</h2>
                             <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
-                                Experience the best futsal environment with premium facilities and a welcoming community.
+                                {t('futsal.whyPlayHere.description')}
                             </p>
                         </div>
                         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
                             {[
-                                { icon: FiActivity, title: 'Professional Court', desc: 'Standard size pitch with high-quality turf' },
-                                { icon: FiDollarSign, title: 'Affordable Rates', desc: 'Competitive pricing for everyone' },
-                                { icon: FiUsers, title: 'Community Hub', desc: 'Meet players and join local leagues' },
-                                { icon: FiShield, title: 'Safe Environment', desc: 'Secure, well-lit, and family-friendly' }
+                                { icon: FiActivity, title: t('futsal.whyPlayHere.professionalCourt.title'), desc: t('futsal.whyPlayHere.professionalCourt.description') },
+                                { icon: FiDollarSign, title: t('futsal.whyPlayHere.affordableRates.title'), desc: t('futsal.whyPlayHere.affordableRates.description') },
+                                { icon: FiUsers, title: t('futsal.whyPlayHere.communityHub.title'), desc: t('futsal.whyPlayHere.communityHub.description') },
+                                { icon: FiShield, title: t('futsal.whyPlayHere.safeEnvironment.title'), desc: t('futsal.whyPlayHere.safeEnvironment.description') }
                             ].map((feature, i) => (
                                 <motion.div
                                     key={i}
@@ -625,8 +628,8 @@ const Futsal = memo(() => {
                 <div className="max-w-7xl mx-auto">
                     {/* Header */}
                     <div className="mb-8">
-                        <h2 className="text-3xl md:text-4xl font-bold mb-2">Book Your Slot</h2>
-                        <p className="text-muted-foreground text-lg">Select a date and time slot to book</p>
+                        <h2 className="text-3xl md:text-4xl font-bold mb-2">{t('futsal.bookYourSlotTitle')}</h2>
+                        <p className="text-muted-foreground text-lg">{t('futsal.bookSubtitle')}</p>
                     </div>
                     
                     {/* Date Selection & View Toggle */}
@@ -639,7 +642,7 @@ const Futsal = memo(() => {
                                     </div>
                                     <div>
                                         <label className="text-sm font-medium text-muted-foreground block mb-1">
-                                            Select Date
+                                            {t('futsal.selectDate')}
                                         </label>
                                         <input
                                             type="date"
@@ -660,14 +663,14 @@ const Futsal = memo(() => {
                                         size="sm"
                                         onClick={() => setViewMode('grid')}
                                     >
-                                        Grid View
+                                        {t('futsal.gridView')}
                                     </Button>
                                     <Button
                                         variant={viewMode === 'calendar' ? 'primary' : 'outline'}
                                         size="sm"
                                         onClick={() => setViewMode('calendar')}
                                     >
-                                        Calendar View
+                                        {t('futsal.calendarView')}
                                     </Button>
                                 </div>
                             </div>
@@ -675,20 +678,20 @@ const Futsal = memo(() => {
                             {loading ? (
                                 <div className="flex items-center gap-2 text-muted-foreground">
                                     <FiLoader className="w-4 h-4 animate-spin" />
-                                    <span className="text-sm">Loading slots...</span>
+                                    <span className="text-sm">{t('common.loading')}</span>
                                 </div>
                             ) : (
                                 <div className="flex items-center gap-4 flex-wrap">
                                     <Badge className="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
                                         <FiCheckCircle className="w-3.5 h-3.5 mr-1" />
-                                        {availableSlots.length} Available
+                                        {availableSlots.length} {t('futsal.available')}
                                     </Badge>
                                     <Badge className="bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400">
                                         <FiXCircle className="w-3.5 h-3.5 mr-1" />
-                                        {bookedSlots.length} Booked
+                                        {bookedSlots.length} {t('futsal.booked')}
                                     </Badge>
                                     <span className="text-sm text-muted-foreground">
-                                        {slots.length} Total Slots
+                                        {slots.length} {t('futsal.timeSlot')}
                                     </span>
                                 </div>
                             )}
@@ -713,19 +716,19 @@ const Futsal = memo(() => {
                             {loading ? (
                                 <div className="flex flex-col items-center justify-center py-16">
                                     <LoadingSpinner size="lg" />
-                                    <p className="text-muted-foreground mt-4">Loading available slots...</p>
+                                    <p className="text-muted-foreground mt-4">{t('futsal.loadingSlots')}</p>
                                 </div>
                             ) : slots.length === 0 ? (
                                 <Card className="p-12 text-center">
                                     <div className="max-w-md mx-auto">
                                         <FiCalendar className="w-16 h-16 text-muted-foreground/50 mx-auto mb-4" />
-                                        <h3 className="text-xl font-semibold mb-2">No Slots Available</h3>
+                                        <h3 className="text-xl font-semibold mb-2">{t('futsal.noSlotsAvailable')}</h3>
                                         <p className="text-muted-foreground mb-6">
-                                            There are no slots available for the selected date. Please try selecting a different date.
+                                            {t('futsal.noSlotsMessage')}
                                         </p>
                                         <Button onClick={() => setSelectedDate(today)} variant="outline">
                                             <FiCalendar className="w-4 h-4 mr-2" />
-                                            View Today's Slots
+                                            {t('futsal.viewTodaySlots')}
                                         </Button>
                                     </div>
                                 </Card>
@@ -754,7 +757,7 @@ const Futsal = memo(() => {
                     <div className="max-w-7xl mx-auto">
                         <div className="flex items-center justify-between mb-6">
                             <div>
-                                <h2 className="text-2xl md:text-3xl font-bold mb-2">Your Booking History</h2>
+                                <h2 className="text-2xl md:text-3xl font-bold mb-2">{t('futsal.bookingHistory')}</h2>
                                 <p className="text-muted-foreground">View and manage your futsal bookings</p>
                             </div>
                             <Button
@@ -801,12 +804,12 @@ const Futsal = memo(() => {
                     setSelectedSlot(null);
                     setErrors({});
                 }}
-                title="Confirm Your Booking"
+                title={t('futsal.confirmBooking')}
                 size="lg"
             >
                 {selectedSlot && (
                     <div className="space-y-6">
-                        {/* Booking Summary */}
+                        {/* {t('futsal.bookingSummary')} */}
                         <Card className="bg-muted/30 border-primary/20">
                             <CardContent className="p-6">
                                 <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
@@ -839,7 +842,7 @@ const Futsal = memo(() => {
                                         </div>
                                     </div>
                                     <div className="bg-background rounded-xl p-5 border border-border/50 min-w-[140px]">
-                                        <div className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Total Price</div>
+                                        <div className="text-xs text-muted-foreground uppercase tracking-wide mb-1">{t('donations.donationAmount')}</div>
                                         <div className="text-3xl font-bold text-primary">{selectedSlot.price}</div>
                                         <div className="text-xs text-muted-foreground">ETB</div>
                                     </div>
@@ -849,7 +852,7 @@ const Futsal = memo(() => {
                         
                         {/* Booking Form */}
                         <div className="space-y-4">
-                            <h3 className="text-lg font-semibold">Contact Information</h3>
+                            <h3 className="text-lg font-semibold">{t('contact.sendUsMessage')}</h3>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <FormField label="Contact Name" required>
                                     <input
@@ -981,7 +984,7 @@ const Futsal = memo(() => {
                                 ) : (
                                     <>
                                         <FiCheckCircle className="w-4 h-4 mr-2" />
-                                        Confirm & Pay {selectedSlot.price} ETB
+                                        {t('common.submit')} & {t('donations.donate')} {selectedSlot.price} ETB
                                     </>
                                 )}
                             </Button>

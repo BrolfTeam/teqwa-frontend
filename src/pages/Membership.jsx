@@ -9,9 +9,11 @@ import { apiService } from '@/lib/apiService';
 import paymentService from '@/services/paymentService';
 import { useAuth } from '@/context/AuthContext';
 import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
 import background from '@/assets/background.png';
 
 const Membership = () => {
+    const { t } = useTranslation();
     const [tiers, setTiers] = useState([]);
     const [currentMembership, setCurrentMembership] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -36,7 +38,7 @@ const Membership = () => {
                 }
             } catch (error) {
                 console.error('Failed to fetch membership data:', error);
-                toast.error('Failed to load membership options');
+                toast.error(t('membership.failedToLoad'));
             } finally {
                 setLoading(false);
             }
@@ -47,7 +49,7 @@ const Membership = () => {
 
     const handleJoin = async (tier) => {
         if (!isAuthenticated) {
-            toast.error('Please login to join our membership program');
+            toast.error(t('membership.pleaseLogin'));
             return;
         }
 
@@ -77,7 +79,7 @@ const Membership = () => {
             }
         } catch (error) {
             console.error('Join failed:', error);
-            toast.error('Failed to process membership request');
+            toast.error(t('membership.failedToProcess'));
         } finally {
             setProcessingTierId(null);
         }
@@ -94,19 +96,18 @@ const Membership = () => {
     return (
         <div className="min-h-screen bg-background font-sans">
             <Hero
-                title="Membership"
-                subtitle="Join our community and become a member of MuJemea At-Tekwa."
+                title={t('membership.title')}
+                subtitle={t('membership.subtitle')}
                 backgroundImage={background}
-                primaryAction={isAuthenticated ? null : "Login to Join"}
+                primaryAction={isAuthenticated ? null : t('membership.loginToJoin')}
                 onPrimaryActionClick={() => window.location.href = '/login'}
             />
 
             <div className="container container-padding py-16">
                 <div className="text-center max-w-3xl mx-auto mb-16">
-                    <h2 className="text-3xl font-bold mb-4">Choose Your Membership Tier</h2>
+                    <h2 className="text-3xl font-bold mb-4">{t('membership.chooseMembershipTier')}</h2>
                     <p className="text-muted-foreground">
-                        Support our mosque and gain access to exclusive community benefits.
-                        Select the plan that best fits your commitment to our cause.
+                        {t('membership.membershipSubtitle')}
                     </p>
                 </div>
 
@@ -123,7 +124,7 @@ const Membership = () => {
                             >
                                 {tier.is_featured && (
                                     <div className="absolute top-0 right-0 bg-primary text-primary-foreground text-xs font-bold px-3 py-1 rounded-bl-lg rounded-tr-lg">
-                                        POPULAR
+                                        {t('membership.popular')}
                                     </div>
                                 )}
                                 <CardHeader>
@@ -133,7 +134,7 @@ const Membership = () => {
                                     <CardTitle className="text-2xl">{tier.name}</CardTitle>
                                     <div className="mt-2">
                                         <span className="text-3xl font-bold">{tier.price}</span>
-                                        <span className="text-muted-foreground ml-1">ETB / month</span>
+                                        <span className="text-muted-foreground ml-1">{t('membership.etbPerMonth')}</span>
                                     </div>
                                 </CardHeader>
                                 <CardContent className="flex-1">
@@ -150,7 +151,7 @@ const Membership = () => {
                                 <CardFooter>
                                     {currentMembership && currentMembership.tier === tier.id && currentMembership.status === 'active' ? (
                                         <Button className="w-full" variant="outline" disabled>
-                                            Current Plan
+                                            {t('membership.currentPlan')}
                                         </Button>
                                     ) : (
                                         <Button
@@ -159,7 +160,7 @@ const Membership = () => {
                                             onClick={() => handleJoin(tier)}
                                             isLoading={processingTierId === tier.id}
                                         >
-                                            Join Now
+                                            {t('membership.joinNow')}
                                         </Button>
                                     )}
                                 </CardFooter>

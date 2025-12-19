@@ -1,47 +1,52 @@
-import { useState, useCallback, memo, useEffect } from 'react';
+import { useState, useCallback, memo, useEffect, useMemo } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiMenu, FiX, FiHome, FiInfo, FiMail, FiChevronDown, FiUser, FiLogOut, FiGrid, FiHeart } from 'react-icons/fi';
-import { Button, ThemeToggle } from '@/components/ui';
+import { useTranslation } from 'react-i18next';
+import { Button, ThemeToggle, LanguageToggle } from '@/components/ui';
 import { useAuth } from '@/context/AuthContext';
 import logo from '@/assets/logo.png';
 
-const navItems = [
-  { name: 'Home', path: '/', icon: FiHome },
-  { name: 'About', path: '/about', icon: FiInfo },
-  {
-    name: 'Services',
-    path: '#',
-    icon: FiGrid,
-    dropdown: [
-      { name: 'Futsal Booking', path: '/futsal' },
-      { name: 'Educational Services', path: '/education' },
-      { name: 'Prayer Times', path: '/prayer-times' },
-    ]
-  },
-  {
-    name: 'Programs',
-    path: '#',
-    icon: FiGrid,
-    dropdown: [
-      { name: 'Events', path: '/events' },
-      { name: 'News', path: '/news' },
-      { name: 'Gallery', path: '/gallery' },
-      { name: 'Iʿtikāf Program', path: '/itikaf' },
-      { name: 'Ders Program', path: '/ders' },
-    ]
-  },
-  { name: 'Membership', path: '/membership', icon: FiUser },
-  { name: 'Contact', path: '/contact', icon: FiMail },
-];
-
 const Navbar = memo(() => {
+  const { t } = useTranslation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const { user, isAuthenticated, logout } = useAuth();
+
+  // Navigation items with translations
+  const navItems = useMemo(() => [
+    { name: t('nav.home'), path: '/', icon: FiHome, key: 'home' },
+    { name: t('nav.about'), path: '/about', icon: FiInfo, key: 'about' },
+    {
+      name: t('nav.services'),
+      path: '#',
+      icon: FiGrid,
+      key: 'services',
+      dropdown: [
+        { name: t('nav.futsalBooking'), path: '/futsal', key: 'futsal' },
+        { name: t('nav.educationalServices'), path: '/education', key: 'education' },
+        { name: t('nav.prayerTimes'), path: '/prayer-times', key: 'prayer' },
+      ]
+    },
+    {
+      name: t('nav.programs'),
+      path: '#',
+      icon: FiGrid,
+      key: 'programs',
+      dropdown: [
+        { name: t('nav.events'), path: '/events', key: 'events' },
+        { name: t('nav.news'), path: '/news', key: 'news' },
+        { name: t('nav.gallery'), path: '/gallery', key: 'gallery' },
+        { name: t('nav.itikafProgram'), path: '/itikaf', key: 'itikaf' },
+        { name: t('nav.dersProgram'), path: '/ders', key: 'ders' },
+      ]
+    },
+    { name: t('nav.membership'), path: '/membership', icon: FiUser, key: 'membership' },
+    { name: t('nav.contact'), path: '/contact', icon: FiMail, key: 'contact' },
+  ], [t]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -56,8 +61,8 @@ const Navbar = memo(() => {
     setActiveDropdown(null);
   }, []);
 
-  const handleDropdownEnter = (name) => {
-    setActiveDropdown(name);
+  const handleDropdownEnter = (key) => {
+    setActiveDropdown(key);
   };
 
   const handleDropdownLeave = () => {
@@ -93,20 +98,20 @@ const Navbar = memo(() => {
         <nav className="hidden xl:flex items-center space-x-1">
           {navItems.map((item) => (
             <div
-              key={item.name}
+              key={item.key}
               className="relative"
-              onMouseEnter={() => item.dropdown && handleDropdownEnter(item.name)}
+              onMouseEnter={() => item.dropdown && handleDropdownEnter(item.key)}
               onMouseLeave={handleDropdownLeave}
             >
               {item.dropdown ? (
                 <button
-                  className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors flex items-center space-x-1 ${activeDropdown === item.name || item.dropdown.some(sub => sub.path === location.pathname)
+                  className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors flex items-center space-x-1 ${activeDropdown === item.key || item.dropdown.some(sub => sub.path === location.pathname)
                     ? 'text-emerald-700 bg-emerald-50 dark:text-emerald-400 dark:bg-emerald-900/30'
                     : 'text-gray-600 hover:text-emerald-700 hover:bg-emerald-50/50 dark:text-gray-300 dark:hover:text-emerald-400 dark:hover:bg-emerald-900/20'
                     }`}
                 >
-                  <span>{item.name}</span>
-                  <FiChevronDown className={`h-4 w-4 transition-transform duration-200 ${activeDropdown === item.name ? 'rotate-180' : ''}`} />
+                    <span>{item.name}</span>
+                  <FiChevronDown className={`h-4 w-4 transition-transform duration-200 ${activeDropdown === item.key ? 'rotate-180' : ''}`} />
                 </button>
               ) : (
                 <Link
@@ -122,13 +127,13 @@ const Navbar = memo(() => {
 
               {/* Desktop Dropdown Menu */}
               <AnimatePresence>
-                {item.dropdown && activeDropdown === item.name && (
+                {item.dropdown && activeDropdown === item.key && (
                   <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 10 }}
                     transition={{ duration: 0.2 }}
-                    className="absolute top-full left-0 w-56 pt-2"
+                    className="absolute top-full left-0 rtl:left-auto rtl:right-0 w-56 pt-2"
                   >
                     <div className="bg-white dark:bg-slate-900 rounded-xl shadow-xl border border-emerald-100 dark:border-emerald-800 overflow-hidden py-1">
                       {item.dropdown.map((subItem) => (
@@ -162,7 +167,7 @@ const Navbar = memo(() => {
                 leftIcon={FiHeart}
                 className="shadow-lg hover:shadow-primary/25 font-semibold"
               >
-                Donate
+                {t('nav.donate')}
               </Button>
             </Link>
 
@@ -176,7 +181,7 @@ const Navbar = memo(() => {
                 <div className="bg-emerald-100 dark:bg-emerald-900/50 p-1.5 rounded-full">
                   <FiUser className="h-4 w-4 text-emerald-700 dark:text-emerald-400" />
                 </div>
-                <span className="font-medium">Dashboard</span>
+                <span className="font-medium">{t('common.dashboard')}</span>
               </div>
             </Button>
 
@@ -187,12 +192,15 @@ const Navbar = memo(() => {
                 variant="ghost"
                 size="icon"
                 className="text-gray-400 hover:text-red-500 hover:bg-red-50 dark:text-gray-500 dark:hover:text-red-400 dark:hover:bg-red-900/20"
-                title="Logout"
+                title={t('common.logout')}
               >
                 <FiLogOut className="h-5 w-5" />
               </Button>
             )}
           </div>
+
+          {/* Language Toggle - Desktop & Mobile (top area) */}
+          <LanguageToggle />
 
           <ThemeToggle />
 
@@ -229,7 +237,7 @@ const Navbar = memo(() => {
                       <div className="pl-12 space-y-1 border-l-2 border-emerald-100 dark:border-emerald-800 ml-6">
                         {item.dropdown.map((subItem) => (
                           <Link
-                            key={subItem.path}
+                            key={subItem.key}
                             to={subItem.path}
                             className={`block px-4 py-2 text-sm rounded-md transition-colors ${location.pathname === subItem.path
                               ? 'text-emerald-700 font-medium bg-emerald-50 dark:text-emerald-400 dark:bg-emerald-900/30'
@@ -267,7 +275,7 @@ const Navbar = memo(() => {
                     leftIcon={FiHeart}
                     className="w-full shadow-lg"
                   >
-                    Donate Now
+                    {t('donations.donateNow')}
                   </Button>
                 </Link>
 

@@ -1,28 +1,38 @@
 import { motion } from 'framer-motion';
-import { FiClock, FiUsers, FiBookOpen } from 'react-icons/fi';
+import { FiClock, FiUsers, FiBookOpen, FiHeart, FiGlobe } from 'react-icons/fi';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import Hero from '@/components/ui/Hero';
 import { Link } from 'react-router-dom';
 import mesjidBg from '@/assets/mesjid.png';
 import jumeaBg from '@/assets/mesjid2.jpg';
 import logo from '@/assets/logo.png';
-import { teamData } from '@/data/teamData';
+import { getTeamData } from '@/data/teamData';
 import { aboutData } from '@/data/aboutData';
 import TeamMemberCard from '@/components/widgets/TeamMemberCard';
 import { Button } from '@/components/ui/Button';
+import { useTranslation } from 'react-i18next';
 
 const About = () => {
+  const { t } = useTranslation();
+  
+  // Create translated stats
+  const stats = [
+    { icon: FiClock, number: '15+', label: t('about.yearsOfService') },
+    { icon: FiUsers, number: '500+', label: t('about.communityMembers') },
+    { icon: FiBookOpen, number: '50+', label: t('about.weeklyPrograms') },
+  ];
+  
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-background font-sans selection:bg-primary/20 w-full overflow-x-hidden">
       <Hero
-        title={aboutData.hero.title}
-        titleHighlight={aboutData.hero.titleHighlight}
+        title={t('about.title')}
+        titleHighlight={t('about.titleHighlight')}
         align="left"
-        description={aboutData.hero.description}
+        description={t('about.description')}
         backgroundImage={mesjidBg}
         logo={logo}
-        primaryAction={<Link to="/contact">Join Our Community</Link>}
-        secondaryAction={<Link to="/events">Our Programs</Link>}
+        primaryAction={<Link to="/contact">{t('about.joinOurCommunity')}</Link>}
+        secondaryAction={<Link to="/events">{t('about.viewPrograms')}</Link>}
       />
 
       {/* Stats Section */}
@@ -35,7 +45,7 @@ const About = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            {aboutData.stats.map((stat, index) => (
+            {stats.map((stat, index) => (
               <Card key={index} className="border-border/40 hover:border-primary/50 hover:shadow-lg transition-all duration-300 bg-background/50 backdrop-blur-sm dark:bg-card/40 flex flex-col items-center justify-center p-6 text-center">
                 <div className="p-4 rounded-full bg-primary/10 mb-4 text-primary">
                   <stat.icon className="h-6 w-6" />
@@ -56,9 +66,9 @@ const About = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
         >
-          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">{aboutData.purpose.title}</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">{t('about.ourPurpose')}</h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            {aboutData.purpose.subtitle}
+            {t('about.purposeSubtitle')}
           </p>
         </motion.div>
 
@@ -75,12 +85,12 @@ const About = () => {
                   <div className="p-3 rounded-full bg-primary/10 text-primary mr-4">
                     <aboutData.mission.icon className="h-6 w-6" />
                   </div>
-                  {aboutData.mission.title}
+                  {t('about.ourMission')}
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground leading-relaxed text-lg">
-                  {aboutData.mission.desc}
+                  {t('about.missionDesc')}
                 </p>
               </CardContent>
             </Card>
@@ -98,12 +108,12 @@ const About = () => {
                   <div className="p-3 rounded-full bg-accent/10 text-accent-700 mr-4">
                     <aboutData.vision.icon className="h-6 w-6" />
                   </div>
-                  {aboutData.vision.title}
+                  {t('about.ourVision')}
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground leading-relaxed text-lg">
-                  {aboutData.vision.desc}
+                  {t('about.visionDesc')}
                 </p>
               </CardContent>
             </Card>
@@ -112,7 +122,12 @@ const About = () => {
 
         {/* Values */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {aboutData.values.map((item, index) => (
+          {[
+            { icon: FiBookOpen, title: t('about.worship'), desc: t('about.worshipDesc'), color: 'text-blue-500', bg: 'bg-blue-500/10' },
+            { icon: FiUsers, title: t('about.education'), desc: t('about.educationDesc'), color: 'text-green-500', bg: 'bg-green-500/10' },
+            { icon: FiHeart, title: t('about.community'), desc: t('about.communityDesc'), color: 'text-red-500', bg: 'bg-red-500/10' },
+            { icon: FiGlobe, title: t('about.service'), desc: t('about.serviceDesc'), color: 'text-orange-500', bg: 'bg-orange-500/10' }
+          ].map((item, index) => (
             <motion.div
               key={item.title}
               initial={{ opacity: 0, y: 20 }}
@@ -144,14 +159,14 @@ const About = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">Meet Our Team</h2>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">{t('about.meetOurTeam')}</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
-              The dedicated individuals serving our community
+              {t('about.teamSubtitle')}
             </p>
           </motion.div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {teamData.map((member, index) => (
+            {getTeamData(t).map((member, index) => (
               <motion.div
                 key={member.id}
                 initial={{ opacity: 0, y: 20 }}
@@ -175,15 +190,20 @@ const About = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
         >
-          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">{aboutData.timeline.title}</h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">{aboutData.timeline.subtitle}</p>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">{t('about.ourJourney')}</h2>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">{t('about.journeySubtitle')}</p>
         </motion.div>
 
         <div className="max-w-4xl mx-auto">
           <div className="relative">
             <div className="absolute left-1/2 w-0.5 h-full bg-gradient-to-b from-primary/10 via-primary/30 to-primary/10 transform -translate-x-1/2 hidden md:block" />
 
-            {aboutData.timeline.items.map((item, index) => (
+            {[
+              { year: '2008', title: t('about.foundation'), desc: t('about.foundationDesc') },
+              { year: '2012', title: t('about.firstExpansion'), desc: t('about.firstExpansionDesc') },
+              { year: '2018', title: t('about.tenthAnniversary'), desc: t('about.tenthAnniversaryDesc') },
+              { year: '2023', title: t('about.digitalEra'), desc: t('about.digitalEraDesc') }
+            ].map((item, index) => (
               <motion.div
                 key={item.year}
                 initial={{ opacity: 0, y: 20 }}
@@ -233,16 +253,16 @@ const About = () => {
             viewport={{ once: true }}
             className="max-w-3xl mx-auto"
           >
-            <h2 className="text-3xl md:text-4xl font-bold mb-6 text-white">{aboutData.cta.title}</h2>
+            <h2 className="text-3xl md:text-4xl font-bold mb-6 text-white">{t('about.joinOurCommunity')}</h2>
             <p className="text-xl mb-10 text-white/90 leading-relaxed font-medium">
-              {aboutData.cta.description}
+              {t('about.joinDescription')}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button asChild size="xl" className="bg-accent text-primary-900 hover:bg-accent/90 shadow-lg font-bold">
-                <Link to={aboutData.cta.primaryAction.link}>{aboutData.cta.primaryAction.label}</Link>
+                <Link to="/contact">{t('about.getInvolved')}</Link>
               </Button>
               <Button asChild size="xl" variant="outline" className="border-white/40 text-white hover:bg-white/10 backdrop-blur-md">
-                <Link to={aboutData.cta.secondaryAction.link}>{aboutData.cta.secondaryAction.label}</Link>
+                <Link to="/events">{t('about.viewPrograms')}</Link>
               </Button>
             </div>
           </motion.div>

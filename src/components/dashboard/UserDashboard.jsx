@@ -9,8 +9,10 @@ import IslamicPattern from '@/components/ui/IslamicPattern';
 import { prayerTimesService } from '@/lib/prayerTimesService';
 import dashboardService from '@/services/dashboardService';
 import verses from '@/lib/verses.json';
+import { useTranslation } from 'react-i18next';
 
 const UserDashboard = memo(() => {
+    const { t } = useTranslation();
     const { user } = useAuth();
 
     // State for dynamic content
@@ -83,12 +85,12 @@ const UserDashboard = memo(() => {
     }, [fetchData]);
 
     const today = new Date();
-    const greeting = "As-salamu alaykum";
+    const greeting = t('dashboard.greeting');
 
     const quickStats = [
-        { label: 'Upcoming Events', value: dashboardStats?.counts?.upcoming_events || '0', icon: <FiCalendar className="h-6 w-6" />, color: 'primary' },
-        { label: 'Total Donations', value: `${(dashboardStats?.donation_stats?.total_amount || 0).toLocaleString()} ETB`, icon: <FiHeart className="h-6 w-6" />, color: 'accent' },
-        { label: 'Community Points', value: dashboardStats?.points || '0', icon: <FiUsers className="h-6 w-6" />, color: 'secondary' },
+        { label: t('dashboard.user.upcomingEvents'), value: dashboardStats?.counts?.upcoming_events || '0', icon: <FiCalendar className="h-6 w-6" />, color: 'primary' },
+        { label: t('dashboard.user.totalDonations'), value: `${(dashboardStats?.donation_stats?.total_amount || 0).toLocaleString()} ETB`, icon: <FiHeart className="h-6 w-6" />, color: 'accent' },
+        { label: t('dashboard.user.communityPoints'), value: dashboardStats?.points || '0', icon: <FiUsers className="h-6 w-6" />, color: 'secondary' },
     ];
 
     // Animation variants
@@ -142,7 +144,7 @@ const UserDashboard = memo(() => {
                             <FiSun className="h-4 w-4" />
                             <span>{today.toLocaleDateString(undefined, { weekday: 'long' })}</span>
                         </div>
-                        <div className="text-2xl font-bold font-arabic">{loading ? "Loading..." : hijriDate}</div>
+                        <div className="text-2xl font-bold font-arabic">{loading ? t('common.loading') : hijriDate}</div>
                         <div className="text-sm opacity-75">{today.toLocaleDateString()}</div>
                     </div>
                 </div>
@@ -155,7 +157,7 @@ const UserDashboard = memo(() => {
                     <Card className="h-full border-primary/20 shadow-lg bg-card/80 backdrop-blur-sm relative overflow-hidden group hover:border-primary/40 transition-colors">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-wider flex items-center gap-2">
-                                <FiClock className="h-4 w-4 text-primary" /> Next Prayer
+                                <FiClock className="h-4 w-4 text-primary" /> {t('dashboard.nextPrayer')}
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
@@ -169,7 +171,7 @@ const UserDashboard = memo(() => {
                                     <>
                                         <span className="text-3xl font-bold text-primary">{nextPrayer?.name || 'Fajr'}</span>
                                         <p className="text-2xl font-mono text-foreground/80 mt-1">{nextPrayer?.formatted || '--:--'}</p>
-                                        <p className="text-xs text-muted-foreground mt-2">Time remaining: {timeRemaining}</p>
+                                        <p className="text-xs text-muted-foreground mt-2">{t('dashboard.timeRemaining')}: {timeRemaining}</p>
                                     </>
                                 )}
                             </div>
@@ -209,10 +211,10 @@ const UserDashboard = memo(() => {
                         <CardHeader className="flex flex-row items-center justify-between border-b border-border/50 pb-4">
                             <CardTitle className="flex items-center space-x-2 text-lg">
                                 <FiCalendar className="h-5 w-5 text-primary" />
-                                <span>Upcoming Events</span>
+                                <span>{t('dashboard.user.upcomingEvents')}</span>
                             </CardTitle>
                             <Button asChild variant="ghost" size="sm" className="hover:text-primary">
-                                <Link to="/events">View All</Link>
+                                <Link to="/events">{t('common.viewAll')}</Link>
                             </Button>
                         </CardHeader>
                         <CardContent className="pt-6 space-y-4">
@@ -257,7 +259,7 @@ const UserDashboard = memo(() => {
                                     );
                                 })
                             ) : (
-                                <p className="text-center text-muted-foreground py-8">No upcoming events</p>
+                                <p className="text-center text-muted-foreground py-8">{t('events.noEvents')}</p>
                             )}
                         </CardContent>
                     </Card>
@@ -269,10 +271,10 @@ const UserDashboard = memo(() => {
                         <CardHeader className="flex flex-row items-center justify-between border-b border-border/50 pb-4">
                             <CardTitle className="flex items-center space-x-2 text-lg">
                                 <FiHeart className="h-5 w-5 text-accent" />
-                                <span>Recent Donations</span>
+                                <span>{t('dashboard.user.totalDonations')}</span>
                             </CardTitle>
                             <Button asChild variant="ghost" size="sm" className="hover:text-primary">
-                                <Link to="/donate">Donate</Link>
+                                <Link to="/donate">{t('donations.makeDonation')}</Link>
                             </Button>
                         </CardHeader>
                         <CardContent className="pt-6 space-y-4">
@@ -308,7 +310,7 @@ const UserDashboard = memo(() => {
                         <CardHeader className="border-b border-border/50 pb-4">
                             <CardTitle className="flex items-center space-x-2 text-lg">
                                 <FiActivity className="h-5 w-5 text-blue-500" />
-                                <span>Recent Activity</span>
+                                <span>{t('dashboard.recentActivity')}</span>
                             </CardTitle>
                         </CardHeader>
                         <CardContent className="pt-6">
@@ -329,7 +331,7 @@ const UserDashboard = memo(() => {
                                     ))}
                                 </div>
                             ) : (
-                                <p className="text-center text-muted-foreground py-6">No recent activity recorded.</p>
+                                <p className="text-center text-muted-foreground py-6">{t('dashboard.user.noRecentActivity')}</p>
                             )}
                         </CardContent>
                     </Card>
@@ -340,10 +342,10 @@ const UserDashboard = memo(() => {
             <motion.div variants={itemVariants}>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     {[
-                        { to: "/futsal", icon: <FiUsers className="h-6 w-6" />, label: "Book Futsal", color: "text-blue-500", bg: "bg-blue-500/10" },
-                        { to: "/donate", icon: <FiHeart className="h-6 w-6" />, label: "Make Donation", color: "text-red-500", bg: "bg-red-500/10" },
-                        { to: "/events", icon: <FiCalendar className="h-6 w-6" />, label: "View Events", color: "text-purple-500", bg: "bg-purple-500/10" },
-                        { to: "/profile", icon: <FiUser className="h-6 w-6" />, label: "Edit Profile", color: "text-amber-500", bg: "bg-amber-500/10" },
+                        { to: "/futsal", icon: <FiUsers className="h-6 w-6" />, label: t('dashboard.user.bookFutsal'), color: "text-blue-500", bg: "bg-blue-500/10" },
+                        { to: "/donate", icon: <FiHeart className="h-6 w-6" />, label: t('dashboard.user.makeDonation'), color: "text-red-500", bg: "bg-red-500/10" },
+                        { to: "/events", icon: <FiCalendar className="h-6 w-6" />, label: t('dashboard.user.viewEvents'), color: "text-purple-500", bg: "bg-purple-500/10" },
+                        { to: "/profile", icon: <FiUser className="h-6 w-6" />, label: t('profile.edit'), color: "text-amber-500", bg: "bg-amber-500/10" },
                     ].map((action, i) => (
                         <Link key={i} to={action.to} className="block h-full">
                             <Card className="h-full border-border/40 hover:border-primary/30 hover:shadow-lg transition-all duration-300 bg-white/50 backdrop-blur-sm group">
@@ -364,20 +366,20 @@ const UserDashboard = memo(() => {
                 <Card className="shadow-lg border-border/50 bg-card/80 backdrop-blur-sm">
                     <CardHeader className="border-b border-border/40 pb-4">
                         <CardTitle className="text-xl font-bold flex items-center gap-2">
-                            <FiBookOpen className="text-primary" /> My Modules
+                            <FiBookOpen className="text-primary" /> {t('dashboard.quickActions')}
                         </CardTitle>
-                        <p className="text-sm text-muted-foreground">Access your features and services</p>
+                        <p className="text-sm text-muted-foreground">{t('dashboard.user.quickLinks')}</p>
                     </CardHeader>
                     <CardContent className="pt-6">
                         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
                             {[
-                                { to: "/services", icon: <FiSun className="h-5 w-5" />, label: "Services", color: "text-orange-500", bg: "bg-orange-500/10" },
-                                { to: "/bookings", icon: <FiCalendar className="h-5 w-5" />, label: "All Bookings", color: "text-blue-500", bg: "bg-blue-500/10" },
-                                { to: "/bookings/user", icon: <FiUser className="h-5 w-5" />, label: "My Bookings", color: "text-indigo-500", bg: "bg-indigo-500/10" },
-                                { to: "/prayer-times", icon: <FiClock className="h-5 w-5" />, label: "Prayer Times", color: "text-emerald-500", bg: "bg-emerald-500/10" },
-                                { to: "/gallery", icon: <FiImage className="h-5 w-5" />, label: "Gallery", color: "text-pink-500", bg: "bg-pink-500/10" },
-                                { to: "/news", icon: <FiBookOpen className="h-5 w-5" />, label: "News", color: "text-rose-500", bg: "bg-rose-500/10" },
-                                { to: "/contact", icon: <FiMail className="h-5 w-5" />, label: "Contact", color: "text-slate-500", bg: "bg-slate-500/10" },
+                                { to: "/services", icon: <FiSun className="h-5 w-5" />, label: t('common.services'), color: "text-orange-500", bg: "bg-orange-500/10" },
+                                { to: "/bookings", icon: <FiCalendar className="h-5 w-5" />, label: t('bookings.title'), color: "text-blue-500", bg: "bg-blue-500/10" },
+                                { to: "/bookings/user", icon: <FiUser className="h-5 w-5" />, label: t('bookings.title'), color: "text-indigo-500", bg: "bg-indigo-500/10" },
+                                { to: "/prayer-times", icon: <FiClock className="h-5 w-5" />, label: t('nav.prayerTimes'), color: "text-emerald-500", bg: "bg-emerald-500/10" },
+                                { to: "/gallery", icon: <FiImage className="h-5 w-5" />, label: t('gallery.title'), color: "text-pink-500", bg: "bg-pink-500/10" },
+                                { to: "/news", icon: <FiBookOpen className="h-5 w-5" />, label: t('news.title'), color: "text-rose-500", bg: "bg-rose-500/10" },
+                                { to: "/contact", icon: <FiMail className="h-5 w-5" />, label: t('common.contact'), color: "text-slate-500", bg: "bg-slate-500/10" },
                             ].map((module, i) => (
                                 <Link key={i} to={module.to}>
                                     <div className="group p-3 rounded-xl border border-border/30 hover:border-primary/30 hover:bg-primary/5 transition-all duration-300 flex items-center gap-3 h-full">

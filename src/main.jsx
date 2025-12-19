@@ -8,9 +8,15 @@ import ErrorBoundary from '@/components/error/ErrorBoundary';
 import App from './App';
 import './styles/global.css';
 
+// Initialize i18n before everything else
+import '@/lib/i18n';
+
 // Import fonts
 import '@fontsource/inter/index.css';
 import '@fontsource/tajawal/400.css';
+// Amharic font support - using Noto Sans Ethiopic
+import '@fontsource/noto-sans-ethiopic/400.css';
+import '@fontsource/noto-sans-ethiopic/700.css';
 
 // Create React Query client
 const queryClient = new QueryClient({

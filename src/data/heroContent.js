@@ -58,19 +58,19 @@ export const isRamadan = () => {
   // return today >= ramadanStart && today <= ramadanEnd;
 };
 
-// Default hero slides
-export const defaultHeroSlides = [
+// Default hero slides - now a function that accepts translation function
+export const getDefaultHeroSlides = (t) => [
   {
     id: 'welcome',
     type: 'default',
     image: mesjidBg,
     alt: "Mosque Interior",
-    badge: "Welcome to Teqwa",
-    title: "Experience the Beauty of",
-    titleHighlight: "Islamic Community",
-    subtitle: "Join us in our daily prayers, educational programs, and community events to strengthen your faith and connection with Allah.",
-    cta: { label: "Explore Programs", link: "/events", icon: "arrow" },
-    secondaryCta: { label: "About Us", link: "/about" },
+    badge: t('hero.welcomeToTeqwa'),
+    title: t('hero.experienceBeauty'),
+    titleHighlight: t('hero.islamicCommunity'),
+    subtitle: t('hero.joinUsSubtitle'),
+    cta: { label: t('hero.explorePrograms'), link: "/events", icon: "arrow" },
+    secondaryCta: { label: t('hero.aboutUs'), link: "/about" },
     priority: 1
   },
   {
@@ -78,22 +78,22 @@ export const defaultHeroSlides = [
     type: 'default',
     image: headerBg,
     alt: "Community Gathering",
-    badge: "MuJemea At-Tekwa",
-    title: "Building a Strong",
-    titleHighlight: "Faith Community",
-    subtitle: "Together we grow in faith, knowledge, and service to our community and beyond.",
-    cta: { label: "Join Us", link: "/membership", icon: "users" },
-    secondaryCta: { label: "Learn More", link: "/about" },
+    badge: t('hero.mujeaAtTekwa'),
+    title: t('hero.buildingStrong'),
+    titleHighlight: t('hero.faithCommunity'),
+    subtitle: t('hero.togetherWeGrow'),
+    cta: { label: t('common.joinUs'), link: "/membership", icon: "users" },
+    secondaryCta: { label: t('common.learnMore'), link: "/about" },
     priority: 2
   }
 ];
 
 // Jumu'ah (Friday) specific slides - Dynamic with khatib info
-export const getJumuahSlides = () => {
+export const getJumuahSlides = (t) => {
   const khatibInfo = getJumuahKhatib();
   const subtitle = khatibInfo 
-    ? `Today's Khutbah will be delivered by ${khatibInfo.name || 'Imam'}. Don't forget to read Surah Al-Kahf and send Salawat upon the Prophet (ﷺ) today. Join us for the blessed Jumu'ah prayer.`
-    : "Don't forget to read Surah Al-Kahf and send Salawat upon the Prophet (ﷺ) today. Join us for the blessed Jumu'ah prayer.";
+    ? t('hero.todayKhutbah', { name: khatibInfo.name || 'Imam' })
+    : t('hero.jumuahSubtitle');
   
   return [
     {
@@ -101,13 +101,13 @@ export const getJumuahSlides = () => {
       type: 'occasion',
       image: jumeaImage,
       alt: "Jumu'ah Prayer",
-      badge: "Jumu'ah Mubarak",
-      title: "The Best Day is",
-      titleHighlight: "Friday",
+      badge: t('hero.blessedFriday'),
+      title: t('hero.bestDayIs'),
+      titleHighlight: t('hero.friday'),
       subtitle: subtitle,
-      cta: { label: "Prayer Times", link: "/prayer-times", icon: "calendar" },
+      cta: { label: t('hero.prayerTimes'), link: "/prayer-times", icon: "calendar" },
       secondaryCta: { 
-        label: "Read Surah Kahf", 
+        label: t('hero.readSurahKahf'), 
         link: "https://quran.com/18", 
         external: true,
         icon: "book" 
@@ -119,8 +119,8 @@ export const getJumuahSlides = () => {
   ];
 };
 
-// Ramadan specific slides
-export const ramadanSlides = [
+// Ramadan specific slides - now a function
+export const getRamadanSlides = (t) => [
   {
     id: 'ramadan',
     type: 'occasion',
@@ -130,8 +130,8 @@ export const ramadanSlides = [
     title: "Welcome to the Month of",
     titleHighlight: "Mercy & Quran",
     subtitle: "May Allah accept our fasting, prayers, and charity in this blessed month. Join us for Taraweeh prayers and community iftars.",
-    cta: { label: "Prayer Schedule", link: "/prayer-times", icon: "calendar" },
-    secondaryCta: { label: "Iftar Program", link: "/events" },
+    cta: { label: t('prayer.prayerTimes'), link: "/prayer-times", icon: "calendar" },
+    secondaryCta: { label: t('events.title'), link: "/events" },
     priority: 10,
     occasion: 'ramadan'
   },
@@ -140,30 +140,30 @@ export const ramadanSlides = [
     type: 'itikaf',
     image: itikafImage2,
     alt: "I'tikaf Program",
-    badge: "Ramadan Special",
-    title: "Experience Spiritual",
-    titleHighlight: "I'tikaf Retreat",
-    subtitle: "Join our I'tikaf program during the last 10 days of Ramadan. Purify your soul and seek Laylat al-Qadr in the blessed environment of the mosque.",
-    cta: { label: "Register for I'tikaf", link: "/itikaf", icon: "book" },
-    secondaryCta: { label: "Learn More", link: "/itikaf" },
+    badge: t('itikaf.ramadanSpecial'),
+    title: t('itikaf.experienceSpiritual'),
+    titleHighlight: t('itikaf.itikafRetreat'),
+    subtitle: t('itikaf.ramadanItikafSubtitle'),
+    cta: { label: t('itikaf.registerForItikaf'), link: "/itikaf", icon: "book" },
+    secondaryCta: { label: t('common.learnMore'), link: "/itikaf" },
     priority: 9,
     occasion: 'ramadan'
   }
 ];
 
-// Service-specific slides
-export const serviceSlides = [
+// Service-specific slides - now a function
+export const getServiceSlides = (t) => [
   {
     id: 'donation',
     type: 'donation',
     image: headerBg,
     alt: "Support Our Community",
     badge: "Make a Difference",
-    title: "Support Our",
-    titleHighlight: "Community Initiatives",
-    subtitle: "Your generous donations help us maintain the mosque, support educational programs, and serve the community. Every contribution makes a difference.",
-    cta: { label: "Donate Now", link: "/donations", icon: "heart" },
-    secondaryCta: { label: "View Causes", link: "/donations" },
+    title: t('donations.supportCommunity').split(' ').slice(0, 2).join(' '),
+    titleHighlight: t('donations.supportCommunity').split(' ').slice(2).join(' '),
+    subtitle: t('donations.donationSubtitle'),
+    cta: { label: t('donations.donateNow'), link: "/donations", icon: "heart" },
+    secondaryCta: { label: t('donations.viewCauses'), link: "/donations" },
     priority: 5
   },
   {
@@ -171,12 +171,12 @@ export const serviceSlides = [
     type: 'booking',
     image: futsalImage,
     alt: "Futsal Booking",
-    badge: "Book Your Slot",
-    title: "Reserve Your",
-    titleHighlight: "Futsal Court",
-    subtitle: "Book your preferred time slot for our futsal court. Available for community members and their families. Easy online booking system.",
-    cta: { label: "Book Now", link: "/futsal", icon: "calendar" },
-    secondaryCta: { label: "View Schedule", link: "/futsal" },
+    badge: t('futsal.bookYourSlot'),
+    title: t('futsal.bookYourSlot'),
+    titleHighlight: t('futsal.futsalCourt'),
+    subtitle: t('futsal.bookSubtitle'),
+    cta: { label: t('futsal.bookNow'), link: "/futsal", icon: "calendar" },
+    secondaryCta: { label: t('futsal.viewSchedule'), link: "/futsal" },
     priority: 4
   },
   {
@@ -184,12 +184,12 @@ export const serviceSlides = [
     type: 'itikaf',
     image: itikafImage,
     alt: "I'tikaf Program",
-    badge: "Spiritual Retreat",
-    title: "Join Our",
-    titleHighlight: "I'tikaf Program",
-    subtitle: "Experience the spiritual benefits of I'tikaf. Spend dedicated time in the mosque for worship, reflection, and connection with Allah.",
-    cta: { label: "Register Now", link: "/itikaf", icon: "book" },
-    secondaryCta: { label: "Learn More", link: "/itikaf" },
+    badge: t('itikaf.spiritualRetreat'),
+    title: t('itikaf.joinItikaf'),
+    titleHighlight: t('itikaf.itikafProgram'),
+    subtitle: t('itikaf.itikafSubtitle'),
+    cta: { label: t('itikaf.registerNow'), link: "/itikaf", icon: "book" },
+    secondaryCta: { label: t('common.learnMore'), link: "/itikaf" },
     priority: 6
   }
 ];
@@ -198,18 +198,19 @@ export const serviceSlides = [
  * Get hero slides based on current date and dynamic content
  * @param {Array} events - Featured events from API
  * @param {Array} campaigns - Active donation campaigns from API
+ * @param {Function} t - Translation function from i18next
  * @returns {Array} Array of hero slides
  */
-export const getHeroSlides = (events = [], campaigns = []) => {
+export const getHeroSlides = (events = [], campaigns = [], t) => {
   const slides = [];
   
   // Add occasion-specific slides first (highest priority)
   if (isJumuah()) {
-    slides.push(...getJumuahSlides());
+    slides.push(...getJumuahSlides(t));
   }
   
   if (isRamadan()) {
-    slides.push(...ramadanSlides);
+    slides.push(...getRamadanSlides(t));
   }
   
   // Add featured events as slides
@@ -221,15 +222,15 @@ export const getHeroSlides = (events = [], campaigns = []) => {
       type: 'event',
       image: event.image || mesjidBg,
       alt: event.title,
-      badge: "Upcoming Event",
+      badge: t('events.upcomingEvents'),
       title: event.title,
       titleHighlight: "",
-      subtitle: event.description?.substring(0, 120) + '...' || "Join us for this special gathering.",
+      subtitle: event.description?.substring(0, 120) + '...' || t('events.title'),
       date: event.date,
       time: event.time,
       location: event.location,
-      cta: { label: "Register Now", link: `/events/${event.id}`, icon: "calendar" },
-      secondaryCta: { label: "View Details", link: `/events/${event.id}` },
+      cta: { label: t('events.registerNow'), link: `/events/${event.id}`, icon: "calendar" },
+      secondaryCta: { label: t('events.viewDetails'), link: `/events/${event.id}` },
       priority: 7
     }));
   slides.push(...eventSlides);
@@ -243,23 +244,23 @@ export const getHeroSlides = (events = [], campaigns = []) => {
       type: 'campaign',
       image: campaign.image || headerBg,
       alt: campaign.name || campaign.title,
-      badge: "Active Campaign",
+      badge: t('donations.activeCampaigns'),
       title: campaign.name || campaign.title,
       titleHighlight: "",
-      subtitle: campaign.description?.substring(0, 120) + '...' || "Support our community initiatives.",
+      subtitle: campaign.description?.substring(0, 120) + '...' || t('donations.supportCommunity'),
       target: campaign.target_amount,
       raised: campaign.raised_amount || 0,
-      cta: { label: "Donate Now", link: "/donations", icon: "heart" },
-      secondaryCta: { label: "Learn More", link: `/donations?cause=${campaign.id}` },
+      cta: { label: t('donations.donateNow'), link: "/donations", icon: "heart" },
+      secondaryCta: { label: t('common.learnMore'), link: `/donations?cause=${campaign.id}` },
       priority: 8
     }));
   slides.push(...campaignSlides);
   
   // Add service slides
-  slides.push(...serviceSlides);
+  slides.push(...getServiceSlides(t));
   
   // Add default slides
-  slides.push(...defaultHeroSlides);
+  slides.push(...getDefaultHeroSlides(t));
   
   // Sort by priority (higher first) and return top 6 slides
   return slides
@@ -268,10 +269,10 @@ export const getHeroSlides = (events = [], campaigns = []) => {
 };
 
 export default {
-  defaultHeroSlides,
+  getDefaultHeroSlides,
   getJumuahSlides,
-  ramadanSlides,
-  serviceSlides,
+  getRamadanSlides,
+  getServiceSlides,
   getHeroSlides,
   isJumuah,
   isRamadan,

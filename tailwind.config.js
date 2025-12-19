@@ -116,8 +116,9 @@ export default {
         },
       },
       fontFamily: {
-        sans: ['Inter', 'Tajawal', 'Noto Kufi Arabic', 'system-ui', 'sans-serif'],
-        arabic: ['"Scheherazade New"', '"Amiri"', '"Noto Kufi Arabic"', 'sans-serif'],
+        sans: ['Inter', '"Noto Sans Ethiopic"', 'Tajawal', 'Noto Kufi Arabic', 'system-ui', 'sans-serif'],
+        arabic: ['Tajawal', '"Scheherazade New"', '"Amiri"', '"Noto Kufi Arabic"', 'sans-serif'],
+        amharic: ['"Noto Sans Ethiopic"', 'Inter', 'system-ui', 'sans-serif'],
         display: ['"Cairo"', '"Scheherazade New"', '"Inter"', 'sans-serif'],
         mono: ['"JetBrains Mono"', '"Fira Code"', 'monospace'],
       },
@@ -215,5 +216,19 @@ export default {
       },
     },
   },
-  plugins: [forms, typography],
+  plugins: [
+    forms, 
+    typography,
+    // RTL plugin for Tailwind
+    function({ addUtilities }) {
+      addUtilities({
+        '.rtl': {
+          direction: 'rtl',
+        },
+        '.ltr': {
+          direction: 'ltr',
+        },
+      });
+    },
+  ],
 }

@@ -4,89 +4,92 @@ import { FiBookOpen, FiUsers, FiHeart, FiCalendar, FiSun, FiMoon, FiCoffee, FiAc
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import Hero from '@/components/ui/Hero';
+import { useTranslation } from 'react-i18next';
 import mesjidBg from '@/assets/mesjid2.jpg';
 
 const Services = () => {
+    const { t } = useTranslation();
+    
     const services = [
         {
             id: 'daily-prayers',
-            title: 'Daily Prayers',
-            description: 'Five daily congregational prayers led by our Imams. Join us for Fajr, Dhuhr, Asr, Maghrib, and Isha.',
+            title: t('services.dailyPrayers'),
+            description: t('services.dailyPrayersDesc'),
             icon: FiSun,
             link: '/prayer-times',
-            action: 'View Times'
+            action: t('services.viewTimes')
         },
         {
             id: 'friday-prayer',
-            title: 'Jummah Prayer',
-            description: 'Weekly Friday prayer. Khutbah starts at 6:30 LT followed by prayer.',
+            title: t('services.jummahPrayer'),
+            description: t('services.jummahPrayerDesc'),
             icon: FiUsers,
             link: '/prayer-times',
-            action: 'Learn More'
+            action: t('services.learnMore')
         },
         {
             id: 'islamic-education',
-            title: 'Islamic Education',
-            description: 'Classes for all ages, including Quran reading, Tajweed, and daily ders program for anyone who want to learn Islam.',
+            title: t('services.islamicEducation'),
+            description: t('services.islamicEducationDesc'),
             icon: FiBookOpen,
             link: '/education',
-            action: 'Classes'
+            action: t('services.classes')
         },
         {
             id: 'charity-zakat',
-            title: 'Charity & Zakat',
-            description: 'Distribution of Zakat and Sadaqah to those in need within our community and beyond.',
+            title: t('services.charityZakat'),
+            description: t('services.charityZakatDesc'),
             icon: FiHeart,
             link: '/donations',
-            action: 'Donate'
+            action: t('services.donate')
         },
         {
             id: 'matrimonial',
-            title: 'Matrimonial Services',
-            description: 'Nikah ceremonies and pre-marital counseling services to support building strong families. we will announce soon when the service is available.',
+            title: t('services.matrimonialServices'),
+            description: t('services.matrimonialServicesDesc'),
             icon: FiHeart,
             link: '/contact',
-            action: 'Contact Us'
+            action: t('services.contactUs')
         },
         {
             id: 'funeral',
-            title: 'Funeral Services',
-            description: 'Janazah prayer and assistance with funeral arrangements for deceased community members. we will announce soon when the service is available.',
+            title: t('services.funeralServices'),
+            description: t('services.funeralServicesDesc'),
             icon: FiMoon,
             link: '/contact',
-            action: 'Contact Us'
+            action: t('services.contactUs')
         },
         {
             id: 'counseling',
-            title: 'Counseling',
-            description: 'Religious and social counseling provided by our Imams for individuals and families. we will announce soon when the service is available.',
+            title: t('services.counseling'),
+            description: t('services.counselingDesc'),
             icon: FiCoffee,
             link: '/contact',
-            action: 'Request'
+            action: t('services.request')
         },
         {
             id: 'community-events',
-            title: 'Community Events',
-            description: 'Regular gatherings, lectures, and social events to strengthen our community bonds.',
+            title: t('services.communityEvents'),
+            description: t('services.communityEventsDesc'),
             icon: FiCalendar,
             link: '/events',
-            action: 'Events'
+            action: t('services.events')
         },
         {
             id: 'youth-programs',
-            title: 'Youth Programs',
-            description: 'Engaging activities, sports, and mentorship programs specifically designed for our youth. stay tuned for more information.',
+            title: t('services.youthPrograms'),
+            description: t('services.youthProgramsDesc'),
             icon: FiActivity,
             link: '/membership',
-            action: 'Join'
+            action: t('services.join')
         }
     ];
 
     return (
         <div className="min-h-screen bg-gray-50">
             <Hero
-                title="Our Services"
-                description="Serving the community with a wide range of religious, educational, and social services."
+                title={t('services.title')}
+                description={t('services.subtitle')}
                 backgroundImage={mesjidBg}
             />
 
@@ -128,12 +131,12 @@ const Services = () => {
             {/* Contact Section */}
             <section className="bg-primary/5 py-16">
                 <div className="container mx-auto px-4 text-center">
-                    <h2 className="text-3xl font-bold mb-4">Need a specific service?</h2>
+                    <h2 className="text-3xl font-bold mb-4">{t('services.needSpecificService')}</h2>
                     <p className="text-muted-foreground mb-8 max-w-2xl mx-auto">
-                        Contact us for custom arrangements or if you have questions about any of our facilities.
+                        {t('services.contactSubtitle')}
                     </p>
                     <Button asChild variant="primary" size="lg">
-                        <Link to="/contact">Get in Touch</Link>
+                        <Link to="/contact">{t('services.getInTouch')}</Link>
                     </Button>
                 </div>
             </section>

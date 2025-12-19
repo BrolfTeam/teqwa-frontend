@@ -9,11 +9,13 @@ import { dataService } from '@/lib/dataService';
 import paymentService from '@/services/paymentService';
 import { useAuth } from '@/context/AuthContext';
 import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
 import Hero from '@/components/ui/Hero';
 import educationBg from '@/assets/mesjid2.jpg';
 import IslamicPattern from '@/components/ui/IslamicPattern';
 
 const Education = () => {
+    const { t } = useTranslation();
     const [services, setServices] = useState([]);
     const [filteredServices, setFilteredServices] = useState([]);
     const [myEnrollments, setMyEnrollments] = useState([]);
@@ -33,30 +35,30 @@ const Education = () => {
     });
 
     const serviceTypes = [
-        { value: 'daily_qirat', label: 'Daily Qirat Program' },
-        { value: 'community_quran', label: 'Community Quran Reading' },
-        { value: 'friday_khutba', label: 'Friday Khutba' },
-        { value: 'quran_recitation', label: 'Quran Recitation (Qirat)' },
-        { value: 'quran_memorization', label: 'Quran Memorization (Hifz)' },
-        { value: 'arabic_language', label: 'Arabic Language' },
-        { value: 'islamic_studies', label: 'Islamic Studies' },
-        { value: 'tajweed', label: 'Tajweed' },
-        { value: 'fiqh', label: 'Fiqh (Islamic Jurisprudence)' },
-        { value: 'hadith', label: 'Hadith Studies' },
-        { value: 'tafseer', label: 'Tafseer (Quran Interpretation)' }
+        { value: 'daily_qirat', label: t('education.dailyQirat') },
+        { value: 'community_quran', label: t('education.communityQuran') },
+        { value: 'friday_khutba', label: t('education.fridayKhutba') },
+        { value: 'quran_recitation', label: t('education.quranRecitation') },
+        { value: 'quran_memorization', label: t('education.quranMemorizationHifz') },
+        { value: 'arabic_language', label: t('education.arabicLanguage') },
+        { value: 'islamic_studies', label: t('education.islamicStudies') },
+        { value: 'tajweed', label: t('education.tajweed') },
+        { value: 'fiqh', label: t('education.fiqh') },
+        { value: 'hadith', label: t('education.hadithStudies') },
+        { value: 'tafseer', label: t('education.tafseer') }
     ];
 
     const levels = [
-        { value: 'beginner', label: 'Beginner' },
-        { value: 'intermediate', label: 'Intermediate' },
-        { value: 'advanced', label: 'Advanced' }
+        { value: 'beginner', label: t('education.beginner') },
+        { value: 'intermediate', label: t('education.intermediate') },
+        { value: 'advanced', label: t('education.advanced') }
     ];
 
     const ageGroups = [
-        { value: 'children', label: 'Children (6-12)' },
-        { value: 'teens', label: 'Teens (13-17)' },
-        { value: 'adults', label: 'Adults (18+)' },
-        { value: 'seniors', label: 'Seniors (60+)' }
+        { value: 'children', label: t('education.children') },
+        { value: 'teens', label: t('education.teens') },
+        { value: 'adults', label: t('education.adults') },
+        { value: 'seniors', label: t('education.seniors') }
     ];
 
     useEffect(() => {
@@ -111,7 +113,7 @@ const Education = () => {
 
     const handleEnroll = async (serviceId) => {
         if (!user) {
-            toast.error('Please login to enroll in services');
+            toast.error(t('education.pleaseLogin'));
             return;
         }
 
@@ -245,23 +247,23 @@ const Education = () => {
         <div className="min-h-screen bg-background font-sans">
             {/* Hero Section */}
             <Hero
-                title="Educational"
-                titleHighlight="Services"
+                title={t('education.title')}
+                titleHighlight={t('education.educationalPrograms')}
                 align="left"
-                description="Enhance your Islamic knowledge through our comprehensive educational programs. From Quran memorization to Arabic language, we offer courses for all ages and levels."
+                description={t('education.enhanceKnowledge')}
                 backgroundImage={educationBg}
-                primaryAction={<a href="#courses">Browse Courses</a>}
-                secondaryAction={<Link to="/contact">Contact Us</Link>}
+                primaryAction={<a href="#courses">{t('education.browseCourses')}</a>}
+                secondaryAction={<Link to="/contact">{t('contact.title')}</Link>}
             />
 
             {/* Why Learn With Us Section */}
             <section className="container container-padding py-16 -mt-10 relative z-20">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     {[
-                        { icon: FiUsers, title: "Expert Instructors", desc: "Learn from qualified scholars and experienced teachers dedicated to your growth." },
-                        { icon: FiBook, title: "Structured Curriculum", desc: "Comprehensive learning paths designed for steady and meaningful progress." },
-                        { icon: FiClock, title: "Flexible Schedules", desc: "Morning, evening, and weekend classes available to fit your busy lifestyle." },
-                        { icon: FiAward, title: "Certification", desc: "Receive recognized certificates upon successful completion of courses." }
+                        { icon: FiUsers, title: t('education.featureCards.expertInstructors.title'), desc: t('education.featureCards.expertInstructors.description') },
+                        { icon: FiBook, title: t('education.featureCards.structuredCurriculum.title'), desc: t('education.featureCards.structuredCurriculum.description') },
+                        { icon: FiClock, title: t('education.featureCards.flexibleSchedules.title'), desc: t('education.featureCards.flexibleSchedules.description') },
+                        { icon: FiAward, title: t('education.featureCards.certification.title'), desc: t('education.featureCards.certification.description') }
                     ].map((feature, index) => (
                         <motion.div
                             key={index}
@@ -300,20 +302,20 @@ const Education = () => {
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
                                 <FiFilter className="h-5 w-5" />
-                                Filter Services
+                                {t('education.filterServices')}
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                                 {/* Service Type Filter */}
                                 <div>
-                                    <label className="block text-sm font-medium mb-2">Service Type</label>
+                                    <label className="block text-sm font-medium mb-2">{t('education.serviceType')}</label>
                                     <select
                                         value={filters.serviceType}
                                         onChange={(e) => setFilters({ ...filters, serviceType: e.target.value })}
                                         className="w-full px-3 py-2 border border-border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-primary"
                                     >
-                                        <option value="">All Types</option>
+                                        <option value="">{t('education.allTypes')}</option>
                                         {serviceTypes.map(type => (
                                             <option key={type.value} value={type.value}>{type.label}</option>
                                         ))}
@@ -322,7 +324,7 @@ const Education = () => {
 
                                 {/* Level Filter */}
                                 <div>
-                                    <label className="block text-sm font-medium mb-2">Level</label>
+                                    <label className="block text-sm font-medium mb-2">{t('education.level')}</label>
                                     <select
                                         value={filters.level}
                                         onChange={(e) => setFilters({ ...filters, level: e.target.value })}
@@ -337,13 +339,13 @@ const Education = () => {
 
                                 {/* Age Group Filter */}
                                 <div>
-                                    <label className="block text-sm font-medium mb-2">Age Group</label>
+                                    <label className="block text-sm font-medium mb-2">{t('education.ageGroup')}</label>
                                     <select
                                         value={filters.ageGroup}
                                         onChange={(e) => setFilters({ ...filters, ageGroup: e.target.value })}
                                         className="w-full px-3 py-2 border border-border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-primary"
                                     >
-                                        <option value="">All Ages</option>
+                                        <option value="">{t('education.allAges')}</option>
                                         {ageGroups.map(age => (
                                             <option key={age.value} value={age.value}>{age.label}</option>
                                         ))}
@@ -352,16 +354,16 @@ const Education = () => {
 
                                 {/* Status Filter */}
                                 <div>
-                                    <label className="block text-sm font-medium mb-2">Status</label>
+                                    <label className="block text-sm font-medium mb-2">{t('education.status')}</label>
                                     <select
                                         value={filters.status}
                                         onChange={(e) => setFilters({ ...filters, status: e.target.value })}
                                         className="w-full px-3 py-2 border border-border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-primary"
                                     >
-                                        <option value="">All Status</option>
-                                        <option value="active">Active</option>
-                                        <option value="full">Full</option>
-                                        <option value="completed">Completed</option>
+                                        <option value="">{t('education.allStatus')}</option>
+                                        <option value="active">{t('education.active')}</option>
+                                        <option value="full">{t('education.full')}</option>
+                                        <option value="completed">{t('education.completed')}</option>
                                     </select>
                                 </div>
                             </div>
@@ -374,7 +376,7 @@ const Education = () => {
                                         size="sm"
                                         onClick={() => setFilters({ serviceType: '', level: '', ageGroup: '', status: 'active' })}
                                     >
-                                        Clear Filters
+                                        {t('common.clear')}
                                     </Button>
                                 </div>
                             )}
@@ -394,11 +396,11 @@ const Education = () => {
                         animate={{ opacity: 1 }}
                     >
                         <FiBook className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
-                        <h3 className="text-xl font-semibold mb-2">No Services Found</h3>
+                        <h3 className="text-xl font-semibold mb-2">{t('education.noServicesFound')}</h3>
                         <p className="text-muted-foreground">
                             {services.length === 0
-                                ? 'No educational services are currently available.'
-                                : 'Try adjusting your filters to see more services.'}
+                                ? t('education.noServicesAvailable')
+                                : t('education.tryAdjustingFilters')}
                         </p>
                     </motion.div>
                 ) : (
@@ -442,7 +444,7 @@ const Education = () => {
                                                 <FiUser className="h-4 w-4 text-accent-foreground" />
                                             </div>
                                             <span>
-                                                Instructor: {service.instructor?.first_name} {service.instructor?.last_name}
+                                                {t('education.instructor')}: {service.instructor?.first_name} {service.instructor?.last_name}
                                             </span>
                                         </div>
 
@@ -523,7 +525,7 @@ const Education = () => {
                                                 {isEnrolled(service.id) ? (
                                                     <Button variant="outline" className="w-full" disabled>
                                                         <FiCheckCircle className="h-4 w-4 mr-2" />
-                                                        Already Enrolled
+                                                        {t('education.alreadyEnrolled')}
                                                     </Button>
                                                 ) : service.status === 'full' ? (
                                                     <Button variant="outline" className="w-full" disabled>
@@ -540,7 +542,7 @@ const Education = () => {
                                                         onClick={() => handleEnroll(service.id)}
                                                         disabled={enrolling === service.id}
                                                     >
-                                                        {enrolling === service.id ? 'Enrolling...' : 'Enroll Now'}
+                                                        {enrolling === service.id ? t('education.enrolling') : t('education.enrollNow')}
                                                     </Button>
                                                 )}
                                             </div>
@@ -562,7 +564,7 @@ const Education = () => {
                     >
                         <div className="flex items-center justify-between mb-6">
                             <div>
-                                <h2 className="text-3xl font-bold mb-2">My Enrollments</h2>
+                                <h2 className="text-3xl font-bold mb-2">{t('education.myEnrollments')}</h2>
                                 <p className="text-muted-foreground">
                                     {user.role === 'student' 
                                         ? 'Access your courses, assignments, and grades from your Student Dashboard'
@@ -636,7 +638,7 @@ const Education = () => {
                                                         <div className="p-2 bg-orange-100 dark:bg-orange-900/30 rounded-lg group-hover:scale-110 transition-transform">
                                                             <FiBookOpen className="h-5 w-5 text-orange-600 dark:text-orange-400" />
                                                         </div>
-                                                        <span className="font-semibold text-sm">My Courses</span>
+                                                        <span className="font-semibold text-sm">{t('education.myCourses')}</span>
                                                     </div>
                                                     <p className="text-xs text-muted-foreground">View all courses</p>
                                                 </div>
@@ -688,7 +690,7 @@ const Education = () => {
                                             </CardHeader>
                                             <CardContent className="flex-1">
                                                 <p className="text-sm text-muted-foreground mb-3">
-                                                    Enrolled: {new Date(enrollment.enrollment_date || enrollment.created_at).toLocaleDateString()}
+                                                    {t('education.enrolled')}: {new Date(enrollment.enrollment_date || enrollment.created_at).toLocaleDateString()}
                                                 </p>
                                                 {service && (
                                                     <div className="space-y-2 text-sm">
@@ -701,7 +703,7 @@ const Education = () => {
                                                         {service.instructor && (
                                                             <div className="flex items-center gap-2 text-muted-foreground">
                                                                 <FiUser className="h-4 w-4" />
-                                                                <span>Instructor: {service.instructor.first_name} {service.instructor.last_name}</span>
+                                                                <span>{t('education.instructor')}: {service.instructor.first_name} {service.instructor.last_name}</span>
                                                             </div>
                                                         )}
                                                     </div>
@@ -726,7 +728,7 @@ const Education = () => {
                                                     </div>
                                                 ) : (
                                                     <div className="w-full text-center text-sm text-muted-foreground">
-                                                        Enrollment cancelled
+                                                        {t('education.enrollmentCancelled')}
                                                     </div>
                                                 )}
                                             </CardFooter>
