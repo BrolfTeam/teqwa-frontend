@@ -103,17 +103,37 @@ class ApiService {
     // Store it to prevent duplicates
     this.pendingRequests.set(requestKey, requestPromise);
     
-    // Remove from pending when done
+    // Remove from pending when done (even if it fails)
+    // Use a separate promise chain to avoid interfering with the main promise
     requestPromise.finally(() => {
       this.pendingRequests.delete(requestKey);
     });
 
-    return requestPromise;
+    // Wrap the promise to ensure errors are handled gracefully
+    // This prevents uncaught promise rejections while still allowing callers to catch errors
+    return requestPromise.catch(error => {
+      // Silently handle rate limiting - callers will handle this
+      if (error.status === 429) {
+        // Just re-throw, callers should handle this
+        return Promise.reject(error);
+      }
+      // For other errors, log but still re-throw
+      // Don't log auth errors (401), student profile not found (404), or permission denied (403) - they're handled separately
+      const isStudentProfileError = error.status === 404 && (error.message?.includes('Student profile') || error.message?.includes('profile not found'));
+      const isPermissionError = error.status === 403;
+      if (error.status !== 401 && !isStudentProfileError && !isPermissionError) {
+        console.error('API request failed:', error);
+      }
+      return Promise.reject(error);
+    });
   }
 
   async _makeRequest(url, config, requestKey) {
     try {
       // console.log('Making request to:', `${this.baseURL}${url}`);
+      // Note: Browser will automatically log failed network requests (404, 403, etc.) in the console.
+      // This is expected behavior and cannot be suppressed. Our error handling in dataService.js
+      // gracefully handles these errors by returning empty data structures.
       const response = await fetch(`${this.baseURL}${url}`, config);
       const token = config.headers?.Authorization?.replace('Bearer ', '');
 
@@ -425,6 +445,43 @@ class ApiService {
 
   async getEducationService(id) {
     return this.request(`/education/${id}/`);
+  }
+
+  async getCourses(params = {}) {
+    const query = new URLSearchParams(params).toString();
+    return this.request(`/education/courses/${query ? `?${query}` : ''}`);
+  }
+
+  async getCourse(id) {
+    return this.request(`/education/courses/${id}/`);
+  }
+
+  async createService(data) {
+    return this.request('/education/create/', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async createCourse(data) {
+    return this.request('/education/courses/create/', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async updateService(id, data) {
+    return this.request(`/education/${id}/`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async updateCourse(id, data) {
+    return this.request(`/education/courses/${id}/`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
   }
 
   async enrollInService(serviceId) {

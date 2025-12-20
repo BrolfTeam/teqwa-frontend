@@ -45,9 +45,15 @@ const News = memo(() => {
         const response = await apiService.getAnnouncements(params);
         setNews(response.data || []);
       } catch (error) {
-        console.error('Failed to fetch news:', error);
-        toast.error('Failed to load announcements');
-        setNews([]);
+        // Silently handle rate limiting (429)
+        if (error.status === 429) {
+          console.warn('Rate limited, returning empty news list');
+          setNews([]);
+        } else {
+          console.error('Failed to fetch news:', error);
+          toast.error('Failed to load announcements');
+          setNews([]);
+        }
       } finally {
         setLoading(false);
       }
@@ -140,7 +146,7 @@ const News = memo(() => {
     const date = parseISO(dateString);
     const now = new Date();
 
-    if (isToday(date)) return 'Today';
+    if (isToday(date)) return t('news.today');
     if (isThisWeek(date)) return format(date, 'EEEE');
     if (isThisMonth(date)) return format(date, 'MMM d');
     return format(date, 'MMM d, yyyy');
@@ -257,10 +263,10 @@ const News = memo(() => {
               {(searchTerm || selectedTags.length > 0) && (
                 <div className="mt-4 pt-4 border-t border-border">
                   <div className="flex flex-wrap items-center gap-2 text-sm">
-                    <span className="text-muted-foreground">Active filters:</span>
+                    <span className="text-muted-foreground">{t('news.activeFilters')}</span>
                     {searchTerm && (
                       <Badge variant="secondary" className="flex items-center gap-1">
-                        Search: "{searchTerm}"
+                        {t('news.search')}: "{searchTerm}"
                         <button onClick={() => setSearchTerm('')}>
                           <FiX className="w-3 h-3" />
                         </button>
@@ -288,13 +294,13 @@ const News = memo(() => {
           className="mb-6"
         >
           <p className="text-sm text-muted-foreground">
-            Showing <span className="font-semibold text-foreground">{filteredNews.length}</span> of {news.length} announcements
+            {t('news.showingAnnouncements', { count: filteredNews.length, total: news.length })}
           </p>
         </motion.div>
 
         {loading ? (
           <div className="flex justify-center items-center py-20">
-            <LoadingSpinner size="lg" text="Loading news..." />
+            <LoadingSpinner size="lg" text={t('news.loadingNews')} />
           </div>
         ) : filteredNews.length === 0 ? (
           <EmptyState
@@ -358,10 +364,11 @@ const News = memo(() => {
 
 // News Card Component
 const NewsCard = memo(({ item, featured = false, index = 0 }) => {
+  const { t } = useTranslation();
   const getTimeAgo = (dateString) => {
     if (!dateString) return '';
     const date = parseISO(dateString);
-    if (isToday(date)) return 'Today';
+    if (isToday(date)) return t('news.today');
     if (isThisWeek(date)) return format(date, 'EEEE');
     if (isThisMonth(date)) return format(date, 'MMM d');
     return format(date, 'MMM d, yyyy');
@@ -445,7 +452,7 @@ const NewsCard = memo(({ item, featured = false, index = 0 }) => {
                   className="w-full group/btn"
                 >
                   <FiHeart className="w-4 h-4 mr-2 group-hover/btn:scale-110 transition-transform" />
-                  Support Fundraising
+                  {t('news.supportFundraising')}
                 </Button>
               </Link>
             </div>

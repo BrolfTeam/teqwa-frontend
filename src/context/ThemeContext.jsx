@@ -3,12 +3,12 @@ import { createContext, useContext, useState, useEffect } from 'react';
 const ThemeContext = createContext();
 
 export function ThemeProvider({ children }) {
-  const [theme, setTheme] = useState('system');
+  const [theme, setTheme] = useState('light'); // Default to light mode
   const [isMounted, setIsMounted] = useState(false);
 
   // Set theme on initial load
   useEffect(() => {
-    const storedTheme = localStorage.getItem('theme') || 'system';
+    const storedTheme = localStorage.getItem('theme') || 'light'; // Default to light if not set
     setTheme(storedTheme);
     setIsMounted(true);
   }, []);

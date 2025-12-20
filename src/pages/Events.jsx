@@ -23,7 +23,7 @@ const Events = () => {
   const { t } = useTranslation();
   const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'list'
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [selectedCategory, setSelectedCategory] = useState(t('events.allCategories'));
   const [showPastEvents, setShowPastEvents] = useState(false);
   const [calendarDate, setCalendarDate] = useState(() => new Date());
   const [selectedDay, setSelectedDay] = useState(null);
@@ -40,8 +40,14 @@ const Events = () => {
         const normalizedEvents = eventsData.map(dataService.normalizeEvent);
         setEvents(normalizedEvents);
       } catch (err) {
-        console.error('Failed to fetch events:', err);
-        setError('Failed to load events');
+        // Silently handle rate limiting (429)
+        if (err.status === 429) {
+          console.warn('Rate limited, returning empty events list');
+          setEvents([]);
+        } else {
+          console.error('Failed to fetch events:', err);
+          setError('Failed to load events');
+        }
       } finally {
         setLoading(false);
       }
@@ -51,13 +57,14 @@ const Events = () => {
   }, []);
 
   // Get unique categories from events
-  const categories = [t('events.allCategories'), ...new Set(events.map(event => event.category).filter(Boolean))];
+  const allCategoriesLabel = t('events.allCategories');
+  const categories = [allCategoriesLabel, ...new Set(events.map(event => event.category).filter(Boolean))];
 
   // Filter events based on search term, selected category, and date
   const filteredEvents = events.filter(event => {
     const matchesSearch = event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       event.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === 'All' || event.category === selectedCategory;
+    const matchesCategory = selectedCategory === allCategoriesLabel || event.category === selectedCategory;
     const isUpcomingOrToday = event.date ? (isFuture(parseISO(event.date)) || isToday(parseISO(event.date))) : true;
 
     return matchesSearch && matchesCategory && (showPastEvents ? true : isUpcomingOrToday);
@@ -185,7 +192,7 @@ const Events = () => {
                 onClick={() => window.location.reload()}
                 className="btn btn-primary"
               >
-                Retry
+                {t('events.retry')}
               </button>
             </div>
           ) : sortedEvents.length > 0 ? (
@@ -217,17 +224,17 @@ const Events = () => {
               <div className="max-w-5xl mx-auto">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2">
-                    <button onClick={() => setCalendarDate(subMonths(calendarDate, 1))} className="btn btn-sm btn-secondary">Prev</button>
+                    <button onClick={() => setCalendarDate(subMonths(calendarDate, 1))} className="btn btn-sm btn-secondary">{t('events.prev')}</button>
                     <div className="text-lg font-semibold">{format(calendarDate, 'MMMM yyyy')}</div>
-                    <button onClick={() => setCalendarDate(addMonths(calendarDate, 1))} className="btn btn-sm btn-secondary">Next</button>
+                    <button onClick={() => setCalendarDate(addMonths(calendarDate, 1))} className="btn btn-sm btn-secondary">{t('events.next')}</button>
                   </div>
-                  <div className="text-sm text-muted-foreground">Click a day to view events</div>
+                  <div className="text-sm text-muted-foreground">{t('events.clickDayToView')}</div>
                 </div>
 
                 <div className="grid grid-cols-7 gap-1 bg-card rounded-lg overflow-hidden shadow-sm">
                   {/* Weekday headers */}
-                  {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(d => (
-                    <div key={d} className="text-center py-2 text-xs font-medium bg-muted border-b border-r border-border">{d}</div>
+                  {['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'].map(d => (
+                    <div key={d} className="text-center py-2 text-xs font-medium bg-muted border-b border-r border-border">{t(`events.weekdays.${d}`)}</div>
                   ))}
 
                   {/* Calendar days */}
@@ -249,7 +256,7 @@ const Events = () => {
                             {dayEvents.slice(0, 2).map(ev => (
                               <div key={ev.id} className="text-xs text-foreground/80 truncate">{ev.time} • {ev.title}</div>
                             ))}
-                            {dayEvents.length > 2 && <div className="text-xs text-muted-foreground">+{dayEvents.length - 2} more</div>}
+                            {dayEvents.length > 2 && <div className="text-xs text-muted-foreground">+{dayEvents.length - 2} {t('events.more')}</div>}
                           </div>
                         </button>
                       </div>
@@ -260,7 +267,7 @@ const Events = () => {
                 {/* Selected day event list */}
                 {selectedDay && (
                   <div className="mt-6 bg-card p-4 rounded-lg shadow-sm">
-                    <h4 className="font-semibold mb-2">Events on {format(selectedDay, 'EEEE, MMMM d, yyyy')}</h4>
+                    <h4 className="font-semibold mb-2">{t('events.eventsOn')} {format(selectedDay, 'EEEE, MMMM d, yyyy')}</h4>
                     <div className="space-y-3">
                       {(eventsByDate[format(selectedDay, 'yyyy-MM-dd')] || []).map(ev => (
                         <div key={ev.id} className="p-3 border border-border rounded-md">
@@ -281,12 +288,12 @@ const Events = () => {
             )
           ) : (
             <EmptyState
-              title="No events found"
-              description="Try adjusting your search or filter criteria to find events."
-              actionLabel="Clear All Filters"
+              title={t('events.noEvents')}
+              description={t('events.noEventsDescription')}
+              actionLabel={t('events.clearAllFilters')}
               onAction={() => {
                 setSearchTerm('');
-                setSelectedCategory('All');
+                setSelectedCategory(t('events.allCategories'));
                 setShowPastEvents(false);
               }}
             />
@@ -297,15 +304,15 @@ const Events = () => {
       {/* Call to Action */}
       <section className="bg-brand-deep text-white py-16">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold mb-4">Have an event idea?</h2>
+          <h2 className="text-3xl font-bold mb-4">{t('events.haveEventIdea')}</h2>
           <p className="text-xl mb-8 max-w-2xl mx-auto">
-            We're always looking for new ways to serve our community. Share your event ideas with us!
+            {t('events.eventIdeaDescription')}
           </p>
           <Link
             to="/contact"
             className="btn btn-lg btn-primary"
           >
-            Suggest an Event
+            {t('events.suggestEvent')}
           </Link>
         </div>
       </section>
@@ -315,12 +322,13 @@ const Events = () => {
 
 // Event Card Component for Grid View
 const EventCard = ({ event }) => {
+  const { t } = useTranslation();
   const isEventFull = event.registrationRequired && event.registeredCount >= event.capacity;
   const registrationStatus = isEventFull
-    ? 'Event Full'
+    ? t('events.eventFull')
     : event.registrationRequired
-      ? `${event.capacity - event.registeredCount} spots left`
-      : 'No registration required';
+      ? t('events.spotsLeft', { count: event.capacity - event.registeredCount })
+      : t('events.noRegistrationRequired');
 
   return (
     <div className="bg-card rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 border border-border/50">
@@ -336,7 +344,7 @@ const EventCard = ({ event }) => {
         />
         {event.featured && (
           <div className="absolute top-4 right-4 bg-accent-gold text-white text-xs font-bold px-3 py-1 rounded-full">
-            Featured
+            {t('events.featured')}
           </div>
         )}
         <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
@@ -376,14 +384,14 @@ const EventCard = ({ event }) => {
 
           {isEventFull ? (
             <span className="px-4 py-2 bg-gray-200 text-gray-600 text-sm font-medium rounded-full cursor-not-allowed">
-              Event Full
+              {t('events.eventFull')}
             </span>
           ) : (
             <Link
               to={`/events/${event.id}?rsvp=true`}
               className="btn btn-sm btn-primary"
             >
-              {event.registrationRequired ? 'RSVP Now' : 'Learn More'}
+              {event.registrationRequired ? t('events.rsvpNow') : t('events.learnMore')}
             </Link>
           )}
         </div>
@@ -394,6 +402,7 @@ const EventCard = ({ event }) => {
 
 // Event List Item Component for List View
 const EventListItem = ({ event }) => {
+  const { t } = useTranslation();
   const isEventFull = event.registrationRequired && event.registeredCount >= event.capacity;
 
   return (
@@ -442,11 +451,11 @@ const EventListItem = ({ event }) => {
           <div className="flex flex-wrap justify-between items-center gap-4">
             <div className="text-sm text-muted-foreground">
               {isEventFull ? (
-                <span className="text-red-500 font-medium">Event Full</span>
+                <span className="text-red-500 font-medium">{t('events.eventFull')}</span>
               ) : event.registrationRequired ? (
-                <span>{event.capacity - event.registeredCount} spots remaining</span>
+                <span>{t('events.spotsRemaining', { count: event.capacity - event.registeredCount })}</span>
               ) : (
-                <span>No registration required</span>
+                <span>{t('events.noRegistrationRequired')}</span>
               )}
             </div>
 
@@ -463,7 +472,7 @@ const EventListItem = ({ event }) => {
                   to={`/events/${event.id}?rsvp=true`}
                   className="btn btn-sm btn-primary"
                 >
-                  {event.registrationRequired ? 'RSVP Now' : 'Learn More'}
+                  {event.registrationRequired ? t('events.rsvpNow') : t('events.learnMore')}
                 </Link>
               )}
             </div>

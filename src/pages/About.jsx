@@ -11,15 +11,16 @@ import { aboutData } from '@/data/aboutData';
 import TeamMemberCard from '@/components/widgets/TeamMemberCard';
 import { Button } from '@/components/ui/Button';
 import { useTranslation } from 'react-i18next';
+import Counter from '@/components/ui/Counter';
 
 const About = () => {
   const { t } = useTranslation();
   
-  // Create translated stats
+  // Create translated stats with parsed numbers for counter animation
   const stats = [
-    { icon: FiClock, number: '15+', label: t('about.yearsOfService') },
-    { icon: FiUsers, number: '500+', label: t('about.communityMembers') },
-    { icon: FiBookOpen, number: '50+', label: t('about.weeklyPrograms') },
+    { icon: FiClock, number: 15, suffix: '+', label: t('about.yearsOfService') },
+    { icon: FiUsers, number: 500, suffix: '+', label: t('about.communityMembers') },
+    { icon: FiBookOpen, number: 50, suffix: '+', label: t('about.weeklyPrograms') },
   ];
   
   return (
@@ -36,7 +37,7 @@ const About = () => {
       />
 
       {/* Stats Section */}
-      <section className="container container-padding py-12 -mt-20 relative z-20">
+      <section className="container container-padding pt-8 pb-12 md:py-12 -mt-8 md:-mt-16 lg:-mt-20 relative z-20">
         <div className="mx-auto max-w-5xl">
           <motion.div
             className="grid grid-cols-1 md:grid-cols-3 gap-6"
@@ -50,7 +51,13 @@ const About = () => {
                 <div className="p-4 rounded-full bg-primary/10 mb-4 text-primary">
                   <stat.icon className="h-6 w-6" />
                 </div>
-                <div className="text-4xl font-bold text-foreground mb-2">{stat.number}</div>
+                <div className="text-4xl font-bold text-foreground mb-2">
+                  <Counter 
+                    end={stat.number} 
+                    suffix={stat.suffix}
+                    duration={2000}
+                  />
+                </div>
                 <div className="text-muted-foreground font-medium">{stat.label}</div>
               </Card>
             ))}

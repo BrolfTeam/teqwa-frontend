@@ -138,7 +138,7 @@ const Footer = memo(() => {
 
           {/* Quick Links */}
           <div className="space-y-4">
-            <h4 className="text-base font-bold text-foreground mb-4">Quick Links</h4>
+            <h4 className="text-base font-bold text-foreground mb-4">{t('footer.quickLinks')}</h4>
             <ul className="space-y-3">
               {quickLinks.map((link) => (
                 <li key={link.href}>

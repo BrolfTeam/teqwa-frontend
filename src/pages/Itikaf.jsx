@@ -16,21 +16,21 @@ import mesjidBg from '@/assets/mesjid2.jpg';
 import { useAuth } from '@/context/AuthContext';
 import Hero from '@/components/ui/Hero';
 
-const safeFormatDate = (date, formatStr = 'MMM dd, yyyy') => {
-  if (!date) return 'Date TBD';
-  try {
-    const dateObj = typeof date === 'string' ? parseISO(date) : new Date(date);
-    if (isValid(dateObj)) {
-      return format(dateObj, formatStr);
-    }
-    return 'Invalid Date';
-  } catch (error) {
-    return 'Date TBD';
-  }
-};
-
 const Itikaf = memo(() => {
   const { t } = useTranslation();
+  
+  const safeFormatDate = (date, formatStr = 'MMM dd, yyyy') => {
+    if (!date) return t('itikaf.dateTBD');
+    try {
+      const dateObj = typeof date === 'string' ? parseISO(date) : new Date(date);
+      if (isValid(dateObj)) {
+        return format(dateObj, formatStr);
+      }
+      return t('itikaf.invalidDate');
+    } catch (error) {
+      return t('itikaf.dateTBD');
+    }
+  };
   const { isAuthenticated, logout } = useAuth();
   const [programs, setPrograms] = useState([]);
   const [selectedProgram, setSelectedProgram] = useState(null);
@@ -54,9 +54,15 @@ const Itikaf = memo(() => {
       const programsData = response?.data || response || [];
       setPrograms(Array.isArray(programsData) ? programsData : []);
     } catch (error) {
-      console.error('Error fetching programs:', error);
-      toast.error('Failed to load Iʿtikāf programs');
-      setPrograms([]);
+      // Silently handle rate limiting (429)
+      if (error.status === 429) {
+        console.warn('Rate limited, returning empty programs list');
+        setPrograms([]);
+      } else {
+        console.error('Error fetching programs:', error);
+        toast.error(t('itikaf.failedToLoadPrograms'));
+        setPrograms([]);
+      }
     } finally {
       setLoading(false);
     }
@@ -98,7 +104,7 @@ const Itikaf = memo(() => {
       await fetchSchedules(programId);
     } catch (error) {
       console.error('Error loading program:', error);
-      toast.error('Failed to load program details');
+      toast.error(t('itikaf.failedToLoadDetails'));
     }
   }, [fetchSchedules]);
 
@@ -112,7 +118,7 @@ const Itikaf = memo(() => {
     try {
       setRegistering(true);
       const response = await dataService.registerForItikaf(programId, registrationData);
-      toast.success(response?.message || 'Successfully registered for Iʿtikāf program!');
+      toast.success(response?.message || t('itikaf.successfullyRegistered'));
       setShowRegistrationForm(false);
       setRegistrationData({
         emergency_contact: '',
@@ -123,7 +129,7 @@ const Itikaf = memo(() => {
       await fetchPrograms();
       await fetchMyRegistrations();
     } catch (error) {
-      const errorMessage = error?.message || 'Failed to register';
+      const errorMessage = error?.message || t('itikaf.failedToRegister');
       toast.error(errorMessage);
     } finally {
       setRegistering(false);
@@ -241,9 +247,9 @@ const Itikaf = memo(() => {
                           وَلَا تُبَاشِرُوهُنَّ وَأَنتُمْ عَاكِفُونَ فِي الْمَسَاجِدِ
                         </p>
                         <p className="text-muted-foreground italic">
-                          "And do not have relations with them as long as you are staying for worship in the mosques."
+                          {t('itikaf.quranicVerseTranslation')}
                         </p>
-                        <p className="text-sm font-medium mt-2 text-primary">— Surah Al-Baqarah [2:187]</p>
+                        <p className="text-sm font-medium mt-2 text-primary">{t('itikaf.quranicReference')}</p>
                       </div>
                     </div>
                   </div>
@@ -253,29 +259,29 @@ const Itikaf = memo(() => {
               {/* Timing Cards */}
               <div className="max-w-6xl mx-auto">
                 <div className="text-center mb-12">
-                  <h2 className="text-3xl font-bold mb-4">When to Perform Iʿtikāf</h2>
-                  <p className="text-muted-foreground">Timing and Duration</p>
+                  <h2 className="text-3xl font-bold mb-4">{t('itikaf.whenToPerform')}</h2>
+                  <p className="text-muted-foreground">{t('itikaf.timingAndDuration')}</p>
                 </div>
                 <div className="grid md:grid-cols-3 gap-6">
                   {[
                     {
                       icon: FiMoon,
-                      title: "Ramadan (Sunnah)",
-                      desc: "The last 10 days of Ramadan is the most emphasized Sunnah, seeking the Night of Power.",
+                      title: t('itikaf.ramadanSunnah'),
+                      desc: t('itikaf.ramadanSunnahDesc'),
                       color: "text-primary",
                       bg: "bg-primary/10"
                     },
                     {
                       icon: FiActivity,
-                      title: "Voluntary (Natafil)",
-                      desc: "Can be performed at any time of the year for any duration, even a few hours.",
+                      title: t('itikaf.voluntaryNatafil'),
+                      desc: t('itikaf.voluntaryNatafilDesc'),
                       color: "text-accent-foreground",
                       bg: "bg-accent/10"
                     },
                     {
                       icon: FiClock,
-                      title: "Duration",
-                      desc: "Standard Sunnah is 10 days, but minimum duration can be as short as a moment of intention.",
+                      title: t('itikaf.duration'),
+                      desc: t('itikaf.durationDesc'),
                       color: "text-secondary-foreground",
                       bg: "bg-secondary/10"
                     }
@@ -298,17 +304,17 @@ const Itikaf = memo(() => {
               {/* Why With Us Section (Refactored) */}
               <section className="container container-padding py-16 px-0 md:px-0">
                 <div className="text-center mb-12">
-                  <h2 className="text-3xl font-bold mb-4">Why Iʿtikāf With Us?</h2>
+                  <h2 className="text-3xl font-bold mb-4">{t('itikaf.whyWithUs')}</h2>
                   <p className="text-muted-foreground max-w-2xl mx-auto">
-                    We provide a structured environment that takes care of your physical needs so you can focus entirely on your spiritual needs.
+                    {t('itikaf.whyWithUsDesc')}
                   </p>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                   {[
-                    { icon: FiUsers, title: "Scholarly Guidance", desc: "Access to mentors for questions and spiritual counseling." },
-                    { icon: FiBookOpen, title: "Structured Program", desc: "Daily Halaqas, Quran circles, and Qiyam prayers." },
-                    { icon: FiCoffee, title: "Meals Provided", desc: "Suhoor and Iftar meals served daily." },
-                    { icon: FiShield, title: "Comfort & Safety", desc: "Secure sleeping areas and clean facilities." }
+                    { icon: FiUsers, title: t('itikaf.scholarlyGuidance'), desc: t('itikaf.scholarlyGuidanceDesc') },
+                    { icon: FiBookOpen, title: t('itikaf.structuredProgram'), desc: t('itikaf.structuredProgramDesc') },
+                    { icon: FiCoffee, title: t('itikaf.mealsProvided'), desc: t('itikaf.mealsProvidedDesc') },
+                    { icon: FiShield, title: t('itikaf.comfortSafety'), desc: t('itikaf.comfortSafetyDesc') }
                   ].map((feature, index) => (
                     <motion.div
                       key={index}
@@ -358,7 +364,7 @@ const Itikaf = memo(() => {
                     {(myRegistrations || []).map((registration, regIdx) => (
                       <div key={registration.id || registration.program_id || `registration-${regIdx}`} className="bg-background rounded-xl p-5 border border-border/50 shadow-sm flex flex-col sm:flex-row gap-5 items-start sm:items-center justify-between">
                         <div>
-                          <h4 className="font-bold text-lg mb-1">{registration.program_title || 'Iʿtikāf Program'}</h4>
+                          <h4 className="font-bold text-lg mb-1">{registration.program_title || t('itikaf.programTitleFallback')}</h4>
                           <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
                             <span className="flex items-center gap-1.5 bg-muted px-2 py-0.5 rounded">
                               <FiCalendar className="w-3.5 h-3.5" />
@@ -379,7 +385,7 @@ const Itikaf = memo(() => {
                             className="w-full sm:w-auto"
                             onClick={() => loadProgramDetails(registration.program?.id || registration.program)}
                           >
-                            View Details
+                            {t('itikaf.viewDetails')}
                           </Button>
                         )}
                       </div>
@@ -397,7 +403,7 @@ const Itikaf = memo(() => {
                       <FiCalendar className="w-10 h-10 text-muted-foreground/50" />
                     </div>
                     <h4 className="text-xl font-semibold mb-2">{t('itikaf.noUpcomingPrograms')}</h4>
-                    <p className="text-muted-foreground">Please check back later for updates.</p>
+                    <p className="text-muted-foreground">{t('itikaf.pleaseCheckBack')}</p>
                   </Card>
                 ) : (
                   <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -421,12 +427,12 @@ const Itikaf = memo(() => {
                             <h4 className="text-xl font-bold text-white mb-1 line-clamp-1">{program.title}</h4>
                             <div className="flex items-center gap-2 text-white/90 text-sm">
                               <FiMapPin className="w-3.5 h-3.5 text-accent" />
-                              {program.location || 'Main Prayer Hall'}
+                              {program.location || t('itikaf.mainPrayerHall')}
                             </div>
                           </div>
                           {(program.is_full) && (
                             <div className="absolute top-4 right-4 bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
-                              FULL
+                              {t('itikaf.full')}
                             </div>
                           )}
                         </div>
@@ -442,7 +448,7 @@ const Itikaf = memo(() => {
                           </div>
 
                           <p className="text-muted-foreground line-clamp-3 mb-6 text-sm leading-relaxed flex-1">
-                            {program.short_description || "Join us for this spiritual retreat..."}
+                            {program.short_description || t('itikaf.joinUsRetreat')}
                           </p>
 
                           <div className="mt-auto space-y-3">
@@ -472,7 +478,7 @@ const Itikaf = memo(() => {
                               className="flex-1"
                               onClick={() => {
                                 if (isRegistered(program.id)) {
-                                  toast.info('Already registered');
+                                  toast.info(t('itikaf.alreadyRegisteredToast'));
                                 } else {
                                   setSelectedProgram(program);
                                   setShowRegistrationForm(true);
@@ -512,7 +518,7 @@ const Itikaf = memo(() => {
               <button
                 onClick={() => setSelectedProgram(null)}
                 className="absolute top-4 right-4 z-20 bg-black/20 hover:bg-black/40 text-white rounded-full p-2 transition-colors"
-                aria-label="Close"
+                aria-label={t('itikaf.close')}
               >
                 <FiX className="w-5 h-5" />
               </button>
@@ -561,15 +567,15 @@ const Itikaf = memo(() => {
                             <div key={schedule.id || `schedule-${idx}`} className="relative pl-8">
                               <div className="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-background border-2 border-primary" />
                               <div className="mb-2">
-                                <span className="text-sm font-semibold text-primary uppercase tracking-wider">Day {schedule.day_number}</span>
+                                <span className="text-sm font-semibold text-primary uppercase tracking-wider">{t('itikaf.day')} {schedule.day_number}</span>
                                 <h4 className="text-lg font-bold">{safeFormatDate(schedule.date)}</h4>
                               </div>
                               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm bg-muted/20 p-4 rounded-lg border border-border/40">
-                                {schedule.fajr_activity && <div className="flex gap-2"><span className="text-primary font-medium w-16">Fajr:</span> <span>{schedule.fajr_activity}</span></div>}
-                                {schedule.dhuhr_activity && <div className="flex gap-2"><span className="text-primary font-medium w-16">Dhuhr:</span> <span>{schedule.dhuhr_activity}</span></div>}
-                                {schedule.asr_activity && <div className="flex gap-2"><span className="text-primary font-medium w-16">Asr:</span> <span>{schedule.asr_activity}</span></div>}
-                                {schedule.maghrib_activity && <div className="flex gap-2"><span className="text-primary font-medium w-16">Maghrib:</span> <span>{schedule.maghrib_activity}</span></div>}
-                                {schedule.isha_activity && <div className="flex gap-2"><span className="text-primary font-medium w-16">Isha:</span> <span>{schedule.isha_activity}</span></div>}
+                                {schedule.fajr_activity && <div className="flex gap-2"><span className="text-primary font-medium w-16">{t('itikaf.fajrActivity')}</span> <span>{schedule.fajr_activity}</span></div>}
+                                {schedule.dhuhr_activity && <div className="flex gap-2"><span className="text-primary font-medium w-16">{t('itikaf.dhuhrActivity')}</span> <span>{schedule.dhuhr_activity}</span></div>}
+                                {schedule.asr_activity && <div className="flex gap-2"><span className="text-primary font-medium w-16">{t('itikaf.asrActivity')}</span> <span>{schedule.asr_activity}</span></div>}
+                                {schedule.maghrib_activity && <div className="flex gap-2"><span className="text-primary font-medium w-16">{t('itikaf.maghribActivity')}</span> <span>{schedule.maghrib_activity}</span></div>}
+                                {schedule.isha_activity && <div className="flex gap-2"><span className="text-primary font-medium w-16">{t('itikaf.ishaActivity')}</span> <span>{schedule.isha_activity}</span></div>}
                               </div>
                             </div>
                           ))}
@@ -580,19 +586,19 @@ const Itikaf = memo(() => {
 
                   <div className="space-y-6">
                     <div className="bg-muted/30 rounded-xl p-6 border border-border/50">
-                      <h3 className="font-bold mb-4 flex items-center gap-2"><FiStar className="text-primary" /> Details</h3>
+                      <h3 className="font-bold mb-4 flex items-center gap-2"><FiStar className="text-primary" /> {t('itikaf.details')}</h3>
                       <div className="space-y-3 text-sm">
                         <div className="flex justify-between py-2 border-b border-border/50">
-                          <span className="text-muted-foreground">Capacity</span>
-                          <span className="font-medium">{selectedProgram.capacity} People</span>
+                          <span className="text-muted-foreground">{t('itikaf.capacity')}</span>
+                          <span className="font-medium">{selectedProgram.capacity} {t('itikaf.people')}</span>
                         </div>
                         <div className="flex justify-between py-2 border-b border-border/50">
                           <span className="text-muted-foreground">{t('itikaf.registered')}</span>
-                          <span className="font-medium">{selectedProgram.participant_count} People</span>
+                          <span className="font-medium">{selectedProgram.participant_count} {t('itikaf.people')}</span>
                         </div>
                         <div className="flex justify-between py-2 border-b border-border/50">
                           <span className="text-muted-foreground">{t('itikaf.registrationFee')}</span>
-                          <span className="font-medium">{selectedProgram.fee > 0 ? `${selectedProgram.fee} ETB` : 'Free'}</span>
+                          <span className="font-medium">{selectedProgram.fee > 0 ? `${selectedProgram.fee} ETB` : t('itikaf.freeRegistration')}</span>
                         </div>
                       </div>
                       {selectedProgram.is_registration_open && !selectedProgram.is_full ? (
@@ -600,7 +606,7 @@ const Itikaf = memo(() => {
                           className="w-full mt-6"
                           onClick={() => {
                             if (isRegistered(selectedProgram.id)) {
-                              toast.info('Already registered');
+                              toast.info(t('itikaf.alreadyRegisteredToast'));
                             } else {
                               setShowRegistrationForm(true);
                             }
@@ -617,7 +623,7 @@ const Itikaf = memo(() => {
 
                     {selectedProgram.requirements && (
                       <div>
-                        <h4 className="font-bold mb-2 flex items-center gap-2 text-sm"><FiCheckCircle className="text-primary" /> Requirements</h4>
+                        <h4 className="font-bold mb-2 flex items-center gap-2 text-sm"><FiCheckCircle className="text-primary" /> {t('itikaf.requirements')}</h4>
                         <div className="text-sm text-muted-foreground bg-muted/10 p-4 rounded-lg border border-border/50">
                           {selectedProgram.requirements}
                         </div>
@@ -626,7 +632,7 @@ const Itikaf = memo(() => {
 
                     {selectedProgram.what_to_bring && (
                       <div>
-                        <h4 className="font-bold mb-2 flex items-center gap-2 text-sm"><FiBookOpen className="text-primary" /> What to Bring</h4>
+                        <h4 className="font-bold mb-2 flex items-center gap-2 text-sm"><FiBookOpen className="text-primary" /> {t('itikaf.whatToBring')}</h4>
                         <div className="text-sm text-muted-foreground bg-muted/10 p-4 rounded-lg border border-border/50">
                           {selectedProgram.what_to_bring}
                         </div>
@@ -676,7 +682,7 @@ const Itikaf = memo(() => {
                     <label className="text-sm font-medium mb-1.5 block">{t('itikaf.emergencyPhone')} <span className="text-red-500">*</span></label>
                     <input
                       className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                      placeholder="+251..."
+                      placeholder={t('itikaf.phonePlaceholder')}
                       value={registrationData.emergency_phone}
                       onChange={(e) => setRegistrationData({ ...registrationData, emergency_phone: e.target.value })}
                     />

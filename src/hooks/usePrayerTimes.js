@@ -1,34 +1,150 @@
 import { useState, useEffect, useCallback } from 'react';
 import { prayerTimesService } from '@/lib/prayerTimesService';
+import { differenceInSeconds, isAfter } from 'date-fns';
+
+// Helper function to calculate current/next from prayer times (outside component for use in initializer)
+const calculateCurrentNextFromTimes = (times, date) => {
+  if (!times || !times.prayers) return null;
+  
+  const prayers = Object.values(times.prayers);
+  const now = new Date();
+  
+  const validPrayers = prayers
+    .filter(p => p && p.name && p.name.toLowerCase() !== 'sunrise')
+    .sort((a, b) => a.time - b.time);
+  
+  let currentPrayer = null;
+  let nextPrayer = null;
+  
+  // Find current prayer
+  for (let i = validPrayers.length - 1; i >= 0; i--) {
+    const prayerTime = validPrayers[i].time;
+    const timeDiff = (now - prayerTime) / 1000; // seconds
+    if (timeDiff >= -120) {
+      currentPrayer = validPrayers[i];
+      break;
+    }
+  }
+  
+  // Find next prayer
+  for (let i = 0; i < validPrayers.length; i++) {
+    if (validPrayers[i].time > now) {
+      nextPrayer = validPrayers[i];
+      break;
+    }
+  }
+  
+  const timeToNext = nextPrayer && nextPrayer.time
+    ? Math.max(0, (nextPrayer.time - now) / 1000)
+    : 0;
+  
+  return {
+    current: currentPrayer,
+    next: nextPrayer,
+    timeToNext
+  };
+};
 
 export const usePrayerTimes = (date = new Date()) => {
-  const [prayerTimes, setPrayerTimes] = useState(null);
-  const [currentNext, setCurrentNext] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [locationStatus, setLocationStatus] = useState('detecting');
-
-  const loadPrayerTimes = useCallback(async () => {
+  // Initialize with cached data instantly (no loading state)
+  const [prayerTimes, setPrayerTimes] = useState(() => {
     try {
-      setLoading(true);
-      setError(null);
-      setLocationStatus('detecting');
+      // Get cached data synchronously on mount
+      return prayerTimesService.getCachedFormattedPrayerTimes(date);
+    } catch {
+      return null;
+    }
+  });
+  
+  const [currentNext, setCurrentNext] = useState(() => {
+    try {
+      // Try to get cached current/next prayer
+      const isToday = date.toDateString() === new Date().toDateString();
+      const cachedTimes = prayerTimesService.getCachedFormattedPrayerTimes(date);
+      if (isToday && cachedTimes) {
+        // Calculate from cached prayer times
+        return calculateCurrentNextFromTimes(cachedTimes, date);
+      }
+    } catch {
+      // Ignore errors on initial load
+    }
+    return null;
+  });
+  
+  const [loading, setLoading] = useState(false); // Never block UI with loading
+  const [error, setError] = useState(null);
+  const [locationStatus, setLocationStatus] = useState('found'); // Assume we have location from cache
 
-      // Get current location
+  // Helper function to calculate current/next from prayer times (for updates)
+  const calculateCurrentNextFromTimesCallback = useCallback((times) => {
+    if (!times || !times.prayers) return null;
+    
+    const prayers = Object.values(times.prayers);
+    const now = new Date();
+    
+    const validPrayers = prayers
+      .filter(p => p && p.name && p.name.toLowerCase() !== 'sunrise')
+      .sort((a, b) => a.time - b.time);
+    
+    let currentPrayer = null;
+    let nextPrayer = null;
+    
+    // Find current prayer
+    for (let i = validPrayers.length - 1; i >= 0; i--) {
+      const prayerTime = validPrayers[i].time;
+      const timeDiff = (now - prayerTime) / 1000; // seconds
+      if (timeDiff >= -120) {
+        currentPrayer = validPrayers[i];
+        break;
+      }
+    }
+    
+    // Find next prayer
+    for (let i = 0; i < validPrayers.length; i++) {
+      if (validPrayers[i].time > now) {
+        nextPrayer = validPrayers[i];
+        break;
+      }
+    }
+    
+    return calculateCurrentNextFromTimes(times, date);
+  }, [date]);
+
+  // Load prayer times with cache-first strategy
+  const loadPrayerTimes = useCallback(async (forceRefresh = false) => {
+    try {
+      // Only show loading if forcing refresh
+      if (forceRefresh) {
+        setLoading(true);
+      }
+      setError(null);
+
+      // Get location (non-blocking, uses cache)
       await prayerTimesService.getCurrentLocation();
       setLocationStatus('found');
 
-      // Get prayer times for the specified date
-      const times = await prayerTimesService.getFormattedPrayerTimes(date);
-      setPrayerTimes(times);
+      // Get prayer times (cache-first, background refresh)
+      const times = await prayerTimesService.getFormattedPrayerTimes(date, {
+        skipCache: forceRefresh,
+        backgroundRefresh: !forceRefresh
+      });
+      
+      if (times) {
+        setPrayerTimes(times);
 
-      // Get current and next prayer (only for today)
-      const isToday = date.toDateString() === new Date().toDateString();
-      if (isToday) {
-        const currentNextData = await prayerTimesService.getCurrentAndNextPrayer();
-        setCurrentNext(currentNextData);
-      } else {
-        setCurrentNext(null);
+        // Get current and next prayer (only for today)
+        const isToday = date.toDateString() === new Date().toDateString();
+        if (isToday) {
+          const currentNextData = await prayerTimesService.getCurrentAndNextPrayer(date, {
+            skipCache: forceRefresh,
+            backgroundRefresh: !forceRefresh
+          });
+          if (currentNextData) {
+            setCurrentNext(currentNextData);
+          }
+        } else {
+          setCurrentNext(null);
+        }
       }
 
     } catch (err) {
@@ -36,16 +152,46 @@ export const usePrayerTimes = (date = new Date()) => {
       setError(err.message || 'Failed to load prayer times');
       setLocationStatus('error');
     } finally {
-      setLoading(false);
+      if (forceRefresh) {
+        setLoading(false);
+      }
     }
   }, [date]);
 
-  const refreshPrayerTimes = useCallback(() => {
-    loadPrayerTimes();
+  // Listen for background updates
+  useEffect(() => {
+    const handleUpdate = (event) => {
+      if (event.detail && event.detail.date) {
+        const updateDate = new Date(event.detail.date);
+        if (updateDate.toDateString() === date.toDateString()) {
+          // Silently update with fresh data
+          setPrayerTimes(event.detail.data);
+          
+          // Recalculate current/next if today
+          const isToday = date.toDateString() === new Date().toDateString();
+          if (isToday) {
+            prayerTimesService.getCurrentAndNextPrayer(date, { skipCache: false, backgroundRefresh: false })
+              .then(data => {
+                if (data) setCurrentNext(data);
+              })
+              .catch(() => {});
+          }
+        }
+      }
+    };
+
+    window.addEventListener('prayer-times-updated', handleUpdate);
+    return () => window.removeEventListener('prayer-times-updated', handleUpdate);
+  }, [date]);
+
+  // Initial load and background refresh
+  useEffect(() => {
+    // Load immediately with cache, refresh in background
+    loadPrayerTimes(false);
   }, [loadPrayerTimes]);
 
-  useEffect(() => {
-    loadPrayerTimes();
+  const refreshPrayerTimes = useCallback(() => {
+    loadPrayerTimes(true); // Force refresh
   }, [loadPrayerTimes]);
 
   return {
@@ -59,33 +205,113 @@ export const usePrayerTimes = (date = new Date()) => {
 };
 
 export const useCurrentPrayer = () => {
-  const [currentNext, setCurrentNext] = useState(null);
+  // Initialize with cached data instantly
+  const [currentNext, setCurrentNext] = useState(() => {
+    try {
+      const today = new Date();
+      const cachedTimes = prayerTimesService.getCachedFormattedPrayerTimes(today);
+      if (cachedTimes && cachedTimes.prayers) {
+        // Calculate from cached data
+        return calculateCurrentNextFromCached(cachedTimes);
+      }
+    } catch {
+      // Ignore errors on initial load
+    }
+    return null;
+  });
+  
   const [currentTime, setCurrentTime] = useState(new Date());
 
+  // Helper to calculate current/next from cached times
+  const calculateCurrentNextFromCached = (times) => {
+    if (!times || !times.prayers) return null;
+    
+    const prayers = Object.values(times.prayers);
+    const now = new Date();
+    
+    const validPrayers = prayers
+      .filter(p => p && p.name && p.name.toLowerCase() !== 'sunrise')
+      .sort((a, b) => a.time - b.time);
+    
+    let currentPrayer = null;
+    let nextPrayer = null;
+    
+    // Find current prayer
+    for (let i = validPrayers.length - 1; i >= 0; i--) {
+      const prayerTime = validPrayers[i].time;
+      const timeDiff = (now - prayerTime) / 1000;
+      if (timeDiff >= -120) {
+        currentPrayer = validPrayers[i];
+        break;
+      }
+    }
+    
+    // Find next prayer
+    for (let i = 0; i < validPrayers.length; i++) {
+      if (validPrayers[i].time > now) {
+        nextPrayer = validPrayers[i];
+        break;
+      }
+    }
+    
+    const timeToNext = nextPrayer && nextPrayer.time
+      ? Math.max(0, (nextPrayer.time - now) / 1000)
+      : 0;
+    
+    return {
+      current: currentPrayer,
+      next: nextPrayer,
+      timeToNext
+    };
+  };
+
   useEffect(() => {
+    // Initial load with cache-first (instant)
     const updateCurrentPrayer = async () => {
       try {
-        const currentNextData = await prayerTimesService.getCurrentAndNextPrayer();
-        setCurrentNext(currentNextData);
+        const currentNextData = await prayerTimesService.getCurrentAndNextPrayer(new Date(), {
+          skipCache: false,
+          backgroundRefresh: true
+        });
+        if (currentNextData) {
+          setCurrentNext(currentNextData);
+        }
       } catch (error) {
         console.error('Error updating current prayer:', error);
       }
     };
 
-    // Initial load
+    // Load immediately with cache
     updateCurrentPrayer();
+
+    // Listen for background updates
+    const handleUpdate = () => {
+      updateCurrentPrayer();
+    };
+    window.addEventListener('prayer-times-updated', handleUpdate);
 
     // Update every second for countdown
     const timer = setInterval(() => {
       setCurrentTime(new Date());
       
-      // Update prayer data every minute
+      // Recalculate timeToNext every second (no network call)
+      setCurrentNext(prev => {
+        if (!prev || !prev.next) return prev;
+        const now = new Date();
+        const timeToNext = Math.max(0, (prev.next.time - now) / 1000);
+        return { ...prev, timeToNext };
+      });
+      
+      // Update prayer data every minute (cache-first)
       if (new Date().getSeconds() === 0) {
         updateCurrentPrayer();
       }
     }, 1000);
 
-    return () => clearInterval(timer);
+    return () => {
+      clearInterval(timer);
+      window.removeEventListener('prayer-times-updated', handleUpdate);
+    };
   }, []);
 
   return {

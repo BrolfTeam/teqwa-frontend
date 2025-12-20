@@ -84,9 +84,15 @@ const Education = () => {
                 }
             }
         } catch (error) {
-            console.error('Failed to fetch education services:', error);
-            toast.error('Failed to load educational services');
-            setServices([]);
+            // Silently handle rate limiting (429)
+            if (error.status === 429) {
+                console.warn('Rate limited, returning empty services list');
+                setServices([]);
+            } else {
+                console.error('Failed to fetch education services:', error);
+                toast.error('Failed to load educational services');
+                setServices([]);
+            }
         } finally {
             setLoading(false);
         }
@@ -208,10 +214,10 @@ const Education = () => {
             const text = `${service.title}\n${service.description || ''}\nSchedule: ${service.schedule || ''}\n${url}`;
             if (navigator.share) {
                 await navigator.share({ title: service.title, text, url });
-                toast.success('Shared successfully');
+                toast.success(t('education.sharedSuccessfully'));
             } else if (navigator.clipboard) {
                 await navigator.clipboard.writeText(url);
-                toast.success('Link copied to clipboard');
+                toast.success(t('education.linkCopied'));
             } else {
                 // Fallback create temporary input
                 const input = document.createElement('input');
@@ -220,11 +226,11 @@ const Education = () => {
                 input.select();
                 document.execCommand('copy');
                 input.remove();
-                toast.success('Link copied to clipboard');
+                toast.success(t('education.linkCopied'));
             }
         } catch (err) {
             console.error('Share failed', err);
-            toast.error('Failed to share');
+            toast.error(t('education.failedToShare'));
         }
     };
 
@@ -330,7 +336,7 @@ const Education = () => {
                                         onChange={(e) => setFilters({ ...filters, level: e.target.value })}
                                         className="w-full px-3 py-2 border border-border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-primary"
                                     >
-                                        <option value="">All Levels</option>
+                                        <option value="">{t('education.allLevels')}</option>
                                         {levels.map(level => (
                                             <option key={level.value} value={level.value}>{level.label}</option>
                                         ))}
@@ -514,10 +520,10 @@ const Education = () => {
                                                     size="sm"
                                                     onClick={() => shareService(service)}
                                                     className="px-3 h-9 flex items-center"
-                                                    aria-label="Share service"
+                                                    aria-label={t('education.shareService')}
                                                 >
                                                     <FaShare className="h-4 w-4 mr-2" />
-                                                    <span className="text-sm">Share</span>
+                                                    <span className="text-sm">{t('common.share')}</span>
                                                 </Button>
                                             </div>
 

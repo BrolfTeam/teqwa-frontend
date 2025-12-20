@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "http://56.228.17.128/api/:path*"
+      "destination": "https://api.mujemaateqwa.org/api/:path*"
     }
   ],
   "headers": [

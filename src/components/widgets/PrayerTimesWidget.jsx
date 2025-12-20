@@ -43,11 +43,18 @@ const PrayerTimesWidget = memo(({ className = '', showNavigation = true, compact
   const { t } = useTranslation();
   const [currentTime, setCurrentTime] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [prayerData, setPrayerData] = useState(null);
+  // Initialize with cached data instantly (no loading state)
+  const [prayerData, setPrayerData] = useState(() => {
+    try {
+      return prayerTimesService.getCachedFormattedPrayerTimes(selectedDate);
+    } catch {
+      return null;
+    }
+  });
   const [currentNext, setCurrentNext] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false); // Never block UI
   const [error, setError] = useState(null);
-  const [locationStatus, setLocationStatus] = useState('detecting');
+  const [locationStatus, setLocationStatus] = useState('found'); // Assume cached location
   const [dailyImams, setDailyImams] = useState(getDailyImams());
   const cardRef = useRef(null);
 
@@ -181,25 +188,30 @@ const PrayerTimesWidget = memo(({ className = '', showNavigation = true, compact
     { stiffness: 300, damping: 30 }
   );
 
-  // Initialize prayer times
-  const initializePrayerTimes = useCallback(async () => {
+  // Initialize prayer times with cache-first strategy (INSTANT LOAD)
+  const initializePrayerTimes = useCallback(async (forceRefresh = false) => {
     try {
-      setLoading(true);
-      setLocationStatus('detecting');
+      // Only show loading if forcing refresh
+      if (forceRefresh) {
+        setLoading(true);
+      }
       setError(null);
+      setLocationStatus('found'); // Assume we have location from cache
 
-      // Get location (non-blocking, uses cache)
-      const locationPromise = prayerTimesService.getCurrentLocation();
-      setLocationStatus('found');
+      // Get location (non-blocking, uses cache - returns instantly)
+      await prayerTimesService.getCurrentLocation();
 
-      // Wait for location (returns immediately with cached/default)
-      await locationPromise;
-
-      // Load prayer times and current/next in parallel
+      // Load prayer times with cache-first (instant from cache, background refresh)
       const isToday = selectedDate.toDateString() === new Date().toDateString();
       const [times, currentNextData] = await Promise.all([
-        prayerTimesService.getFormattedPrayerTimes(selectedDate),
-        isToday ? prayerTimesService.getCurrentAndNextPrayer(selectedDate) : Promise.resolve(null)
+        prayerTimesService.getFormattedPrayerTimes(selectedDate, {
+          skipCache: forceRefresh,
+          backgroundRefresh: !forceRefresh
+        }),
+        isToday ? prayerTimesService.getCurrentAndNextPrayer(selectedDate, {
+          skipCache: forceRefresh,
+          backgroundRefresh: !forceRefresh
+        }) : Promise.resolve(null)
       ]);
 
       if (times && times.prayers) {
@@ -208,7 +220,13 @@ const PrayerTimesWidget = memo(({ className = '', showNavigation = true, compact
           setCurrentNext(currentNextData);
         }
       } else {
-        throw new Error('Invalid prayer times data');
+        // Fallback to local calculation if no cache
+        const localTimes = prayerTimesService.getCachedFormattedPrayerTimes(selectedDate);
+        if (localTimes && localTimes.prayers) {
+          setPrayerData(localTimes);
+        } else {
+          throw new Error('Invalid prayer times data');
+        }
       }
     } catch (err) {
       console.error('Error initializing prayer times:', err);
@@ -216,7 +234,12 @@ const PrayerTimesWidget = memo(({ className = '', showNavigation = true, compact
       setLocationStatus('default');
       // Don't clear prayerData on error, keep showing last known data
     } finally {
-      setLoading(false);
+      if (forceRefresh) {
+        setLoading(false);
+      } else {
+        // Never show loading for cache-first loads
+        setLoading(false);
+      }
     }
   }, [selectedDate]);
 
@@ -286,19 +309,22 @@ const PrayerTimesWidget = memo(({ className = '', showNavigation = true, compact
           await updatePrayerStatus();
         }
 
-        // Refresh full prayer times data every 5 minutes to ensure accuracy
+        // Refresh full prayer times data every 5 minutes in background (cache-first)
         if (nowTime - lastDataRefresh >= DATA_REFRESH_INTERVAL) {
           lastDataRefresh = nowTime;
-          try {
-            const times = await prayerTimesService.getFormattedPrayerTimes(selectedDate);
+          // Refresh in background (non-blocking)
+          prayerTimesService.getFormattedPrayerTimes(selectedDate, {
+            skipCache: false,
+            backgroundRefresh: true
+          }).then(times => {
             if (times && times.prayers) {
               setPrayerData(times);
               // Also update current/next after refresh
-              await updatePrayerStatus();
+              updatePrayerStatus();
             }
-          } catch (err) {
-            console.error('Error refreshing prayer times:', err);
-          }
+          }).catch(() => {
+            // Silently fail - we already have cached data
+          });
         }
       }
     }, 1000);
@@ -306,10 +332,38 @@ const PrayerTimesWidget = memo(({ className = '', showNavigation = true, compact
     return () => clearInterval(timer);
   }, [selectedDate, prayerData]);
 
-  // Initialize on mount and when date changes
+  // Initialize on mount and when date changes (cache-first)
   useEffect(() => {
-    initializePrayerTimes();
+    // Load instantly from cache, refresh in background
+    initializePrayerTimes(false);
   }, [initializePrayerTimes]);
+
+  // Listen for background updates
+  useEffect(() => {
+    const handleUpdate = (event) => {
+      if (event.detail && event.detail.date) {
+        const updateDate = new Date(event.detail.date);
+        if (updateDate.toDateString() === selectedDate.toDateString()) {
+          // Silently update with fresh data
+          setPrayerData(event.detail.data);
+          
+          // Recalculate current/next if today
+          const isToday = selectedDate.toDateString() === new Date().toDateString();
+          if (isToday) {
+            prayerTimesService.getCurrentAndNextPrayer(selectedDate, {
+              skipCache: false,
+              backgroundRefresh: false
+            }).then(data => {
+              if (data) setCurrentNext(data);
+            }).catch(() => {});
+          }
+        }
+      }
+    };
+
+    window.addEventListener('prayer-times-updated', handleUpdate);
+    return () => window.removeEventListener('prayer-times-updated', handleUpdate);
+  }, [selectedDate]);
 
   // Listen for imam updates from admin settings
   useEffect(() => {
@@ -354,7 +408,8 @@ const PrayerTimesWidget = memo(({ className = '', showNavigation = true, compact
     y.set(0);
   }, [isMobile, x, y]);
 
-  if (loading) {
+  // Only show loading spinner if forcing refresh (never on initial cache load)
+  if (loading && !prayerData) {
     return (
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
@@ -389,7 +444,7 @@ const PrayerTimesWidget = memo(({ className = '', showNavigation = true, compact
           <div className="text-center relative z-10">
             <p className="text-destructive mb-4">{error}</p>
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Button onClick={initializePrayerTimes} size="sm" variant="outline" className="hover:bg-primary/10">
+              <Button onClick={() => initializePrayerTimes(true)} size="sm" variant="outline" className="hover:bg-primary/10">
                 <FiRefreshCw className="mr-2 h-4 w-4" />
                 Retry
               </Button>

@@ -7,6 +7,7 @@ import { useAuth } from '@/context/AuthContext';
 import { toast } from 'sonner';
 import { apiService } from '@/lib/apiService';
 import { LoadingSpinner } from '@/components/ui';
+import { useTranslation } from 'react-i18next';
 
 const ROLE_OPTIONS = [
     { value: 'admin', label: 'Admin', color: 'bg-red-100 text-red-700' },
@@ -16,6 +17,7 @@ const ROLE_OPTIONS = [
 ];
 
 export default function UserManagement() {
+    const { t } = useTranslation();
     const { user: currentUser } = useAuth();
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -120,9 +122,9 @@ export default function UserManagement() {
                     <h1 className="text-3xl font-bold mb-2">User Management</h1>
                     <p className="text-muted-foreground">Manage users and their roles</p>
                 </div>
-                <Button onClick={fetchUsers} variant="outline">
+                <Button onClick={fetchUsers} variant="outline" title={t('common.refresh')}>
                     <FiRefreshCw className="mr-2" />
-                    Refresh
+                    {t('common.refresh')}
                 </Button>
             </div>
 

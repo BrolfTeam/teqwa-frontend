@@ -9,6 +9,8 @@ import { apiService } from '@/lib/apiService';
 import IslamicPattern from '@/components/ui/IslamicPattern';
 import authLogo from '@/assets/logo.png';
 import { useTranslation } from 'react-i18next';
+import LanguageToggle from '@/components/ui/LanguageToggle';
+import ThemeToggle from '@/components/ui/ThemeToggle';
 
 const Register = memo(() => {
   const { t } = useTranslation();
@@ -118,9 +120,15 @@ const Register = memo(() => {
   };
 
   return (
-    <div className="h-screen flex bg-stone-50 overflow-hidden">
+    <div className="h-screen flex bg-stone-50 dark:bg-gray-900 overflow-hidden">
+      {/* Language and Theme Toggles - Fixed Top Right */}
+      <div className="fixed top-4 right-4 z-50 flex items-center gap-3">
+        <LanguageToggle />
+        <ThemeToggle />
+      </div>
+
       {/* Decorative Side (Left) */}
-      <div className="hidden lg:flex w-1/2 bg-emerald-900 relative items-center justify-center text-white p-12 h-full">
+      <div className="hidden lg:flex w-1/2 bg-emerald-900 dark:bg-emerald-950 relative items-center justify-center text-white p-12 h-full">
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-10">
           <IslamicPattern className="w-full h-full" color="#FBBF24" opacity={0.1} />
@@ -205,7 +213,7 @@ const Register = memo(() => {
 
               <div className="mb-8">
                 <div className="flex items-center justify-between mb-2">
-                  <h2 className="text-2xl font-bold text-emerald-950 font-serif">{t('auth.registerPage.signUp')}</h2>
+                  <h2 className="text-2xl font-bold text-emerald-950 dark:text-emerald-50 font-serif">{t('auth.registerPage.signUp')}</h2>
                   {role && (
                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 text-sm">
                       <FiUser className="h-3 w-3" />
@@ -213,7 +221,7 @@ const Register = memo(() => {
                     </div>
                   )}
                 </div>
-                <p className="text-stone-500 text-sm">{t('auth.registerPage.fillDetails')}</p>
+                <p className="text-stone-500 dark:text-stone-400 text-sm">{t('auth.registerPage.fillDetails')}</p>
                 {role && (
                   <div className="mt-3 flex items-center gap-2">
                     <button
@@ -230,7 +238,7 @@ const Register = memo(() => {
 
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="space-y-2">
-                  <label htmlFor="name" className="text-sm font-medium text-emerald-900 block pl-1">
+                  <label htmlFor="name" className="text-sm font-medium text-emerald-900 dark:text-emerald-100 block pl-1">
                     Full Name *
                   </label>
                   <div className="relative group">
@@ -296,7 +304,7 @@ const Register = memo(() => {
                 </div>
 
                 <div className="space-y-2">
-                  <label htmlFor="phone" className="text-sm font-medium text-emerald-900 block pl-1">
+                  <label htmlFor="phone" className="text-sm font-medium text-emerald-900 dark:text-emerald-100 block pl-1">
                     {t('auth.registerPage.phoneNumber')}
                   </label>
                   <div className="relative group">
@@ -317,7 +325,7 @@ const Register = memo(() => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <label htmlFor="password" className="text-sm font-medium text-emerald-900 block pl-1">
+                    <label htmlFor="password" className="text-sm font-medium text-emerald-900 dark:text-emerald-100 block pl-1">
                       {t('auth.password')} *
                     </label>
                     <div className="relative group">
@@ -357,7 +365,7 @@ const Register = memo(() => {
                   </div>
 
                   <div className="space-y-2">
-                    <label htmlFor="confirmPassword" className="text-sm font-medium text-emerald-900 block pl-1">
+                    <label htmlFor="confirmPassword" className="text-sm font-medium text-emerald-900 dark:text-emerald-100 block pl-1">
                       {t('auth.confirmPassword')} *
                     </label>
                     <div className="relative group">
@@ -441,8 +449,8 @@ const Register = memo(() => {
                 </Button>
               </form>
 
-              <div className="mt-8 text-center pt-6 border-t border-stone-100 space-y-2">
-                <p className="text-stone-500 text-sm">
+              <div className="mt-8 text-center pt-6 border-t border-stone-100 dark:border-slate-700 space-y-2">
+                <p className="text-stone-500 dark:text-stone-400 text-sm">
                   {t('auth.alreadyHaveAccount')}{' '}
                   <Link
                     to={role ? `/login?role=${role}` : "/login"}
@@ -452,7 +460,7 @@ const Register = memo(() => {
                   </Link>
                 </p>
                 {!role && (
-                  <p className="text-stone-500 text-xs">
+                  <p className="text-stone-500 dark:text-stone-400 text-xs">
                     {t('auth.roleSelection.selectRole')}{' '}
                     <Link
                       to="/role-selection"

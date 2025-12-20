@@ -18,7 +18,7 @@ const ForgotPassword = memo(() => {
         e.preventDefault();
 
         if (!email) {
-            toast.error(t('auth.forgotPassword.enterEmailAddress'));
+            toast.error(t('auth.forgotPasswordPage.enterEmailAddress'));
             return;
         }
 
@@ -27,9 +27,9 @@ const ForgotPassword = memo(() => {
         try {
             await apiService.requestPasswordReset(email);
             setEmailSent(true);
-            toast.success(t('auth.forgotPassword.passwordResetSent'));
+            toast.success(t('auth.forgotPasswordPage.passwordResetSent'));
         } catch (error) {
-            toast.error(error.message || t('auth.forgotPassword.failedToSend'));
+            toast.error(error.message || t('auth.forgotPasswordPage.failedToSend'));
         } finally {
             setIsLoading(false);
         }
@@ -45,11 +45,11 @@ const ForgotPassword = memo(() => {
             >
                 <Card className="shadow-xl">
                     <CardHeader className="text-center pb-6">
-                        <CardTitle className="text-2xl font-bold">{t('auth.forgotPassword.title')}</CardTitle>
+                        <CardTitle className="text-2xl font-bold">{t('auth.forgotPasswordPage.title')}</CardTitle>
                         <p className="text-muted-foreground">
                             {emailSent
-                                ? t('auth.forgotPassword.checkEmail')
-                                : t('auth.forgotPassword.enterEmail')
+                                ? t('auth.forgotPasswordPage.checkEmail')
+                                : t('auth.forgotPasswordPage.enterEmail')
                             }
                         </p>
                     </CardHeader>
@@ -58,7 +58,7 @@ const ForgotPassword = memo(() => {
                             <form onSubmit={handleSubmit} className="space-y-4">
                                 <div>
                                     <label htmlFor="email" className="block text-sm font-medium mb-2">
-                                        Email Address
+                                        {t('auth.forgotPasswordPage.emailAddress')}
                                     </label>
                                     <div className="relative">
                                         <FiMail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -69,7 +69,7 @@ const ForgotPassword = memo(() => {
                                             value={email}
                                             onChange={(e) => setEmail(e.target.value)}
                                             className="w-full pl-10 pr-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                                            placeholder="Enter your email"
+                                            placeholder={t('auth.forgotPasswordPage.emailPlaceholder')}
                                             required
                                         />
                                     </div>
@@ -84,12 +84,12 @@ const ForgotPassword = memo(() => {
                                     {isLoading ? (
                                         <div className="flex items-center space-x-2">
                                             <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                                            <span>{t('auth.forgotPassword.sending')}</span>
+                                            <span>{t('auth.forgotPasswordPage.sending')}</span>
                                         </div>
                                     ) : (
                                         <div className="flex items-center space-x-2">
                                             <FiSend className="h-4 w-4" />
-                                            <span>{t('auth.forgotPassword.sendResetLink')}</span>
+                                            <span>{t('auth.forgotPasswordPage.sendResetLink')}</span>
                                         </div>
                                     )}
                                 </Button>
@@ -98,8 +98,8 @@ const ForgotPassword = memo(() => {
                             <div className="space-y-4">
                                 <div className="p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
                                     <p className="text-sm text-green-800 dark:text-green-200">
-                                        {t('auth.forgotPassword.resetLinkSent')} <strong>{email}</strong>.
-                                        {t('auth.forgotPassword.checkInbox')}
+                                        {t('auth.forgotPasswordPage.resetLinkSent')} <strong>{email}</strong>.
+                                        {t('auth.forgotPasswordPage.checkInbox')}
                                     </p>
                                 </div>
 
@@ -108,7 +108,7 @@ const ForgotPassword = memo(() => {
                                     variant="outline"
                                     className="w-full"
                                 >
-                                    {t('auth.forgotPassword.sendAnotherLink')}
+                                    {t('auth.forgotPasswordPage.sendAnotherLink')}
                                 </Button>
                             </div>
                         )}
@@ -119,7 +119,7 @@ const ForgotPassword = memo(() => {
                                 className="inline-flex items-center space-x-2 text-sm text-primary hover:text-primary/80 transition-colors"
                             >
                                 <FiArrowLeft className="h-4 w-4" />
-                                <span>{t('auth.forgotPassword.backToLogin')}</span>
+                                <span>{t('auth.forgotPasswordPage.backToLogin')}</span>
                             </Link>
                         </div>
                     </CardContent>

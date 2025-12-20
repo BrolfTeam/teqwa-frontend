@@ -2,7 +2,7 @@ export const siteConfig = {
   name: 'MuJemea At-Tekwa',
   slogan: 'Serving faith, learning, and community',
   description: 'A place of worship, learning, and community for Muslims in our area.',
-  url: 'https://mujea-at-tekwa.org',
+  url: 'https://mujemaateqwa.org',
   ogImage: '/images/og-image.jpg',
   links: {
     twitter: 'https://twitter.com/mujea_at_tekwa',
@@ -11,7 +11,7 @@ export const siteConfig = {
     youtube: 'https://youtube.com/c/mujea_at_tekwa',
   },
   contact: {
-    email: 'info@mujea-at-tekwa.org',
+    email: 'info@mujemaateqwa.org',
     phone: '+251 11 123 4567',
     address: 'MuJemea At-Tekwa, Addis Ababa, Ethiopia',
   },

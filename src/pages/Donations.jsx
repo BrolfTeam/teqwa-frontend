@@ -70,9 +70,15 @@ const Donations = memo(() => {
           setSelectedCategory(matchingCause ? matchingCause.id : mappedCategories[0].id);
         }
       } catch (error) {
-        console.error('Failed to fetch donation causes:', error);
-        toast.error('Failed to load donation causes');
-        setDonationCategories([]);
+        // Silently handle rate limiting (429)
+        if (error.status === 429) {
+          console.warn('Rate limited, returning empty donation causes');
+          setDonationCategories([]);
+        } else {
+          console.error('Failed to fetch donation causes:', error);
+          toast.error(t('donations.failedToLoadCauses'));
+          setDonationCategories([]);
+        }
       } finally {
         setLoading(false);
       }
@@ -139,7 +145,7 @@ const Donations = memo(() => {
         amount,
         cause: parseInt(selectedCategory, 10),
         method: 'card',
-        message: `Donation for ${donationCategories.find(c => c.id == selectedCategory)?.title || 'General Fund'}`,
+        message: `${t('donations.donation')} for ${donationCategories.find(c => c.id == selectedCategory)?.title || t('donations.generalFund')}`,
         donor_name: donorName,
         email: isAuthenticated ? user.email : donorInfo.email,
         phone: isAuthenticated ? (user.phone || '') : donorInfo.phone,
@@ -170,17 +176,17 @@ const Donations = memo(() => {
           const paymentResponse = await paymentService.initializePayment(paymentPayload);
 
           if (paymentResponse && paymentResponse.checkout_url) {
-            toast.success('Redirecting to payment gateway...');
+            toast.success(t('donations.redirectingToPayment'));
             window.location.href = paymentResponse.checkout_url;
             return; // Stop further execution as we redirect
           }
         } catch (paymentError) {
           console.error('Payment initialization error:', paymentError);
-          toast.error('Donation recorded but payment initialization failed. Please contact support.');
+          toast.error(t('donations.donationRecordedPaymentFailed'));
         }
       }
 
-      toast.success(`Thank you for your ${amount} ETB donation!`);
+      toast.success(t('donations.thankYouDonation', { amount }));
 
       // Dispatch event to refresh dashboard (only if donation was created successfully)
       // Note: For completed donations, we'll rely on payment success callback
@@ -199,13 +205,13 @@ const Donations = memo(() => {
       }
     } catch (error) {
       console.error('Donation failed:', error);
-      let errorMsg = 'Payment failed. Please try again.';
+      let errorMsg = t('donations.paymentFailed');
       if (error.data) {
         // Format validation errors nicely
         const validations = Object.entries(error.data)
           .map(([key, value]) => `${key}: ${Array.isArray(value) ? value.join(', ') : value}`)
           .join('; ');
-        if (validations) errorMsg = `Validation Error: ${validations}`;
+        if (validations) errorMsg = `${t('donations.validationError')}: ${validations}`;
       }
       toast.error(errorMsg);
     } finally {
@@ -282,17 +288,16 @@ const Donations = memo(() => {
                     <div className="inline-flex bg-primary/10 text-primary p-3 rounded-2xl">
                       <FiSun className="w-8 h-8" />
                     </div>
-                    <h2 className="text-3xl md:text-4xl font-bold">The Power of Sadaqah</h2>
+                    <h2 className="text-3xl md:text-4xl font-bold">{t('donations.powerOfSadaqah')}</h2>
                     <p className="text-lg text-muted-foreground leading-relaxed">
-                      Charity (Sadaqah) is not just a donation; it is a proof of faith and a means to purify one's wealth and soul.
-                      Every contribution, no matter how small, makes a significant impact in the sight of Allah.
+                      {t('donations.sadaqahDescription')}
                     </p>
                     <ul className="space-y-3">
                       {[
-                        "Purifies wealth and increases provisions",
-                        "Extinguishes sins like water extinguishes fire",
-                        "Provides shade on the Day of Judgment",
-                        "Supports the needy and strengthens community"
+                        t('donations.purifiesWealth'),
+                        t('donations.extinguishesSins'),
+                        t('donations.providesShade'),
+                        t('donations.supportsNeedy')
                       ].map((item, i) => (
                         <li key={i} className="flex items-center gap-3 text-foreground/80">
                           <FiCheckCircle className="text-primary w-5 h-5 flex-shrink-0" />
@@ -310,9 +315,9 @@ const Donations = memo(() => {
                           مَّثَلُ الَّذِينَ يُنفِقُونَ أَمْوَالَهُمْ فِي سَبِيلِ اللَّهِ كَمَثَلِ حَبَّةٍ أَنبَتَتْ سَبْعَ سَنَابِلَ فِي كُلِّ سُنبُلَةٍ مِّائَةُ حَبَّةٍ
                         </p>
                         <p className="text-muted-foreground italic mb-4">
-                          "The example of those who spend their wealth in the way of Allah is like a seed of grain which grows seven spikes; in each spike is a hundred grains."
+                          {t('donations.quranicVerseTranslation')}
                         </p>
-                        <p className="text-sm font-bold text-primary">— Surah Al-Baqarah [2:261]</p>
+                        <p className="text-sm font-bold text-primary">{t('donations.quranicReference')}</p>
                       </div>
                     </div>
                   </Card>
@@ -322,17 +327,17 @@ const Donations = memo(() => {
               {/* Why Contribute Section */}
               <section className="max-w-6xl mx-auto">
                 <div className="text-center mb-12">
-                  <h2 className="text-3xl font-bold mb-4">Why Contribute?</h2>
+                  <h2 className="text-3xl font-bold mb-4">{t('donations.whyContribute')}</h2>
                   <p className="text-muted-foreground max-w-2xl mx-auto">
-                    We are committed to transparency, stewardship, and ensuring your donations have the maximum positive impact on our community.
+                    {t('donations.whyContributeDesc')}
                   </p>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                   {[
-                    { icon: FiShield, title: "100% Secure", desc: "Your payments are processed securely with banking-grade encryption." },
-                    { icon: FiCheckCircle, title: "Transparent", desc: "We provide regular reports on how funds are utilized for the community." },
-                    { icon: FiHeart, title: "Zakat Eligible", desc: "Designed to handle Zakat, Sadaqah, and general donations correctly." },
-                    { icon: FiUsers, title: "Local Impact", desc: "Directly funds programs and maintenance for our local mosque." }
+                    { icon: FiShield, title: t('donations.hundredPercentSecure'), desc: t('donations.hundredPercentSecureDesc') },
+                    { icon: FiCheckCircle, title: t('donations.transparent'), desc: t('donations.transparentDesc') },
+                    { icon: FiHeart, title: t('donations.zakatEligible'), desc: t('donations.zakatEligibleDesc') },
+                    { icon: FiUsers, title: t('donations.localImpact'), desc: t('donations.localImpactDesc') }
                   ].map((feature, index) => (
                     <Card key={index} className="text-center hover:bg-muted/50 transition-colors" hoverable>
                       <CardHeader>
@@ -351,22 +356,22 @@ const Donations = memo(() => {
 
               {/* Impact Section */}
               <section className="max-w-6xl mx-auto">
-                <h2 className="text-3xl font-bold text-center mb-8">How Your Donations Help</h2>
+                <h2 className="text-3xl font-bold text-center mb-8">{t('donations.howDonationsHelp')}</h2>
                 <div className="grid md:grid-cols-3 gap-8">
                   {[
                     {
-                      title: 'Education',
-                      description: 'Supporting Islamic studies, Quran memorization programs, and educational resources for all ages.',
+                      title: t('donations.educationSupport'),
+                      description: t('donations.educationSupportDesc'),
                       icon: FiBook
                     },
                     {
-                      title: 'Community',
-                      description: 'Funding community gatherings, Iftar meals, and social welfare programs to strengthen our bonds.',
+                      title: t('donations.communitySupport'),
+                      description: t('donations.communitySupportDesc'),
                       icon: FiUsers
                     },
                     {
-                      title: 'Maintenance',
-                      description: 'Ensuring our sacred space remains clean, safe, and well-maintained for daily prayers and worship.',
+                      title: t('donations.maintenanceSupport'),
+                      description: t('donations.maintenanceSupportDesc'),
                       icon: FiHome
                     },
                   ].map((item, index) => (
@@ -396,7 +401,7 @@ const Donations = memo(() => {
               transition={{ duration: 0.5 }}
               className="max-w-6xl mx-auto"
             >
-              <h2 className="text-3xl font-bold text-center mb-8">Choose Your Cause</h2>
+              <h2 className="text-3xl font-bold text-center mb-8">{t('donations.chooseYourCause')}</h2>
               {loading ? (
                 <div className="flex flex-col items-center justify-center py-24">
                   <div className="relative">
@@ -405,16 +410,16 @@ const Donations = memo(() => {
                       <div className="w-12 h-12 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
                     </div>
                   </div>
-                  <p className="mt-4 text-muted-foreground animate-pulse">Loading causes...</p>
+                  <p className="mt-4 text-muted-foreground animate-pulse">{t('donations.loadingCauses')}</p>
                 </div>
               ) : donationCategories.length === 0 ? (
                 <div className="text-center py-16 bg-muted/20 rounded-2xl border border-dashed border-border">
                   <FiHeart className="h-12 w-12 mx-auto text-muted-foreground mb-4 opacity-50" />
-                  <h3 className="text-xl font-semibold mb-2">No Active Causes</h3>
-                  <p className="text-muted-foreground">There are currently no specific donation causes available.</p>
-                  <p className="text-sm text-muted-foreground mt-1">You may still make a general donation below.</p>
+                  <h3 className="text-xl font-semibold mb-2">{t('donations.noActiveCauses')}</h3>
+                  <p className="text-muted-foreground">{t('donations.noActiveCausesDesc')}</p>
+                  <p className="text-sm text-muted-foreground mt-1">{t('donations.generalDonationAvailable')}</p>
                   <Button variant="link" onClick={() => setActiveTab('donate')} className="mt-4">
-                    Go to Donation Form
+                    {t('donations.goToDonationForm')}
                   </Button>
                 </div>
               ) : (
@@ -488,7 +493,7 @@ const Donations = memo(() => {
                           <div className="mb-4">
                             <div className="flex justify-between items-center text-xs text-muted-foreground mb-1">
                               <span>
-                                {parseFloat(category.raised_amount || 0).toLocaleString()} ETB raised
+                                {parseFloat(category.raised_amount || 0).toLocaleString()} ETB {t('donations.raised')}
                               </span>
                               <span>
                                 {parseFloat(category.progress_percentage || 0).toFixed(0)}%
@@ -501,7 +506,7 @@ const Donations = memo(() => {
                               />
                             </div>
                             <p className="text-xs text-muted-foreground mt-1 text-center">
-                              Goal: {parseFloat(category.target_amount).toLocaleString()} ETB
+                              {t('donations.goal')}: {parseFloat(category.target_amount).toLocaleString()} ETB
                             </p>
                           </div>
                         )}
@@ -537,8 +542,8 @@ const Donations = memo(() => {
                           <FiHeart className="h-6 w-6 text-primary" />
                         </div>
                         <div>
-                          <CardTitle className="text-2xl font-bold">Make a Donation</CardTitle>
-                          <p className="text-sm text-muted-foreground mt-1">Support our community with your generous contribution</p>
+                          <CardTitle className="text-2xl font-bold">{t('donations.makeDonation')}</CardTitle>
+                          <p className="text-sm text-muted-foreground mt-1">{t('donations.supportCommunitySubtitle')}</p>
                         </div>
                       </div>
                     </div>
@@ -589,7 +594,7 @@ const Donations = memo(() => {
                           </div>
                           <input
                             type="number"
-                            placeholder="Enter custom amount"
+                            placeholder={t('donations.enterCustomAmount')}
                             value={customAmount}
                             onChange={(e) => handleCustomAmount(e.target.value)}
                             onFocus={() => setIsCustom(true)}
@@ -716,7 +721,7 @@ const Donations = memo(() => {
                         
                         <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
                           <FiShield className="w-4 h-4" />
-                          <span>Secure payment powered by Chapa</span>
+                          <span>{t('donations.securePaymentChapa')}</span>
                         </div>
                       </div>
                     </CardContent>
@@ -751,22 +756,22 @@ const Donations = memo(() => {
                         {/* Category Display */}
                         <div className="space-y-2 pt-4 border-t border-border/50">
                           <div className="flex items-center justify-between text-sm">
-                            <span className="text-muted-foreground">Cause</span>
+                            <span className="text-muted-foreground">{t('donations.cause')}</span>
                             <span className="font-semibold text-foreground">
-                              {donationCategories.find(c => c.id == selectedCategory)?.title || 'General Fund'}
+                              {donationCategories.find(c => c.id == selectedCategory)?.title || t('donations.generalFund')}
                             </span>
                           </div>
                         </div>
 
                         {/* Benefits List */}
                         <div className="pt-4 border-t border-border/50 space-y-3">
-                          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">What you're supporting:</p>
+                          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">{t('donations.whatYouSupporting')}</p>
                           <ul className="space-y-2">
                             {[
-                              'Community programs',
-                              'Educational services',
-                              'Facility maintenance',
-                              'Worship activities'
+                              t('donations.communityPrograms'),
+                              t('donations.educationalServices'),
+                              t('donations.facilityMaintenance'),
+                              t('donations.worshipActivities')
                             ].map((item, index) => (
                               <li key={index} className="flex items-center gap-2 text-sm text-foreground/80">
                                 <FiCheckCircle className="w-4 h-4 text-primary flex-shrink-0" />
@@ -781,9 +786,9 @@ const Donations = memo(() => {
                           <div className="flex items-start gap-2">
                             <FiInfo className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
                             <div className="space-y-1">
-                              <p className="text-xs font-semibold text-foreground">Tax Receipt</p>
+                              <p className="text-xs font-semibold text-foreground">{t('donations.taxReceipt')}</p>
                               <p className="text-xs text-muted-foreground leading-relaxed">
-                                Tax receipts will be provided for all donations via email.
+                                {t('donations.taxReceiptDesc')}
                               </p>
                             </div>
                           </div>

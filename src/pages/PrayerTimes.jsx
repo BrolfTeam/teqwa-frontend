@@ -16,6 +16,7 @@ import { prayerTimesService, PRAYER_INFO, MOSQUE_LOCATION } from '@/lib/prayerTi
 import { format, addMonths, subMonths, addDays, subDays } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import mesjidBg from '@/assets/mesjid2.jpg';
+import QiblaCompass from '@/components/widgets/QiblaCompass';
 
 const PrayerTimes = memo(() => {
   const { t } = useTranslation();
@@ -24,9 +25,6 @@ const PrayerTimes = memo(() => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [monthlyData, setMonthlyData] = useState([]);
   const [currentNext, setCurrentNext] = useState(null);
-  const [qiblaDirection, setQiblaDirection] = useState(0);
-  const [compassHeading, setCompassHeading] = useState(0);
-  const [isCompassAvailable, setIsCompassAvailable] = useState(false);
   const [loading, setLoading] = useState(true);
   const [locationStatus, setLocationStatus] = useState('detecting');
   const [currentMonth, setCurrentMonth] = useState(new Date());
@@ -45,18 +43,16 @@ const PrayerTimes = memo(() => {
       await locationPromise;
 
       // Load data in parallel for better performance
-      const [monthly, currentNextData, qibla] = await Promise.all([
+      const [monthly, currentNextData] = await Promise.all([
         prayerTimesService.getMonthlyPrayerTimes(
           currentMonth.getFullYear(),
           currentMonth.getMonth()
         ),
-        prayerTimesService.getCurrentAndNextPrayer(),
-        prayerTimesService.getQiblaDirection()
+        prayerTimesService.getCurrentAndNextPrayer()
       ]);
 
       setMonthlyData(monthly || []);
       setCurrentNext(currentNextData);
-      setQiblaDirection(qibla || 0);
 
     } catch (error) {
       console.error('Error initializing prayer times:', error);
@@ -68,38 +64,24 @@ const PrayerTimes = memo(() => {
 
   // Update current time every second
   useEffect(() => {
-    const timer = setInterval(() => {
+    const timer = setInterval(async () => {
       setCurrentTime(new Date());
 
       // Update current/next prayer every minute
       if (currentTime.getSeconds() === 0) {
-        const currentNextData = prayerTimesService.getCurrentAndNextPrayer();
-        setCurrentNext(currentNextData);
+        try {
+          const currentNextData = await prayerTimesService.getCurrentAndNextPrayer();
+          if (currentNextData) {
+            setCurrentNext(currentNextData);
+          }
+        } catch (error) {
+          console.error('Error updating current/next prayer:', error);
+        }
       }
     }, 1000);
 
     return () => clearInterval(timer);
   }, [currentTime]);
-
-  // Initialize compass
-  useEffect(() => {
-    if ('DeviceOrientationEvent' in window) {
-      setIsCompassAvailable(true);
-
-      const handleOrientation = (event) => {
-        if (event.webkitCompassHeading !== undefined) {
-          // iOS
-          setCompassHeading(360 - event.webkitCompassHeading);
-        } else if (event.alpha !== null) {
-          // Android and others
-          setCompassHeading(360 - event.alpha);
-        }
-      };
-
-      window.addEventListener('deviceorientation', handleOrientation);
-      return () => window.removeEventListener('deviceorientation', handleOrientation);
-    }
-  }, []);
 
   // Initialize on mount and when month changes
   useEffect(() => {
@@ -200,17 +182,6 @@ const PrayerTimes = memo(() => {
     }
   }, [currentMonth]);
 
-  const enableCompass = useCallback(() => {
-    if ('DeviceOrientationEvent' in window && typeof DeviceOrientationEvent.requestPermission === 'function') {
-      DeviceOrientationEvent.requestPermission()
-        .then(response => {
-          if (response === 'granted') {
-            setIsCompassAvailable(true);
-          }
-        })
-        .catch(console.error);
-    }
-  }, []);
 
   if (loading) {
     return (
@@ -303,15 +274,15 @@ const PrayerTimes = memo(() => {
                 <IslamicPattern className="opacity-3" color="currentColor" />
                 <CardContent className="p-4 sm:p-6 relative z-10">
                   {/* Current and Next Prayer Cards - Mobile First */}
-                  {currentNext && (
+                  {currentNext && (currentNext.current || currentNext.next) && (
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-4 sm:mb-5">
                       {/* Current Prayer */}
                       <div className="bg-primary rounded-xl sm:rounded-2xl p-3 sm:p-4 text-primary-foreground relative overflow-hidden">
                         <div className="relative z-10">
-                          <div className="text-[10px] sm:text-xs font-medium opacity-90 mb-1">Now time is</div>
+                          <div className="text-[10px] sm:text-xs font-medium opacity-90 mb-1">{t('prayerTimes.nowTimeIs')}</div>
                           <div className="flex items-baseline gap-1.5 sm:gap-2 mb-1.5">
                             <div className="text-base sm:text-lg font-bold">
-                              {currentNext.current?.name || 'N/A'}
+                              {currentNext.current?.name || t('prayer.noDataAvailable')}
                             </div>
                             {currentNext.current?.arabic && (
                               <div className="text-[10px] sm:text-xs font-arabic opacity-80">
@@ -323,7 +294,7 @@ const PrayerTimes = memo(() => {
                             {format(currentTime, 'h:mm a')}
                           </div>
                           <div className="text-[10px] sm:text-xs opacity-90">
-                            End time - {currentNext.next?.formatted || '--:--'}
+                            {t('prayerTimes.endTime')} - {currentNext.next?.formatted || '--:--'}
                           </div>
                         </div>
                         <FiStar className="absolute bottom-1.5 right-1.5 h-3 w-3 sm:h-4 sm:w-4 opacity-30" />
@@ -332,10 +303,10 @@ const PrayerTimes = memo(() => {
                       {/* Next Prayer */}
                       <div className="bg-card rounded-xl sm:rounded-2xl p-3 sm:p-4 border-2 border-primary/20 relative overflow-hidden">
                         <div className="relative z-10">
-                          <div className="text-[10px] sm:text-xs text-muted-foreground mb-1">Next prayer is</div>
+                          <div className="text-[10px] sm:text-xs text-muted-foreground mb-1">{t('prayerTimes.nextPrayerIs')}</div>
                           <div className="flex items-baseline gap-1.5 sm:gap-2 mb-1.5">
                             <div className="text-base sm:text-lg font-bold text-foreground">
-                              {currentNext.next?.name || 'N/A'}
+                              {currentNext.next?.name || t('prayer.noDataAvailable')}
                             </div>
                             {currentNext.next?.arabic && (
                               <div className="text-[10px] sm:text-xs font-arabic text-muted-foreground">
@@ -348,12 +319,12 @@ const PrayerTimes = memo(() => {
                           </div>
                           {currentNext.timeToNext > 0 && (
                             <div className="text-[10px] sm:text-xs text-primary font-semibold mb-1">
-                              in {prayerTimesService.formatTimeRemaining(currentNext.timeToNext)}
+                              {t('prayerTimes.in')} {prayerTimesService.formatTimeRemaining(currentNext.timeToNext)}
                             </div>
                           )}
                           <div className="space-y-0 text-[10px] sm:text-xs text-muted-foreground">
-                            <div>Azan - {currentNext.next?.formatted || '--:--'}</div>
-                            <div>Jamaat - {currentNext.next?.formatted || '--:--'}</div>
+                            <div>{t('prayerTimes.azan')} - {currentNext.next?.formatted || '--:--'}</div>
+                            <div>{t('prayerTimes.jamaat')} - {currentNext.next?.formatted || '--:--'}</div>
                           </div>
                         </div>
                         <FiStar className="absolute bottom-1.5 right-1.5 h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground opacity-30" />
@@ -365,19 +336,19 @@ const PrayerTimes = memo(() => {
                   <div className="bg-muted/50 rounded-xl p-2.5 sm:p-3 mb-4 sm:mb-5">
                     <div className="grid grid-cols-3 gap-1.5 sm:gap-3 text-center">
                       <div>
-                        <div className="text-[10px] sm:text-xs text-muted-foreground mb-1">Sunrise</div>
+                        <div className="text-[10px] sm:text-xs text-muted-foreground mb-1">{t('prayerTimes.sunrise')}</div>
                         <div className="text-xs sm:text-sm font-bold text-foreground">
                           {todayData.prayers.sunrise?.formatted || '--:--'}
                         </div>
                       </div>
                       <div>
-                        <div className="text-[10px] sm:text-xs text-muted-foreground mb-1">Mid Day</div>
+                        <div className="text-[10px] sm:text-xs text-muted-foreground mb-1">{t('prayerTimes.midDay')}</div>
                         <div className="text-xs sm:text-sm font-bold text-foreground">
                           {todayData.prayers.dhuhr?.formatted || '--:--'}
                         </div>
                       </div>
                       <div>
-                        <div className="text-[10px] sm:text-xs text-muted-foreground mb-1">Sunset</div>
+                        <div className="text-[10px] sm:text-xs text-muted-foreground mb-1">{t('prayerTimes.sunset')}</div>
                         <div className="text-xs sm:text-sm font-bold text-foreground">
                           {todayData.prayers.maghrib?.formatted || '--:--'}
                         </div>
@@ -457,7 +428,7 @@ const PrayerTimes = memo(() => {
             {/* Header */}
             <div className="flex flex-col gap-4 sm:gap-6 mb-5 sm:mb-6 md:mb-8">
               <div>
-                <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground mb-1">Monthly Timetable</h2>
+                <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground mb-1">{t('prayerTimes.monthlyTimetable')}</h2>
                 <p className="text-xs sm:text-sm text-muted-foreground">
                   {MOSQUE_LOCATION.name} • {locationStatus === 'found' ? t('prayerTimes.currentLocation') : t('prayerTimes.defaultLocation')}
                 </p>
@@ -505,13 +476,13 @@ const PrayerTimes = memo(() => {
                   <table className="w-full min-w-[640px]">
                     <thead className="bg-muted/80 backdrop-blur-sm sticky top-0 z-20">
                       <tr>
-                        <th className="px-3 sm:px-4 py-2.5 sm:py-3 text-left text-[10px] sm:text-xs font-semibold text-foreground">Date</th>
-                        <th className="px-2 sm:px-3 py-2.5 sm:py-3 text-center text-[10px] sm:text-xs font-semibold text-foreground">Fajr</th>
-                        <th className="px-2 sm:px-3 py-2.5 sm:py-3 text-center text-[10px] sm:text-xs font-semibold text-muted-foreground">Sunrise</th>
-                        <th className="px-2 sm:px-3 py-2.5 sm:py-3 text-center text-[10px] sm:text-xs font-semibold text-foreground">Dhuhr</th>
-                        <th className="px-2 sm:px-3 py-2.5 sm:py-3 text-center text-[10px] sm:text-xs font-semibold text-foreground">Asr</th>
-                        <th className="px-2 sm:px-3 py-2.5 sm:py-3 text-center text-[10px] sm:text-xs font-semibold text-foreground">Maghrib</th>
-                        <th className="px-2 sm:px-3 py-2.5 sm:py-3 text-center text-[10px] sm:text-xs font-semibold text-foreground">Isha</th>
+                        <th className="px-3 sm:px-4 py-2.5 sm:py-3 text-left text-[10px] sm:text-xs font-semibold text-foreground">{t('prayerTimes.date')}</th>
+                        <th className="px-2 sm:px-3 py-2.5 sm:py-3 text-center text-[10px] sm:text-xs font-semibold text-foreground">{t('prayerTimes.fajr')}</th>
+                        <th className="px-2 sm:px-3 py-2.5 sm:py-3 text-center text-[10px] sm:text-xs font-semibold text-muted-foreground">{t('prayerTimes.sunrise')}</th>
+                        <th className="px-2 sm:px-3 py-2.5 sm:py-3 text-center text-[10px] sm:text-xs font-semibold text-foreground">{t('prayerTimes.dhuhr')}</th>
+                        <th className="px-2 sm:px-3 py-2.5 sm:py-3 text-center text-[10px] sm:text-xs font-semibold text-foreground">{t('prayerTimes.asr')}</th>
+                        <th className="px-2 sm:px-3 py-2.5 sm:py-3 text-center text-[10px] sm:text-xs font-semibold text-foreground">{t('prayerTimes.maghrib')}</th>
+                        <th className="px-2 sm:px-3 py-2.5 sm:py-3 text-center text-[10px] sm:text-xs font-semibold text-foreground">{t('prayerTimes.isha')}</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-border/50 bg-card">
@@ -594,98 +565,7 @@ const PrayerTimes = memo(() => {
               <p className="text-xs sm:text-sm text-muted-foreground">Find the direction to the Kaaba</p>
             </motion.div>
 
-            <Card className="overflow-hidden border border-border/50 shadow-lg relative">
-              <IslamicPattern className="opacity-3" color="currentColor" />
-              <CardHeader className="text-center pb-3 sm:pb-4 relative z-10">
-                <CardTitle className="flex items-center justify-center gap-2 text-lg sm:text-xl md:text-2xl">
-                  <FaCompass className="text-primary h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6" />
-                  <span>{t('prayerTimes.qiblaCompass')}</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="text-center pb-5 sm:pb-6 md:pb-8 relative z-10">
-                {/* Compass */}
-                <div className="relative w-full max-w-sm mx-auto mb-5 sm:mb-6 md:mb-8">
-                  <div className="relative w-full aspect-square max-w-[240px] sm:max-w-[280px] md:max-w-[320px] mx-auto">
-                    {/* Compass Base */}
-                    <div className="absolute inset-0 rounded-full border-4 border-primary/30 bg-gradient-to-br from-muted/50 to-muted/30 shadow-inner">
-                      {/* Islamic Pattern on Compass */}
-                      <div className="absolute inset-4 rounded-full opacity-5">
-                        <IslamicPattern className="rounded-full" color="currentColor" />
-                      </div>
-                      
-                      {/* Cardinal directions */}
-                      <div className="absolute top-2 sm:top-3 left-1/2 transform -translate-x-1/2 text-destructive font-bold text-sm sm:text-base">N</div>
-                      <div className="absolute bottom-2 sm:bottom-3 left-1/2 transform -translate-x-1/2 text-muted-foreground font-bold text-sm sm:text-base">S</div>
-                      <div className="absolute left-2 sm:left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground font-bold text-sm sm:text-base">W</div>
-                      <div className="absolute right-2 sm:right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground font-bold text-sm sm:text-base">E</div>
-
-                      {/* Qibla Indicator */}
-                      <div
-                        className="absolute inset-0 flex items-center justify-center transition-transform duration-500 ease-out"
-                        style={{ transform: `rotate(${qiblaDirection}deg)` }}
-                      >
-                        <div className="w-1 sm:w-1.5 h-20 sm:h-24 bg-primary rounded-full shadow-lg"></div>
-                        <div className="absolute top-0 w-0 h-0 border-l-[8px] sm:border-l-[10px] border-r-[8px] sm:border-r-[10px] border-b-[14px] sm:border-b-[16px] border-l-transparent border-r-transparent border-b-primary"></div>
-                      </div>
-
-                      {/* Compass Needle (if available) */}
-                      {isCompassAvailable && (
-                        <div
-                          className="absolute inset-0 flex items-center justify-center transition-transform duration-100"
-                          style={{ transform: `rotate(${compassHeading}deg)` }}
-                        >
-                          <div className="w-0.5 sm:w-1 h-16 sm:h-20 bg-destructive rounded-full"></div>
-                          <div className="absolute top-2 w-0 h-0 border-l-[4px] sm:border-l-[5px] border-r-[4px] sm:border-r-[5px] border-b-[8px] sm:border-b-[10px] border-l-transparent border-r-transparent border-b-destructive"></div>
-                        </div>
-                      )}
-
-                      {/* Center Circle */}
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="w-4 h-4 sm:w-5 sm:h-5 bg-primary rounded-full border-2 border-background shadow-md"></div>
-                      </div>
-
-                      {/* Kaaba Icon */}
-                      <div className="absolute bottom-4 sm:bottom-6 left-1/2 transform -translate-x-1/2">
-                        <FaMosque className="text-xl sm:text-2xl text-primary/60" />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Information */}
-                <div className="space-y-3 sm:space-y-4">
-                  <div className="bg-primary/10 rounded-xl p-3 sm:p-4 border border-primary/20">
-                    <p className="text-xs sm:text-sm md:text-base text-foreground">
-                      {t('prayerTimes.qiblaFromNorth')} <span className="font-bold text-primary text-base sm:text-lg md:text-xl">{qiblaDirection}°</span> {t('prayerTimes.fromNorth')}
-                    </p>
-                  </div>
-
-                  {isCompassAvailable ? (
-                    <div className="bg-accent/10 rounded-xl p-3 sm:p-4 border border-accent/20">
-                      <p className="text-xs sm:text-sm md:text-base text-foreground flex items-center justify-center gap-2">
-                        <FiNavigation className="h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-5 md:w-5 text-accent flex-shrink-0" />
-                        <span>{t('prayerTimes.compassActive')}</span>
-                      </p>
-                    </div>
-                  ) : (
-                    <div className="space-y-2 sm:space-y-3">
-                      <p className="text-xs sm:text-sm text-muted-foreground">
-                        Enable device orientation for live compass
-                      </p>
-                      <Button 
-                        onClick={enableCompass} 
-                        size="sm" 
-                        variant="outline"
-                        className="w-full sm:w-auto text-xs sm:text-sm h-9 sm:h-10"
-                      >
-                        <FiNavigation className="mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                        {t('prayerTimes.enableCompass')}
-                      </Button>
-                    </div>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
+            <QiblaCompass variant="embedded" showHeader={true} showLocation={true} showActions={true} />
           </div>
         </div>
       </section>

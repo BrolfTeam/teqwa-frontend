@@ -256,11 +256,86 @@ class PrayerTimesService {
     }
   }
 
-  // Get formatted prayer times (Aladhan API -> Local Calculation Fallback)
-  async getFormattedPrayerTimes(date = new Date()) {
-    // Try Aladhan API
-    const aladhanData = await this.fetchAladhanTimings(date);
+  // Get cached formatted prayer times synchronously (INSTANT - no network)
+  getCachedFormattedPrayerTimes(date = new Date()) {
+    const dateStr = format(date, 'dd-MM-yyyy');
+    const cacheKey = `${dateStr}_${this.coordinates.latitude}_${this.coordinates.longitude}`;
+    
+    // Check in-memory cache first
+    if (this.timingsCache.has(cacheKey)) {
+      const aladhanData = this.timingsCache.get(cacheKey);
+      return this.formatAladhanResponse(aladhanData, date);
+    }
 
+    // Check localStorage cache (synchronous)
+    const cachedData = this.loadFromStorageCache(date, this.coordinates.latitude, this.coordinates.longitude);
+    if (cachedData) {
+      // Store in memory cache for faster access
+      this.timingsCache.set(cacheKey, cachedData);
+      return this.formatAladhanResponse(cachedData, date);
+    }
+
+    // Fallback to local calculation (always works, no network needed)
+    const times = this.getPrayerTimesLocal(date);
+    const formatted = {};
+
+    Object.keys(PRAYER_INFO).forEach(prayer => {
+      if (times[prayer]) {
+        formatted[prayer] = {
+          ...PRAYER_INFO[prayer],
+          time: times[prayer],
+          formatted: format(times[prayer], 'h:mm a'),
+          timestamp: times[prayer].getTime()
+        };
+      }
+    });
+
+    return {
+      ...times,
+      prayers: formatted,
+      hijriDate: this.getHijriDate(date),
+      gregorianDate: format(date, 'EEEE, MMMM d, yyyy')
+    };
+  }
+
+  // Get formatted prayer times with cache-first strategy
+  // Returns cached data immediately, fetches fresh data in background
+  async getFormattedPrayerTimes(date = new Date(), options = {}) {
+    const { skipCache = false, backgroundRefresh = true } = options;
+    
+    // If skipCache is false, return cached data instantly (Promise that resolves immediately)
+    if (!skipCache) {
+      const cached = this.getCachedFormattedPrayerTimes(date);
+      
+      // If we have cached data, return it immediately and refresh in background
+      if (cached && backgroundRefresh) {
+        // Trigger background refresh (don't await - fire and forget)
+        this.fetchAladhanTimings(date).then((freshData) => {
+          if (freshData) {
+            // Fresh data will be cached automatically by fetchAladhanTimings
+            // Emit event for components to update silently
+            try {
+              window.dispatchEvent(new CustomEvent('prayer-times-updated', {
+                detail: { 
+                  date: date.toISOString(), 
+                  data: this.formatAladhanResponse(freshData, date) 
+                }
+              }));
+            } catch (e) {
+              // Ignore event dispatch errors
+            }
+          }
+        }).catch(() => {
+          // Silently fail - we already have cached data
+        });
+      }
+      
+      // Return cached data immediately as resolved Promise
+      return Promise.resolve(cached);
+    }
+
+    // If skipCache is true, fetch fresh data (for manual refresh)
+    const aladhanData = await this.fetchAladhanTimings(date);
     if (aladhanData) {
       return this.formatAladhanResponse(aladhanData, date);
     }
@@ -338,10 +413,14 @@ class PrayerTimesService {
     };
   }
 
-  // Get current and next prayer (optimized - uses cached data when possible)
-  async getCurrentAndNextPrayer(date = new Date()) {
+  // Get current and next prayer with cache-first strategy
+  // Returns cached data instantly, updates in background
+  async getCurrentAndNextPrayer(date = new Date(), options = {}) {
+    const { skipCache = false, backgroundRefresh = true } = options;
+    
     try {
-      const times = await this.getFormattedPrayerTimes(date);
+      // Use cache-first approach - get data instantly from cache
+      const times = await this.getFormattedPrayerTimes(date, { skipCache, backgroundRefresh });
       if (!times || !times.prayers) {
         return null;
       }
@@ -410,6 +489,7 @@ class PrayerTimesService {
         ? Math.max(0, differenceInSeconds(nextPrayer.time, now))
         : 0;
 
+      // Always return a valid structure, even if prayers are null
       return {
         current: currentPrayer,
         next: nextPrayer,
@@ -417,7 +497,12 @@ class PrayerTimesService {
       };
     } catch (error) {
       console.error('Error in getCurrentAndNextPrayer:', error);
-      return null;
+      // Return empty structure instead of null to prevent N/A display
+      return {
+        current: null,
+        next: null,
+        timeToNext: 0
+      };
     }
   }
 

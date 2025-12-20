@@ -9,6 +9,8 @@ import { apiService } from '@/lib/apiService';
 import IslamicPattern from '@/components/ui/IslamicPattern';
 import authLogo from '@/assets/logo.png';
 import { useTranslation } from 'react-i18next';
+import LanguageToggle from '@/components/ui/LanguageToggle';
+import ThemeToggle from '@/components/ui/ThemeToggle';
 
 const Login = memo(() => {
   const { t } = useTranslation();
@@ -93,9 +95,15 @@ const Login = memo(() => {
   };
 
   return (
-    <div className="h-screen flex bg-stone-50 overflow-hidden">
+    <div className="h-screen flex bg-stone-50 dark:bg-gray-900 overflow-hidden">
+      {/* Language and Theme Toggles - Fixed Top Right */}
+      <div className="fixed top-4 right-4 z-50 flex items-center gap-3">
+        <LanguageToggle />
+        <ThemeToggle />
+      </div>
+
       {/* Decorative Side (Left) */}
-      <div className="hidden lg:flex w-1/2 bg-emerald-900 relative items-center justify-center text-white p-12 h-full">
+      <div className="hidden lg:flex w-1/2 bg-emerald-900 dark:bg-emerald-950 relative items-center justify-center text-white p-12 h-full">
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-10">
           <IslamicPattern className="w-full h-full" color="#FBBF24" opacity={0.1} />
@@ -155,12 +163,12 @@ const Login = memo(() => {
               <p className="text-stone-500 mt-2">Sign in to continue</p>
             </div>
 
-            <div className="bg-white p-8 rounded-3xl shadow-xl border border-stone-100 relative overflow-hidden">
+            <div className="bg-white dark:bg-slate-800 p-8 rounded-3xl shadow-xl border border-stone-100 dark:border-slate-700 relative overflow-hidden">
               <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-600 via-amber-500 to-emerald-600" />
 
               <div className="mb-8">
                 <div className="flex items-center justify-between mb-2">
-                  <h2 className="text-2xl font-bold text-emerald-950 font-serif">{t('auth.loginPage.signIn')}</h2>
+                  <h2 className="text-2xl font-bold text-emerald-950 dark:text-emerald-50 font-serif">{t('auth.loginPage.signIn')}</h2>
                   {role && (
                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 text-sm">
                       <FiUser className="h-3 w-3" />
@@ -185,7 +193,7 @@ const Login = memo(() => {
 
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="space-y-2">
-                  <label htmlFor="email" className="text-sm font-medium text-emerald-900 block pl-1">
+                  <label htmlFor="email" className="text-sm font-medium text-emerald-900 dark:text-emerald-100 block pl-1">
                     Email Address
                   </label>
                   <div className="relative group">
@@ -219,7 +227,7 @@ const Login = memo(() => {
 
                 <div className="space-y-2">
                   <div className="flex items-center justify-between pl-1">
-                    <label htmlFor="password" className="text-sm font-medium text-emerald-900">
+                    <label htmlFor="password" className="text-sm font-medium text-emerald-900 dark:text-emerald-100">
                       {t('auth.password')}
                     </label>
                     <Link
@@ -284,8 +292,8 @@ const Login = memo(() => {
                 </Button>
               </form>
 
-              <div className="mt-8 text-center pt-6 border-t border-stone-100 space-y-2">
-                <p className="text-stone-500 text-sm">
+              <div className="mt-8 text-center pt-6 border-t border-stone-100 dark:border-slate-700 space-y-2">
+                <p className="text-stone-500 dark:text-stone-400 text-sm">
                   {t('auth.dontHaveAccount')}{' '}
                   <Link
                     to={role ? `/register?role=${role}` : "/role-selection"}
@@ -295,7 +303,7 @@ const Login = memo(() => {
                   </Link>
                 </p>
                 {!role && (
-                  <p className="text-stone-500 text-xs">
+                  <p className="text-stone-500 dark:text-stone-400 text-xs">
                     {t('auth.roleSelection.selectRole')}{' '}
                     <Link
                       to="/role-selection"

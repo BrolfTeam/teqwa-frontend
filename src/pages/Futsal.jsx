@@ -57,8 +57,18 @@ const STATUS_ICONS = {
     completed: FiCheckCircle
 };
 
+// Helper function for safe translations
+const getTranslation = (t, key, fallback) => {
+  const translation = t(key, { defaultValue: fallback });
+  if (translation === key && key.includes('.')) {
+    return fallback;
+  }
+  return translation;
+};
+
 // Calendar Component
 const CalendarView = memo(({ selectedDate, onDateSelect, minDate }) => {
+    const { t } = useTranslation();
     const [currentMonth, setCurrentMonth] = useState(new Date(selectedDate));
     const today = useMemo(() => new Date(), []);
     
@@ -88,11 +98,29 @@ const CalendarView = memo(({ selectedDate, onDateSelect, minDate }) => {
     const days = useMemo(() => getDaysInMonth(currentMonth), [currentMonth, getDaysInMonth]);
     
     const monthNames = [
-        'January', 'February', 'March', 'April', 'May', 'June',
-        'July', 'August', 'September', 'October', 'November', 'December'
+        getTranslation(t, 'islamicCalendar.monthNames.january', 'January'),
+        getTranslation(t, 'islamicCalendar.monthNames.february', 'February'),
+        getTranslation(t, 'islamicCalendar.monthNames.march', 'March'),
+        getTranslation(t, 'islamicCalendar.monthNames.april', 'April'),
+        getTranslation(t, 'islamicCalendar.monthNames.may', 'May'),
+        getTranslation(t, 'islamicCalendar.monthNames.june', 'June'),
+        getTranslation(t, 'islamicCalendar.monthNames.july', 'July'),
+        getTranslation(t, 'islamicCalendar.monthNames.august', 'August'),
+        getTranslation(t, 'islamicCalendar.monthNames.september', 'September'),
+        getTranslation(t, 'islamicCalendar.monthNames.october', 'October'),
+        getTranslation(t, 'islamicCalendar.monthNames.november', 'November'),
+        getTranslation(t, 'islamicCalendar.monthNames.december', 'December')
     ];
     
-    const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const weekDays = [
+        getTranslation(t, 'islamicCalendar.dayNamesShort.sun', 'Sun'),
+        getTranslation(t, 'islamicCalendar.dayNamesShort.mon', 'Mon'),
+        getTranslation(t, 'islamicCalendar.dayNamesShort.tue', 'Tue'),
+        getTranslation(t, 'islamicCalendar.dayNamesShort.wed', 'Wed'),
+        getTranslation(t, 'islamicCalendar.dayNamesShort.thu', 'Thu'),
+        getTranslation(t, 'islamicCalendar.dayNamesShort.fri', 'Fri'),
+        getTranslation(t, 'islamicCalendar.dayNamesShort.sat', 'Sat')
+    ];
     
     const navigateMonth = (direction) => {
         setCurrentMonth(prev => {
@@ -232,12 +260,12 @@ const TimeSlotCard = memo(({ slot, onSelect, isSelected }) => {
                             
                             <div className="flex items-center gap-2 mb-2 text-muted-foreground text-sm">
                                 <FiMapPin className="w-4 h-4" />
-                                <span>{slot.location || 'Main Court'}</span>
+                                <span>{slot.location || t('futsal.mainCourt')}</span>
                             </div>
                             
                             <div className="flex items-center gap-2 mb-3 text-muted-foreground text-sm">
                                 <FiUsers className="w-4 h-4" />
-                                <span>Max {slot.max_players || 12} players</span>
+                                <span>{t('futsal.maxPlayers', { count: slot.max_players || 12 })}</span>
                             </div>
                         </div>
                         
@@ -249,9 +277,9 @@ const TimeSlotCard = memo(({ slot, onSelect, isSelected }) => {
                     
                     <div className="flex items-center justify-between pt-4 border-t border-border/50">
                         <div>
-                            <div className="text-xs text-muted-foreground mb-1">Price</div>
+                            <div className="text-xs text-muted-foreground mb-1">{t('futsal.price')}</div>
                             <div className="text-2xl font-bold text-primary">{slot.price}</div>
-                            <div className="text-xs text-muted-foreground">ETB</div>
+                            <div className="text-xs text-muted-foreground">{t('futsal.etb')}</div>
                         </div>
                         
                         <Button
@@ -268,7 +296,7 @@ const TimeSlotCard = memo(({ slot, onSelect, isSelected }) => {
                             ) : (
                                 <>
                                     <FiXCircle className="w-4 h-4 mr-2" />
-                                    Unavailable
+                                    {t('futsal.unavailable')}
                                 </>
                             )}
                         </Button>

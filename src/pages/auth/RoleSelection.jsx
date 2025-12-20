@@ -14,6 +14,8 @@ import IslamicPattern from '@/components/ui/IslamicPattern';
 import { Card } from '@/components/ui/Card';
 import authLogo from '@/assets/logo.png';
 import { useTranslation } from 'react-i18next';
+import LanguageToggle from '@/components/ui/LanguageToggle';
+import ThemeToggle from '@/components/ui/ThemeToggle';
 
 const RoleSelection = memo(() => {
   const { t } = useTranslation();
@@ -115,6 +117,12 @@ const RoleSelection = memo(() => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-stone-50 dark:bg-gray-900 p-4 relative overflow-hidden">
+      {/* Language and Theme Toggles - Fixed Top Right */}
+      <div className="fixed top-4 right-4 z-50 flex items-center gap-3">
+        <LanguageToggle />
+        <ThemeToggle />
+      </div>
+
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-5 dark:opacity-10">
         <IslamicPattern className="w-full h-full" color="currentColor" opacity={0.1} />

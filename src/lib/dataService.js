@@ -1,6 +1,11 @@
 /**
  * Centralized data service for handling all API integrations
  * Provides consistent error handling and data transformation
+ * 
+ * Note: Browser console will show network errors (404, 403, etc.) for failed requests.
+ * This is expected browser behavior and cannot be suppressed. However, this service
+ * handles these errors gracefully by returning appropriate empty data structures,
+ * allowing the application to continue functioning normally.
  */
 
 import { apiService } from './apiService';
@@ -55,14 +60,52 @@ class DataService {
 
       return data;
     } catch (error) {
-      console.error(`API call failed for ${apiMethod.name}:`, error);
-
       // Handle rate limiting (429) - don't show error, just return empty data
       if (error.status === 429) {
         console.warn(`Rate limited for ${apiMethod.name}, returning empty data`);
         // Return empty data structure instead of throwing
         return [];
       }
+
+      // Handle "Student profile not found" errors (404) - return empty data gracefully
+      if (error.status === 404 && (error.message?.includes('Student profile') || error.message?.includes('profile not found'))) {
+        // Silently handle - this is expected for users without student profiles
+        // Only log once per session to avoid console spam
+        if (!window._studentProfileWarningLogged) {
+          console.debug(
+            '%cℹ️ Student Profile Info:',
+            'color: #10b981; font-weight: bold;',
+            'Student profile not found - returning empty data. This is expected for users without student profiles. ' +
+            'The dashboard will display with empty states. Browser network logs (404 errors) are normal and cannot be suppressed.'
+          );
+          window._studentProfileWarningLogged = true;
+        }
+        // Return appropriate empty structure based on expected return type
+        // For methods that return objects with data property, return { data: {} }
+        // For methods that return arrays directly, return []
+        if (apiMethod.name.includes('Stats') || apiMethod.name.includes('Grades') || apiMethod.name.includes('Dashboard')) {
+          return { data: {} };
+        }
+        return [];
+      }
+
+      // Handle permission denied errors (403) - return empty data gracefully
+      if (error.status === 403) {
+        // Silently handle - this is expected for users without required permissions
+        // Only log once per session to avoid console spam
+        if (!window._permissionDeniedWarningLogged) {
+          console.debug(`Permission denied for ${apiMethod.name} - returning empty data (this is expected for users without required permissions)`);
+          window._permissionDeniedWarningLogged = true;
+        }
+        // Return appropriate empty structure based on expected return type
+        if (apiMethod.name.includes('Stats') || apiMethod.name.includes('Dashboard')) {
+          return { data: {} };
+        }
+        return [];
+      }
+
+      // Log other errors (not 404 student profile or 403 permission denied)
+      console.error(`API call failed for ${apiMethod.name}:`, error);
 
       // Handle network errors gracefully
       if (error.message && (error.message.includes('Network error') || error.message.includes('Failed to fetch') || error.message.includes('ERR_EMPTY_RESPONSE'))) {
@@ -142,6 +185,14 @@ class DataService {
 
   async getEducationService(id) {
     return this.apiCall(() => apiService.getEducationService(id), { id });
+  }
+
+  async getCourses(params = {}) {
+    return this.apiCall(() => apiService.getCourses(params), params);
+  }
+
+  async getCourse(id) {
+    return this.apiCall(() => apiService.getCourse(id), { id });
   }
 
   async enrollInService(serviceId) {

@@ -17,6 +17,7 @@ import FormField from '@/components/ui/FormField';
 import { useTranslation } from 'react-i18next';
 
 const StudentDashboard = memo(() => {
+    const { t } = useTranslation();
     const { user } = useAuth();
     const [loading, setLoading] = useState(true);
     const [stats, setStats] = useState(null);
@@ -57,11 +58,14 @@ const StudentDashboard = memo(() => {
             setAnnouncements(Array.isArray(announcementsData.data) ? announcementsData.data : announcementsData.data?.data || []);
         } catch (error) {
             console.error('Failed to fetch dashboard data:', error);
-            toast.error('Failed to load dashboard data');
+            // Don't show error toast for student profile not found - it's expected for users without profiles
+            if (error.status !== 404 || (!error.message?.includes('Student profile') && !error.message?.includes('profile not found'))) {
+                toast.error('Failed to load dashboard data');
+            }
         } finally {
             setLoading(false);
         }
-    }, []);
+    }, [t]);
 
     useEffect(() => {
         fetchDashboardData();

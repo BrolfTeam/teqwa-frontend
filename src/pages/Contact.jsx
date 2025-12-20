@@ -198,7 +198,7 @@ const Contact = () => {
                     </div>
 
                     <div className="mb-4">
-                      <label htmlFor="subject" className="block text-card-foreground font-medium mb-1">Subject</label>
+                      <label htmlFor="subject" className="block text-card-foreground font-medium mb-1">{t('contact.subject')}</label>
                       <input
                         type="text"
                         id="subject"
@@ -233,7 +233,7 @@ const Contact = () => {
                         variant="primary"
                         size="lg"
                       >
-                        {isSubmitting ? 'Sending...' : 'Send Message'}
+                        {isSubmitting ? t('contact.sending') : t('contact.sendMessage')}
                       </Button>
 
                       <Button
@@ -242,7 +242,7 @@ const Contact = () => {
                         variant="ghost"
                         size="sm"
                       >
-                        Clear
+                        {t('contact.clear')}
                       </Button>
                     </div>
                   </form>
