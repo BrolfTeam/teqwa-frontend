@@ -1,6 +1,6 @@
 # 🕌 Teqwa Frontend
 
-React + Vite frontend for the Teqwa mosque management platform.
+React + Vite frontend for the Teqwa mesjid management platform.
 
 ## 🚀 Quick Start
 
