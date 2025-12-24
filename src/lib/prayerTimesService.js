@@ -39,7 +39,7 @@ class PrayerTimesService {
     this.storageKeyPrefix = 'prayer_times_';
     this.locationStorageKey = 'prayer_location';
     this.cacheExpiryHours = 24; // Cache prayer times for 24 hours
-    
+
     // Load cached location from localStorage immediately
     this.loadCachedLocation();
   }
@@ -88,7 +88,7 @@ class PrayerTimesService {
         const { data, timestamp } = JSON.parse(cached);
         const age = Date.now() - timestamp;
         const expiryMs = this.cacheExpiryHours * 3600000;
-        
+
         // Return cached data if not expired
         if (age < expiryMs && data) {
           return data;
@@ -124,7 +124,7 @@ class PrayerTimesService {
       const keysToRemove = [];
       const now = Date.now();
       const expiryMs = this.cacheExpiryHours * 3600000;
-      
+
       for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
         if (key && key.startsWith(this.storageKeyPrefix)) {
@@ -141,7 +141,7 @@ class PrayerTimesService {
           }
         }
       }
-      
+
       keysToRemove.forEach(key => localStorage.removeItem(key));
     } catch (e) {
       console.warn('Error clearing old cache:', e);
@@ -151,10 +151,10 @@ class PrayerTimesService {
   // Set custom coordinates
   setCoordinates(latitude, longitude) {
     const newCoords = { latitude, longitude };
-    const coordsChanged = 
+    const coordsChanged =
       Math.abs(this.coordinates.latitude - newCoords.latitude) > 0.0001 ||
       Math.abs(this.coordinates.longitude - newCoords.longitude) > 0.0001;
-    
+
     if (coordsChanged) {
       this.coordinates = newCoords;
       // Clear in-memory cache when location changes
@@ -167,9 +167,9 @@ class PrayerTimesService {
   // Get current location (optimized - returns immediately with cached/default, updates in background)
   getCurrentLocation(forceRefresh = false) {
     // Return cached coordinates immediately if we have them
-    if (!forceRefresh && this.coordinates && 
-        (this.coordinates.latitude !== DEFAULT_COORDINATES.latitude || 
-         this.coordinates.longitude !== DEFAULT_COORDINATES.longitude)) {
+    if (!forceRefresh && this.coordinates &&
+      (this.coordinates.latitude !== DEFAULT_COORDINATES.latitude ||
+        this.coordinates.longitude !== DEFAULT_COORDINATES.longitude)) {
       // Return immediately with cached coordinates
       if (!this.locationPromise) {
         // Update location in background (non-blocking)
@@ -260,7 +260,7 @@ class PrayerTimesService {
   getCachedFormattedPrayerTimes(date = new Date()) {
     const dateStr = format(date, 'dd-MM-yyyy');
     const cacheKey = `${dateStr}_${this.coordinates.latitude}_${this.coordinates.longitude}`;
-    
+
     // Check in-memory cache first
     if (this.timingsCache.has(cacheKey)) {
       const aladhanData = this.timingsCache.get(cacheKey);
@@ -302,11 +302,11 @@ class PrayerTimesService {
   // Returns cached data immediately, fetches fresh data in background
   async getFormattedPrayerTimes(date = new Date(), options = {}) {
     const { skipCache = false, backgroundRefresh = true } = options;
-    
+
     // If skipCache is false, return cached data instantly (Promise that resolves immediately)
     if (!skipCache) {
       const cached = this.getCachedFormattedPrayerTimes(date);
-      
+
       // If we have cached data, return it immediately and refresh in background
       if (cached && backgroundRefresh) {
         // Trigger background refresh (don't await - fire and forget)
@@ -316,9 +316,9 @@ class PrayerTimesService {
             // Emit event for components to update silently
             try {
               window.dispatchEvent(new CustomEvent('prayer-times-updated', {
-                detail: { 
-                  date: date.toISOString(), 
-                  data: this.formatAladhanResponse(freshData, date) 
+                detail: {
+                  date: date.toISOString(),
+                  data: this.formatAladhanResponse(freshData, date)
                 }
               }));
             } catch (e) {
@@ -329,7 +329,7 @@ class PrayerTimesService {
           // Silently fail - we already have cached data
         });
       }
-      
+
       // Return cached data immediately as resolved Promise
       return Promise.resolve(cached);
     }
@@ -417,7 +417,7 @@ class PrayerTimesService {
   // Returns cached data instantly, updates in background
   async getCurrentAndNextPrayer(date = new Date(), options = {}) {
     const { skipCache = false, backgroundRefresh = true } = options;
-    
+
     try {
       // Use cache-first approach - get data instantly from cache
       const times = await this.getFormattedPrayerTimes(date, { skipCache, backgroundRefresh });
@@ -507,7 +507,9 @@ class PrayerTimesService {
   }
 
   // Get monthly prayer times (optimized with cache)
-  async getMonthlyPrayerTimes(year = new Date().getFullYear(), month = new Date().getMonth()) {
+  async getMonthlyPrayerTimes(year = new Date().getFullYear(), month = new Date().getMonth(), options = {}) {
+    const { enableNetwork = false } = options;
+
     // Check cache first
     const cacheKey = `monthly_${year}_${month}_${this.coordinates.latitude.toFixed(4)}_${this.coordinates.longitude.toFixed(4)}`;
     try {
@@ -525,45 +527,48 @@ class PrayerTimesService {
     }
 
     // Aladhan API supports monthly calendar - use this for better performance
-    try {
-      const url = `https://api.aladhan.com/v1/calendar/${year}/${month + 1}?latitude=${this.coordinates.latitude}&longitude=${this.coordinates.longitude}&method=3&school=0`;
-      const response = await fetch(url);
+    // Only fetch if network is enabled or we have no fallback (actually fallback is always available via calculation)
+    if (enableNetwork) {
+      try {
+        const url = `https://api.aladhan.com/v1/calendar/${year}/${month + 1}?latitude=${this.coordinates.latitude}&longitude=${this.coordinates.longitude}&method=3&school=0`;
+        const response = await fetch(url);
 
-      if (response.ok) {
-        const data = await response.json();
-        const monthlyData = data.data.map(dayData => {
-          // Parse date from DD-MM-YYYY
-          const [d, m, y] = dayData.date.gregorian.date.split('-');
-          const date = new Date(y, m - 1, d);
+        if (response.ok) {
+          const data = await response.json();
+          const monthlyData = data.data.map(dayData => {
+            // Parse date from DD-MM-YYYY
+            const [d, m, y] = dayData.date.gregorian.date.split('-');
+            const date = new Date(y, m - 1, d);
 
-          return {
-            date: date,
-            day: date.getDate(),
-            dayName: format(date, 'EEE'),
-            isToday: format(date, 'yyyy-MM-dd') === format(new Date(), 'yyyy-MM-dd'),
-            prayers: this.formatAladhanResponse({ timings: dayData.timings, date: dayData.date }, date).prayers,
-            hijriDate: `${dayData.date.hijri.day} ${dayData.date.hijri.month.en} ${dayData.date.hijri.year}`,
-            gregorianDate: format(date, 'MMM d')
-          };
-        });
-        
-        // Cache the monthly data
-        try {
-          localStorage.setItem(`monthly_${cacheKey}`, JSON.stringify({
-            data: monthlyData,
-            timestamp: Date.now()
-          }));
-        } catch (e) {
-          // Ignore storage errors
+            return {
+              date: date,
+              day: date.getDate(),
+              dayName: format(date, 'EEE'),
+              isToday: format(date, 'yyyy-MM-dd') === format(new Date(), 'yyyy-MM-dd'),
+              prayers: this.formatAladhanResponse({ timings: dayData.timings, date: dayData.date }, date).prayers,
+              hijriDate: `${dayData.date.hijri.day} ${dayData.date.hijri.month.en} ${dayData.date.hijri.year}`,
+              gregorianDate: format(date, 'MMM d')
+            };
+          });
+
+          // Cache the monthly data
+          try {
+            localStorage.setItem(`monthly_${cacheKey}`, JSON.stringify({
+              data: monthlyData,
+              timestamp: Date.now()
+            }));
+          } catch (e) {
+            // Ignore storage errors
+          }
+
+          return monthlyData;
         }
-        
-        return monthlyData;
+      } catch (error) {
+        console.error('Error fetching monthly calendar:', error);
       }
-    } catch (error) {
-      console.error('Error fetching monthly calendar:', error);
     }
 
-    // Fallback: use cached daily data where available
+    // Fallback: use cached daily data where available or local calculation
     const monthlyTimes = [];
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     const today = new Date();
@@ -571,7 +576,8 @@ class PrayerTimesService {
     // Process in batches to avoid blocking
     for (let day = 1; day <= daysInMonth; day++) {
       const date = new Date(year, month, day);
-      const times = await this.getFormattedPrayerTimes(date); // This uses cache
+      // Use cached formatted times, avoid network trigger here loops
+      const times = await this.getFormattedPrayerTimes(date, { skipCache: false, backgroundRefresh: false });
 
       monthlyTimes.push({
         date,
@@ -629,7 +635,7 @@ class PrayerTimesService {
   async getQiblaDirection() {
     // Qibla direction doesn't change for a location, so cache it
     const cacheKey = `qibla_${this.coordinates.latitude.toFixed(4)}_${this.coordinates.longitude.toFixed(4)}`;
-    
+
     // Check cache first
     try {
       const cached = localStorage.getItem(cacheKey);
@@ -651,7 +657,7 @@ class PrayerTimesService {
       if (response.ok) {
         const data = await response.json();
         const direction = Math.round(data.data.direction);
-        
+
         // Cache the result
         try {
           localStorage.setItem(cacheKey, JSON.stringify({
@@ -661,7 +667,7 @@ class PrayerTimesService {
         } catch (e) {
           // Ignore storage errors
         }
-        
+
         return direction;
       }
     } catch (error) {
@@ -683,7 +689,7 @@ class PrayerTimesService {
     bearing = (bearing + 360) % 360; // Normalize to 0-360
 
     const direction = Math.round(bearing);
-    
+
     // Cache the calculated result too
     try {
       localStorage.setItem(cacheKey, JSON.stringify({
@@ -693,7 +699,7 @@ class PrayerTimesService {
     } catch (e) {
       // Ignore storage errors
     }
-    
+
     return direction;
   }
 }

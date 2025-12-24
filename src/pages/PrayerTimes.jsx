@@ -30,7 +30,7 @@ const PrayerTimes = memo(() => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
 
   // Initialize prayer times and location (optimized - parallel loading)
-  const initializePrayerTimes = useCallback(async () => {
+  const initializePrayerTimes = useCallback(async (forceRefresh = false) => {
     try {
       setLoading(true);
       setLocationStatus('detecting');
@@ -43,12 +43,17 @@ const PrayerTimes = memo(() => {
       await locationPromise;
 
       // Load data in parallel for better performance
+      // Note: By default these will NOT fetch from network if cache exists (offline-first)
       const [monthly, currentNextData] = await Promise.all([
         prayerTimesService.getMonthlyPrayerTimes(
           currentMonth.getFullYear(),
-          currentMonth.getMonth()
+          currentMonth.getMonth(),
+          { enableNetwork: forceRefresh }
         ),
-        prayerTimesService.getCurrentAndNextPrayer()
+        prayerTimesService.getCurrentAndNextPrayer(new Date(), {
+          backgroundRefresh: forceRefresh,
+          skipCache: forceRefresh
+        })
       ]);
 
       setMonthlyData(monthly || []);
@@ -96,7 +101,7 @@ const PrayerTimes = memo(() => {
         const navHeight = 80; // Approximate navbar height
         const elementPosition = element.getBoundingClientRect().top;
         const offsetPosition = elementPosition + window.pageYOffset - navHeight;
-        
+
         window.scrollTo({
           top: Math.max(0, offsetPosition),
           behavior: 'smooth'
@@ -118,7 +123,7 @@ const PrayerTimes = memo(() => {
             setTimeout(scrollToQibla, 300);
           }
         }, 100);
-        
+
         return () => clearInterval(checkInterval);
       }
     }
@@ -207,10 +212,10 @@ const PrayerTimes = memo(() => {
         <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${mesjidBg})`, filter: 'brightness(0.4)' }} />
         <div className="absolute inset-0 bg-gradient-to-br from-primary/60 via-primary/40 to-accent/30" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-        
+
         {/* Islamic Pattern Overlay */}
         <IslamicPattern className="opacity-10" color="white" />
-        
+
         <div className="container relative z-10 px-4 sm:px-6">
           <div className="max-w-4xl mx-auto text-center text-white">
             <motion.div
@@ -227,7 +232,7 @@ const PrayerTimes = memo(() => {
               <p className="text-xs sm:text-sm md:text-base text-white/80 mb-6 sm:mb-8">
                 {MOSQUE_LOCATION.name}
               </p>
-              
+
               {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row items-center justify-center gap-2.5 sm:gap-3 md:gap-4 mt-6 sm:mt-8">
                 <Button
@@ -374,24 +379,22 @@ const PrayerTimes = memo(() => {
                       .map((prayer) => (
                         <motion.div
                           key={prayer.name}
-                          className={`flex items-center justify-between p-2.5 sm:p-3 rounded-lg transition-all ${
-                            currentNext?.current?.name === prayer.name
-                              ? 'bg-primary/10 border-2 border-primary/30'
-                              : currentNext?.next?.name === prayer.name
+                          className={`flex items-center justify-between p-2.5 sm:p-3 rounded-lg transition-all ${currentNext?.current?.name === prayer.name
+                            ? 'bg-primary/10 border-2 border-primary/30'
+                            : currentNext?.next?.name === prayer.name
                               ? 'bg-accent/10 border-2 border-accent/30'
                               : 'bg-muted/50 border-2 border-transparent hover:bg-muted'
-                          }`}
+                            }`}
                           whileHover={{ scale: 1.01 }}
                           transition={{ duration: 0.2 }}
                         >
                           <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
                             <span className="text-lg sm:text-xl flex-shrink-0">{prayer.icon || '🕌'}</span>
                             <div className="flex flex-col min-w-0">
-                              <span className={`font-semibold text-xs sm:text-sm ${
-                                currentNext?.current?.name === prayer.name
-                                  ? 'text-primary'
-                                  : 'text-foreground'
-                              }`}>
+                              <span className={`font-semibold text-xs sm:text-sm ${currentNext?.current?.name === prayer.name
+                                ? 'text-primary'
+                                : 'text-foreground'
+                                }`}>
                                 {prayer.name}
                               </span>
                               {prayer.arabic && (
@@ -402,11 +405,10 @@ const PrayerTimes = memo(() => {
                             </div>
                           </div>
                           <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
-                            <span className={`font-bold text-xs sm:text-sm md:text-base ${
-                              currentNext?.current?.name === prayer.name
-                                ? 'text-primary'
-                                : 'text-foreground'
-                            }`}>
+                            <span className={`font-bold text-xs sm:text-sm md:text-base ${currentNext?.current?.name === prayer.name
+                              ? 'text-primary'
+                              : 'text-foreground'
+                              }`}>
                               {prayer.formatted}
                             </span>
                             <FiBell className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-muted-foreground flex-shrink-0" />
@@ -436,9 +438,9 @@ const PrayerTimes = memo(() => {
 
               {/* Month Navigation - Mobile Optimized */}
               <div className="flex items-center gap-2 sm:gap-3">
-                <Button 
-                  onClick={goToPreviousMonth} 
-                  variant="outline" 
+                <Button
+                  onClick={goToPreviousMonth}
+                  variant="outline"
                   size="sm"
                   className="flex-shrink-0 h-9"
                   aria-label="Previous month"
@@ -448,18 +450,18 @@ const PrayerTimes = memo(() => {
                 <div className="text-sm sm:text-base md:text-lg font-semibold px-3 sm:px-4 text-center flex-1 min-w-0">
                   <span className="truncate block">{format(currentMonth, 'MMMM yyyy')}</span>
                 </div>
-                <Button 
-                  onClick={goToNextMonth} 
-                  variant="outline" 
+                <Button
+                  onClick={goToNextMonth}
+                  variant="outline"
                   size="sm"
                   className="flex-shrink-0 h-9"
                   aria-label="Next month"
                 >
                   <FiChevronRight className="h-4 w-4" />
                 </Button>
-                <Button 
-                  onClick={goToToday} 
-                  variant="ghost" 
+                <Button
+                  onClick={goToToday}
+                  variant="ghost"
                   size="sm"
                   className="flex-shrink-0 text-xs sm:text-sm h-9"
                 >
@@ -489,11 +491,10 @@ const PrayerTimes = memo(() => {
                       {monthlyData.map((day, index) => (
                         <motion.tr
                           key={day.day}
-                          className={`transition-colors ${
-                            day.isToday 
-                              ? 'bg-primary/10 border-l-4 border-l-primary' 
-                              : 'hover:bg-muted/50'
-                          }`}
+                          className={`transition-colors ${day.isToday
+                            ? 'bg-primary/10 border-l-4 border-l-primary'
+                            : 'hover:bg-muted/50'
+                            }`}
                           initial={{ opacity: 0, x: -20 }}
                           whileInView={{ opacity: 1, x: 0 }}
                           viewport={{ once: true }}
@@ -608,25 +609,25 @@ const PrayerTimes = memo(() => {
                   <div>
                     <h3 className="text-base sm:text-lg md:text-xl font-bold mb-3 sm:mb-4 text-foreground">Quick Actions</h3>
                     <div className="space-y-2.5 sm:space-y-3">
-                      <Button 
-                        onClick={downloadPrayerTimes} 
+                      <Button
+                        onClick={downloadPrayerTimes}
                         className="w-full justify-start h-10 sm:h-11 text-xs sm:text-sm"
                         variant="default"
                       >
                         <FaDownload className="mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4" />
                         {t('prayerTimes.downloadMonthlySchedule')}
                       </Button>
-                      <Button 
-                        onClick={sharePrayerTimes} 
-                        variant="outline" 
+                      <Button
+                        onClick={sharePrayerTimes}
+                        variant="outline"
                         className="w-full justify-start h-10 sm:h-11 text-xs sm:text-sm"
                       >
                         <FaShare className="mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4" />
                         {t('prayerTimes.sharePrayerTimes')}
                       </Button>
-                      <Button 
-                        onClick={initializePrayerTimes} 
-                        variant="ghost" 
+                      <Button
+                        onClick={() => initializePrayerTimes(true)}
+                        variant="ghost"
                         className="w-full justify-start h-10 sm:h-11 text-xs sm:text-sm"
                       >
                         <FiRefreshCw className="mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4" />

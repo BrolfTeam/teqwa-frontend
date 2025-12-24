@@ -27,6 +27,7 @@ const Futsal = lazy(() => import('@/pages/Futsal'));
 const Membership = lazy(() => import('@/pages/Membership'));
 const Itikaf = lazy(() => import('@/pages/Itikaf'));
 const Ders = lazy(() => import('@/pages/Ders'));
+const DersProgram = lazy(() => import('@/pages/DersProgram'));
 const Qibla = lazy(() => import('@/pages/Qibla'));
 const IslamicCalendar = lazy(() => import('@/pages/IslamicCalendar'));
 const PaymentSuccess = lazy(() => import('@/pages/PaymentSuccess'));
@@ -77,126 +78,127 @@ const AppContent = memo(() => {
     <div className={isRTL ? 'rtl' : 'ltr'}>
       <ScrollToTop />
       <Suspense fallback={<LoadingFallback />}>
-          <Routes>
-            {/* Public Routes */}
-            <Route path="/" element={<MainLayout />}>
-              <Route index element={<Home />} />
-              <Route path="about" element={<About />} />
-              <Route path="events" element={<Events />} />
-              <Route path="events/:id" element={<EventDetail />} />
-              <Route path="gallery" element={<Gallery />} />
-              <Route path="prayer-times" element={<PrayerTimes />} />
-              <Route path="contact" element={<Contact />} />
-              <Route path="news" element={<News />} />
-              <Route path="news/:id" element={<NewsDetail />} />
-              <Route path="announcements/:id" element={<NewsDetail />} />
-              <Route path="education" element={<Education />} />
-              <Route path="donations" element={<Donations />} />
-              <Route path="donate" element={<Donations />} />
-              <Route path="donate" element={<Donations />} />
-              <Route path="services" element={<Services />} />
-              <Route path="futsal" element={<Futsal />} />
-              <Route path="membership" element={<Membership />} />
-              <Route path="itikaf" element={<Itikaf />} />
-              <Route path="ders" element={<Ders />} />
-              <Route path="qibla" element={<Qibla />} />
-              <Route path="islamic-calendar" element={<IslamicCalendar />} />
-              <Route path="payment/success/:txRef" element={<PaymentSuccess />} />
-            </Route>
+        <Routes>
+          {/* Public Routes */}
+          <Route path="/" element={<MainLayout />}>
+            <Route index element={<Home />} />
+            <Route path="about" element={<About />} />
+            <Route path="events" element={<Events />} />
+            <Route path="events/:id" element={<EventDetail />} />
+            <Route path="gallery" element={<Gallery />} />
+            <Route path="prayer-times" element={<PrayerTimes />} />
+            <Route path="contact" element={<Contact />} />
+            <Route path="news" element={<News />} />
+            <Route path="news/:id" element={<NewsDetail />} />
+            <Route path="announcements/:id" element={<NewsDetail />} />
+            <Route path="education" element={<Education />} />
+            <Route path="donations" element={<Donations />} />
+            <Route path="donate" element={<Donations />} />
+            <Route path="donate" element={<Donations />} />
+            <Route path="services" element={<Services />} />
+            <Route path="futsal" element={<Futsal />} />
+            <Route path="membership" element={<Membership />} />
+            <Route path="itikaf" element={<Itikaf />} />
+            <Route path="ders" element={<Ders />} />
+            <Route path="ders-program" element={<DersProgram />} />
+            <Route path="qibla" element={<Qibla />} />
+            <Route path="islamic-calendar" element={<IslamicCalendar />} />
+            <Route path="payment/success/:txRef" element={<PaymentSuccess />} />
+          </Route>
 
-            {/* Auth Routes */}
-            <Route path="/role-selection" element={
-              <ProtectedRoute requireAuth={false}>
-                <RoleSelection />
-              </ProtectedRoute>
-            } />
-            <Route path="/login" element={
-              <ProtectedRoute requireAuth={false}>
-                <Login />
-              </ProtectedRoute>
-            } />
-            <Route path="/register" element={
-              <ProtectedRoute requireAuth={false}>
-                <Register />
-              </ProtectedRoute>
-            } />
-            <Route path="/forgot-password" element={
-              <ProtectedRoute requireAuth={false}>
-                <AuthLayout><ForgotPassword /></AuthLayout>
-              </ProtectedRoute>
-            } />
-            <Route path="/reset-password/:token" element={
-              <ProtectedRoute requireAuth={false}>
-                <AuthLayout><ResetPassword /></AuthLayout>
-              </ProtectedRoute>
-            } />
+          {/* Auth Routes */}
+          <Route path="/role-selection" element={
+            <ProtectedRoute requireAuth={false}>
+              <RoleSelection />
+            </ProtectedRoute>
+          } />
+          <Route path="/login" element={
+            <ProtectedRoute requireAuth={false}>
+              <Login />
+            </ProtectedRoute>
+          } />
+          <Route path="/register" element={
+            <ProtectedRoute requireAuth={false}>
+              <Register />
+            </ProtectedRoute>
+          } />
+          <Route path="/forgot-password" element={
+            <ProtectedRoute requireAuth={false}>
+              <AuthLayout><ForgotPassword /></AuthLayout>
+            </ProtectedRoute>
+          } />
+          <Route path="/reset-password/:token" element={
+            <ProtectedRoute requireAuth={false}>
+              <AuthLayout><ResetPassword /></AuthLayout>
+            </ProtectedRoute>
+          } />
 
-            {/* Protected Routes */}
-            <Route path="/dashboard" element={
-              <ProtectedRoute>
-                <MainLayout><Dashboard /></MainLayout>
-              </ProtectedRoute>
-            } />
-            <Route path="/profile" element={
-              <ProtectedRoute>
-                <MainLayout><Profile /></MainLayout>
-              </ProtectedRoute>
-            } />
+          {/* Protected Routes */}
+          <Route path="/dashboard" element={
+            <ProtectedRoute>
+              <MainLayout><Dashboard /></MainLayout>
+            </ProtectedRoute>
+          } />
+          <Route path="/profile" element={
+            <ProtectedRoute>
+              <MainLayout><Profile /></MainLayout>
+            </ProtectedRoute>
+          } />
 
-            {/* Module Routes */}
-            <Route path="/bookings" element={
-              <ProtectedRoute>
-                <MainLayout><BookingList /></MainLayout>
-              </ProtectedRoute>
-            } />
-            <Route path="/bookings/user" element={
-              <ProtectedRoute>
-                <MainLayout><UserBookings /></MainLayout>
-              </ProtectedRoute>
-            } />
+          {/* Module Routes */}
+          <Route path="/bookings" element={
+            <ProtectedRoute>
+              <MainLayout><BookingList /></MainLayout>
+            </ProtectedRoute>
+          } />
+          <Route path="/bookings/user" element={
+            <ProtectedRoute>
+              <MainLayout><UserBookings /></MainLayout>
+            </ProtectedRoute>
+          } />
 
-            {/* Staff Routes */}
-            <Route path="/staff" element={
-              <ProtectedRoute>
-                <MainLayout><StaffList /></MainLayout>
-              </ProtectedRoute>
-            } />
-            <Route path="/staff/attendance" element={
-              <ProtectedRoute>
-                <MainLayout><Attendance /></MainLayout>
-              </ProtectedRoute>
-            } />
-            <Route path="/staff/hours" element={
-              <ProtectedRoute>
-                <MainLayout><WorkingHours /></MainLayout>
-              </ProtectedRoute>
-            } />
-            <Route path="/staff/tasks" element={
-              <ProtectedRoute>
-                <MainLayout><StaffTasks /></MainLayout>
-              </ProtectedRoute>
-            } />
-            <Route path="/staff/reports" element={
-              <ProtectedRoute>
-                <MainLayout><StaffReports /></MainLayout>
-              </ProtectedRoute>
-            } />
+          {/* Staff Routes */}
+          <Route path="/staff" element={
+            <ProtectedRoute>
+              <MainLayout><StaffList /></MainLayout>
+            </ProtectedRoute>
+          } />
+          <Route path="/staff/attendance" element={
+            <ProtectedRoute>
+              <MainLayout><Attendance /></MainLayout>
+            </ProtectedRoute>
+          } />
+          <Route path="/staff/hours" element={
+            <ProtectedRoute>
+              <MainLayout><WorkingHours /></MainLayout>
+            </ProtectedRoute>
+          } />
+          <Route path="/staff/tasks" element={
+            <ProtectedRoute>
+              <MainLayout><StaffTasks /></MainLayout>
+            </ProtectedRoute>
+          } />
+          <Route path="/staff/reports" element={
+            <ProtectedRoute>
+              <MainLayout><StaffReports /></MainLayout>
+            </ProtectedRoute>
+          } />
 
-            {/* Admin Routes */}
-            <Route path="/admin/users" element={
-              <ProtectedRoute>
-                <MainLayout><UserManagement /></MainLayout>
-              </ProtectedRoute>
-            } />
-            <Route path="/admin/settings" element={
-              <ProtectedRoute>
-                <MainLayout><AdminSettings /></MainLayout>
-              </ProtectedRoute>
-            } />
+          {/* Admin Routes */}
+          <Route path="/admin/users" element={
+            <ProtectedRoute>
+              <MainLayout><UserManagement /></MainLayout>
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/settings" element={
+            <ProtectedRoute>
+              <MainLayout><AdminSettings /></MainLayout>
+            </ProtectedRoute>
+          } />
 
-            {/* 404 */}
-            <Route path="*" element={<MainLayout><NotFound /></MainLayout>} />
-          </Routes>
+          {/* 404 */}
+          <Route path="*" element={<MainLayout><NotFound /></MainLayout>} />
+        </Routes>
       </Suspense>
 
       <Toaster

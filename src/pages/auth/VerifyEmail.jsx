@@ -15,7 +15,7 @@ const VerifyEmail = memo(() => {
     const navigate = useNavigate();
     const { updateUser } = useAuth();
     const [status, setStatus] = useState('verifying'); // verifying, success, error
-    const [message, setMessage] = useState(t('auth.verifyEmail.verifyingMessage'));
+    const [message, setMessage] = useState(t('auth.verifyEmailPage.verifyingMessage'));
     const [email, setEmail] = useState('');
     const [isResending, setIsResending] = useState(false);
 
@@ -24,14 +24,14 @@ const VerifyEmail = memo(() => {
             try {
                 const response = await apiService.verifyEmail(token);
                 setStatus('success');
-                setMessage(response.message || t('auth.verifyEmail.verifiedSuccessfully'));
+                setMessage(response.message || t('auth.verifyEmailPage.verifiedSuccessfully'));
 
                 // Update user in context if they're logged in
                 if (response.user && updateUser) {
                     updateUser(response.user);
                 }
 
-                toast.success(t('auth.verifyEmail.verifiedSuccessfully'));
+                toast.success(t('auth.verifyEmailPage.verifiedSuccessfully'));
 
                 // Redirect to login after 3 seconds
                 setTimeout(() => {
@@ -39,8 +39,8 @@ const VerifyEmail = memo(() => {
                 }, 3000);
             } catch (error) {
                 setStatus('error');
-                setMessage(error.message || t('auth.verifyEmail.linkExpired'));
-                toast.error(t('auth.verifyEmail.verificationFailed'));
+                setMessage(error.message || t('auth.verifyEmailPage.linkExpired'));
+                toast.error(t('auth.verifyEmailPage.verificationFailed'));
             }
         };
 
@@ -88,9 +88,9 @@ const VerifyEmail = memo(() => {
                             )}
                         </div>
                         <CardTitle className="text-2xl font-bold">
-                            {status === 'verifying' && t('auth.verifyEmail.verifying')}
-                            {status === 'success' && t('auth.verifyEmail.emailVerified')}
-                            {status === 'error' && t('auth.verifyEmail.verificationFailed')}
+                            {status === 'verifying' && t('auth.verifyEmailPage.verifying')}
+                            {status === 'success' && t('auth.verifyEmailPage.emailVerified')}
+                            {status === 'error' && t('auth.verifyEmailPage.verificationFailed')}
                         </CardTitle>
                         <p className="text-muted-foreground mt-2">{message}</p>
                     </CardHeader>
@@ -99,13 +99,13 @@ const VerifyEmail = memo(() => {
                             <div className="space-y-4">
                                 <div className="p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
                                     <p className="text-sm text-green-800 dark:text-green-200">
-                                        {t('auth.verifyEmail.verifiedSuccessfully')}
+                                        {t('auth.verifyEmailPage.verifiedSuccessfully')}
                                     </p>
                                 </div>
 
                                 <Link to="/login" className="block">
                                     <Button className="w-full">
-                                        {t('auth.verifyEmail.goToLogin')}
+                                        {t('auth.verifyEmailPage.goToLogin')}
                                     </Button>
                                 </Link>
                             </div>
@@ -115,13 +115,13 @@ const VerifyEmail = memo(() => {
                             <div className="space-y-4">
                                 <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
                                     <p className="text-sm text-red-800 dark:text-red-200">
-                                        {t('auth.verifyEmail.linkExpired')}
+                                        {t('auth.verifyEmailPage.linkExpired')}
                                     </p>
                                 </div>
 
                                 <div>
                                     <label htmlFor="email" className="block text-sm font-medium mb-2">
-                                        {t('auth.verifyEmail.emailAddress')}
+                                        {t('auth.verifyEmailPage.emailAddress')}
                                     </label>
                                     <div className="relative">
                                         <FiMail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -131,7 +131,7 @@ const VerifyEmail = memo(() => {
                                             value={email}
                                             onChange={(e) => setEmail(e.target.value)}
                                             className="w-full pl-10 pr-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                                            placeholder={t('auth.verifyEmail.emailPlaceholder')}
+                                            placeholder={t('auth.verifyEmailPage.emailPlaceholder')}
                                         />
                                     </div>
                                 </div>
@@ -141,12 +141,12 @@ const VerifyEmail = memo(() => {
                                     disabled={isResending}
                                     className="w-full"
                                 >
-                                    {isResending ? t('auth.verifyEmail.sending') : t('auth.verifyEmail.resendVerificationEmail')}
+                                    {isResending ? t('auth.verifyEmailPage.sending') : t('auth.verifyEmailPage.resendVerificationEmail')}
                                 </Button>
 
                                 <Link to="/login" className="block">
                                     <Button variant="outline" className="w-full">
-                                        {t('auth.forgotPassword.backToLogin')}
+                                        {t('auth.forgotPasswordPage.backToLogin')}
                                     </Button>
                                 </Link>
                             </div>
@@ -155,7 +155,7 @@ const VerifyEmail = memo(() => {
                         {status === 'verifying' && (
                             <div className="text-center">
                                 <p className="text-sm text-muted-foreground">
-                                    {t('auth.verifyEmail.pleaseWait')}
+                                    {t('auth.verifyEmailPage.pleaseWait')}
                                 </p>
                             </div>
                         )}

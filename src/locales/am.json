@@ -32,7 +32,9 @@
     "joinUs": "እኛን ይቀላቀሉ",
     "explore": "ያስሱ",
     "refresh": "አድስ",
-    "viewAll": "ሁሉንም እይ"
+    "viewAll": "ሁሉንም እይ",
+    "quickAccess": "ፈጣን መዳረሻ",
+    "browseAll": "ሁሉንም ይመልከቱ"
   },
   "nav": {
     "home": "መነሻ",
@@ -49,7 +51,67 @@
     "gallery": "ጋለሪ",
     "itikafProgram": "ኢእቲ ፕሮግራም",
     "dersProgram": "ደርስ ፕሮግራም",
-    "donate": "ለመለገስ"
+    "donate": "ለመለገስ",
+    "islamicCalendar": "የእስላም የቀን መቁጠሪያ",
+    "resources": "ግብዓቶች",
+    "qiblaDirection": "የቂብላ አቅጣጫ"
+  },
+  "calendar": {
+    "title": "እስላማዊ",
+    "titleHighlight": "የቀን መቁጠሪያ",
+    "description": "እስላማዊ (ሂጅራ) የቀን መቁጠሪያን ከግሪጎርያን የቀን መቁጠሪያ ጎን ለጎን ይመልከቱ።",
+    "todayGregorian": "ዛሬ (ግሪጎርያን)",
+    "todayHijri": "ዛሬ (ሂጅራ)",
+    "gregorianCalendar": "ግሪጎርያን የቀን መቁጠሪያ",
+    "selectedDate": "የተመረጠ ቀን",
+    "hijriApprox": "ሂጅራ (ግምታዊ)",
+    "gregorian": "ግሪጎርያን",
+    "hijriSuffix": "ሂ.ገ",
+    "aboutTitle": "ስለ ሂጅራ የቀን መቁጠሪያ",
+    "aboutDescription": "የእስላም የቀን መቁጠሪያ (ሂጅራ የቀን መቁጠሪያ) በዓመት 354 ወይም 355 ቀናት ያላቸው 12 ወራትን የያዘ የጨረቃ የቀን መቁጠሪያ ነው።",
+    "note": "ማስታወሻ",
+    "accuracyNote": "ይህ የቀን መቁጠሪያ ግምታዊ የሂጅራ ቀናትን ያሳያል። ለትክክለኛ ቀናት የአካባቢዎን እስላማዊ ባለስልጣን ወይም የስነ-ከዋክብት ስሌቶችን ያማክሩ።",
+    "importantMonths": "አስፈላጊ የእስላም ወራት",
+    "ramadan": "ረመዳን",
+    "fasting": "ጾም",
+    "dhulHijjah": "ዙልሂጃ",
+    "hajj": "ሀጅ",
+    "muharram": "ሙሃረም",
+    "newYear": "አዲስ ዓመት",
+    "prevMonth": "ያለፈው ወር",
+    "nextMonth": "የሚቀጥለው ወር",
+    "adjustment": "የሂጅራ ማስተካከያ",
+    "adjustmentDesc": "የሂጅራ ቀንን ከአካባቢው ጨረቃ እይታ ጋር ለማዛመድ በ +/- 2 ቀናት ያስተካክሉ።",
+    "adjustmentNote": "ለውጦች በጠቅላሁ ስርዓት ላይ ይንጸባረቃሉ።",
+    "syncing": "ትክክለኛ ቀናትን በማመሳሰል ላይ...",
+    "accurateSource": "ከAladhan API ጋር የተመሳሰለ",
+    "verified": "የተረጋገጠ",
+    "calculated": "የተሰላ",
+    "months": {
+      "hijri": [
+        "ሙሃረም",
+        "ሰፈር",
+        "ረቢ አል-አወል",
+        "ረቢ አል-ታኒ",
+        "ጁማዳ አል-አወል",
+        "ጁማዳ አል-ታኒ",
+        "ረጀብ",
+        "ሻባን",
+        "ረመዳን",
+        "ሻዋል",
+        "ዙልቂዳህ",
+        "ዙልሂጃ"
+      ]
+    },
+    "weekdays": {
+      "sun": "እሁ",
+      "mon": "ሰኞ",
+      "tue": "ማክ",
+      "wed": "ረቡ",
+      "thu": "ሐሙ",
+      "fri": "አርብ",
+      "sat": "ቅዳ"
+    }
   },
   "hero": {
     "welcomeToTeqwa": "ወደ ተቃዋ እንኳን ደህና መጡ",
@@ -90,11 +152,11 @@
     "newsUpdates": "ዜናዎች እና ዝመናዎች",
     "generalInquiries": "አጠቃላይ ጥያቄዎች",
     "officeHours": "የቢሮ ሰዓቶች",
-    "openDaily": "በዕለት ይከፈታል",
+    "openDaily": "በየቀኑ ክፍት",
     "builtWith": "በ",
-    "forCommunity": "ለማህበረሰባችን ተገንብቷል",
     "backToTop": "ወደ ላይ ተመለስ",
-    "poweredBy": "በተቃዋ ገንቢዎች በብሮልፍ የተገነባ",
+    "forCommunity": "ለማህበረሰባችን",
+    "poweredBy": "በብሮልፍ ቴክዋ ግንቢዎች የቀረበ",
     "donations": "ለመለገስ",
     "futsalBooking": "ፉትሳል ማስያዝ",
     "educationalServices": "የትምህርት አገልግሎቶች",
@@ -103,9 +165,7 @@
     "home": "መነሻ",
     "prayerTimes": "የስግደት ሰዓቶች",
     "events": "ዝግጅቶች",
-    "contact": "ያግኙን",
-    "quickLinks": "ፈጣን አገናኞች",
-    "placeOfWorship": "ለሙስሊሞች የመጸለያ፣ የትምህርት እና የማህበረሰብ ቦታ"
+    "contact": "ያግኙን"
   },
   "prayer": {
     "fajr": "ፋጅር",
@@ -125,6 +185,23 @@
     "schedule": "መርሐግብር",
     "qibla": "ቅብላ",
     "noDataAvailable": "ውሂብ አልተገኘም"
+  },
+  "qibla": {
+    "title": "የእርስዎን",
+    "titleHighlight": "የቅብላ አቅጣጫ ይፈልጉ",
+    "description": "የቅብላ (ካዕባ) አቅጣጫን ከየትኛውም የዓለም ክፍል በትክክል ያግኙ።",
+    "aboutQibla": "ስለ ቅብላ",
+    "aboutQiblaDescription": "ቅብላ ሙስሊሞች በስግደት ጊዜ የሚዞሩበት አቅጣጫ ነው። እሱም በለ መካ፣ ሳውዲ አረቢያ የሚገኘውን ካዕባ ያመለክታል። ይህ መሳሪያ በእርስዎ የአሁኑ አካባቢ ላይ በመመስረት ትክክለኛውን አቅጣጫ ለማግኘት ይረዳዎታል።",
+    "howToUse": "እንዴት መጠቀም እንደሚቻል",
+    "allowLocationAccess": "ለትክክለኛ ውጤቶች የአካባቢ መዳረሻን ይፍቀዱ።",
+    "useDeviceCompass": "መሳሪያዎን በ8 figur motion በማንቀሳቀስ የኮምፓስዎን ያስተካክሉ።",
+    "faceDirection": "ራስዎን በኮምፓሱ ላይ ካለው ቀስት ጋር ያስተካክሉ።",
+    "qiblaCompass": "የቅብላ ኮምፓስ",
+    "qiblaFromNorth": "ቅብላ ከሰሜን",
+    "fromNorth": "ላይ ነው",
+    "compassActive": "ኮምፓስ እየሰራ ነው",
+    "enableCompassDescription": "ለቀጥታ ኮምፓስ መከታተያ የመሳሪያ አቅጣጫን ይፍቀዱ",
+    "enableCompass": "ኮምፓስን አስጀምር"
   },
   "events": {
     "title": "ዝግጅቶች",
@@ -208,7 +285,7 @@
     "howDonationsHelp": "ምጽዋቶችዎ እንዴት ይረዳሉ",
     "educationSupport": "ትምህርት",
     "educationSupportDesc": "የእስላም ጥናቶችን፣ ቁርአን ማስታወስ ፕሮግራሞችን እና ለሁሉም ዕድሜዎች የትምህርት መርጃዎችን ማገዝ።",
-    "communitySupport": "ማህበረሰብ",
+    "communitySupportCategory": "ማህበረሰብ",
     "communitySupportDesc": "ማህበረሰብ ስብሰቦችን፣ ኢፍታር ምግቦችን እና ማህበራዊ ደጋፊ ፕሮግራሞችን ለመደገፍ የማህበረሰባችንን ግንኙነት ለማጠናከር።",
     "maintenanceSupport": "ጠብታ",
     "maintenanceSupportDesc": "ቅዱስ ቦታችን ለዕለታዊ ስግደቶች እና ለመገዛት ንፁህ፣ ደህንነቱ የተጠበቀ እና በትክክል የተጠበቀ እንዲሆን ማረጋገጥ።",
@@ -217,7 +294,6 @@
     "noActiveCausesDesc": "በአሁኑ ጊዜ ምንም የተወሰኑ የምጽዋት ምክንያቶች አይገኙም።",
     "generalDonationAvailable": "ከዚህ በታች አጠቃላይ ምጽዋት ማድረግ ይችላሉ።",
     "goToDonationForm": "ወደ ምጽዋት ቅጹ ይሂዱ",
-    "makeDonation": "ምጽዋት ያድርጉ",
     "supportCommunitySubtitle": "ማህበረሰባችንን በለጋስ አስተዋጽዖዎ ድገፉ",
     "enterCustomAmount": "ብጁ መጠን ያስገቡ",
     "donationSummary": "የምጽዋት ማጠቃለያ",
@@ -250,10 +326,17 @@
     "donate": "ለመለገስ",
     "fullName": "ሙሉ ስም",
     "emailAddress": "የኢሜይል አድራሻ",
-    "phoneNumber": "የስልክ ቁጥር (አማራጭ)"
+    "phoneNumber": "የስልክ ቁጥር (አማራጭ)",
+    "zakatCalculator": "የዘካት ማስያ",
+    "eligibleAmount": "ተገቢ መጠን",
+    "calculatedZakat": "የተሰላ ዘካት (2.5%)",
+    "applyToDonation": "ወደ ምጽዋት ተግብር",
+    "zakatCalculationDesc": "ዘካትዎን ከተገቢ ንብረቶችዎ 2.5% በማስላት ያግኙ።",
+    "donationAmountUpdated": "የምጽዋት መጠን ከዘካት ስሌት ዘምኗል"
   },
   "education": {
     "title": "ትምህርት",
+    "heroPrefix": "የእኛ",
     "educationalPrograms": "የትምህርት ፕሮግራሞች",
     "enhanceKnowledge": "በሰፊው የእስላም ትምህርት ፕሮግራሞቻችን በኩል የእስላም እውቀትዎን ያሻሽሉ። ከቁርአን ማስታወስ እስከ የዓረብኛ ቋንቋ ድረስ፣ ለሁሉም ዕድሜዎች እና ደረጃዎች ኮርሶችን እንሰጣለን።",
     "quranMemorization": "ቁርአን ማስታወስ",
@@ -287,6 +370,11 @@
     "noServicesFound": "ምንም አገልግሎቶች አልተገኙም",
     "noServicesAvailable": "በአሁኑ ጊዜ ምንም የትምህርት አገልግሎቶች አይገኙም።",
     "tryAdjustingFilters": "ተጨማሪ አገልግሎቶችን ለማየት ማጣሪያዎችዎን ለመስተካከል ይሞክሩ።",
+    "enrollNow": "አሁኑኑ ይመዝገቡ",
+    "enrolling": "በመመዝገብ ላይ...",
+    "enrollSucceeded": "ምዝገባ በተሳካ ሁኔታ ተጠናቋል!",
+    "enrollFailed": "በአገልግሎቱ ላይ መመዝገብ አልተሳካም",
+    "alreadyEnrolled": "አስቀድሞ ተመዝግቧል",
     "instructor": "አስተማሪ",
     "filterServices": "አገልግሎቶችን ማጣሪያ",
     "serviceType": "የአገልግሎት አይነት",
@@ -312,7 +400,27 @@
     "quranRecitation": "ቁርአን ንባብ (ቂራት)",
     "quranMemorizationHifz": "ቁርአን ማስታወስ (ሂፍዝ)",
     "tajweed": "ታጅዊድ",
-    "hadithStudies": "የሀዲስ ጥናት"
+    "hadithStudies": "የሀዲስ ጥናት",
+    "dersProgram": "የሳምንት ደርስ ፕሮግራም",
+    "dersProgramDesc": "የእስላም ንግግሮች እና ክፍሎች የሳምንት መርሐግብርን ይመልከቱ።",
+    "days": {
+      "monday": "ሰኞ",
+      "tuesday": "ማክሰኞ",
+      "wednesday": "ረቡዕ",
+      "thursday": "ሐሙስ",
+      "friday": "ዓርብ",
+      "saturday": "ቅዳሜ",
+      "sunday": "እሑድ"
+    },
+    "schedule": {
+      "title": "የደርስ መርሐግብር",
+      "subtitle": "በብቃት ባላቸው ምሁራን የሚመሩ የሳምንት የእውቀት ክፍለ ጊዜዎችን ይቀላቀሉ።",
+      "time": "ሰዓት",
+      "subject": "ርዕሰ ጉዳይ",
+      "instructor": "አስተማሪ",
+      "location": "ቦታ",
+      "noClasses": "ለዚህ ቀን ምንም ክፍሎች አልተያዙም።"
+    }
   },
   "futsal": {
     "title": "ፉትሳል ማስያዝ",
@@ -521,7 +629,7 @@
       "enterEmailAddress": "እባክዎ የኢሜይል አድራሻዎን ያስገቡ",
       "failedToSend": "የዳግም ማስጀመሪያ ኢሜይል ላክ አልተሳካም። እባክዎ እንደገና ይሞክሩ።"
     },
-    "resetPassword": {
+    "resetPasswordPage": {
       "title": "የይለፍ ቃል ዳግም ያስጀምሩ",
       "enterNewPassword": "አዲሱን የይለፍ ቃልዎን ያስገቡ",
       "newPassword": "አዲስ የይለፍ ቃል",
@@ -541,7 +649,7 @@
       "rememberPassword": "የይለፍ ቃልዎን ታስታውሳለህ?",
       "signIn": "ግባ"
     },
-    "verifyEmail": {
+    "verifyEmailPage": {
       "verifying": "ኢሜይል በመረጋገጥ ላይ",
       "verifyingMessage": "ኢሜይልዎን እያረጋገጥን ነው...",
       "emailVerified": "ኢሜይል ተረጋግጧል!",
@@ -597,11 +705,6 @@
       "teacher": "ሰራተኛ / አስተማሪ"
     }
   },
-  "membership": {
-    "title": "አባልነት",
-    "becomeMember": "አባል ይሁኑ",
-    "membershipBenefits": "የአባልነት ጥቅሞች"
-  },
   "gallery": {
     "title": "ጋለሪ",
     "viewAll": "ሁሉንም ፎቶዎች እይ",
@@ -631,6 +734,8 @@
   "news": {
     "title": "ዜናዎች",
     "latestNews": "የቅርብ ጊዜ ዜናዎች",
+    "latestUpdates": "የቅርብ ጊዜ ዝመናዎች",
+    "description": "በማህበረሰባችን ውስጥ ስላሉት የቅርብ ጊዜ ሁኔታዎች እና ማስታወሻዎች መረጃዎን ያግኙ።",
     "readMore": "ተጨማሪ አንብብ",
     "searchNews": "ዜናዎችን ፈልግ...",
     "filter": "ማጣሪያ",
@@ -794,6 +899,10 @@
     "youthPrograms": "የወጣቶች ፕሮግራሞች",
     "youthProgramsDesc": "ለወጣቶቻችን በተለይ የተነደፉ አስማሚ እንቅስቃሴዎች፣ ስፖርቶች እና የመምሪያ ፕሮግራሞች። ተጨማሪ መረጃ ለማግኘት ይጠብቁ።",
     "join": "ይቀላቀሉ",
+    "weeklyDersProgram": "የሳምንት ደርስ ፕሮግራም",
+    "weeklyDersProgramDesc": "ለተለያዩ ደረጃዎች የተለያዩ ርዕሰ ጉዳዮችን የሚሸፍን የተዋቀረ የሳምንት የእስላም ንግግሮች እና ትምህርቶች (ደርስ) ፕሮግራም።",
+    "viewAll": "ሁሉንም እይ",
+    "checkBackSoon": "ለዝማኔዎች በቅርቡ ተመልሰው ይጠብቁ!",
     "needSpecificService": "ተወሳኝ አገልግሎት ይፈልጋሉ?",
     "contactSubtitle": "ለብጁ ምደባዎች ወይስ ስለ አቅርቦቶቻችን ጥያቄዎች ካሉዎት ያግኙን።",
     "getInTouch": "ያግኙን"
@@ -848,11 +957,14 @@
     "joinNow": "አሁኑኑ ይቀላቀሉ",
     "pleaseLogin": "እባክዎ የአባልነት ፕሮግራማችንን ለመቀላቀል ይግቡ",
     "failedToLoad": "የአባልነት አማራጮችን ለመጫን አልተሳካም",
-    "failedToProcess": "የአባልነት ጥያቄን ለመስራት አልተሳካም"
+    "failedToProcess": "የአባልነት ጥያቄን ለመስራት አልተሳካም",
+    "becomeMember": "አባል ይሁኑ",
+    "membershipBenefits": "የአባልነት ጥቅሞች"
   },
   "ders": {
     "title": "ደርስ እና የንግግር ማህደር",
     "description": "የእስላም ንግግሮች፣ ታፍሲር እና የትምህርት ቀረጻዎች ስብስባችንን ያስሱ።",
+    "archiveDescription": "ከአሊሞቻችን እና ከአስተማሪዎቻችን የተቀረጹ ንግግሮችን እና የትምህርት ቁሳቁሶችን ይድረሱ።",
     "searchLectures": "ንግግሮችን በርዕስ ወይስ በመግለጫ ፈልግ...",
     "allSubjects": "ሁሉም ርዕሶች",
     "quranRecitation": "ቁርአን ንባብ",
@@ -978,7 +1090,7 @@
       "fri": "ዓርብ",
       "sat": "ቅዳሜ"
     },
-    "monthNames": {
+    "gregorianMonthNames": {
       "january": "ጃንዋሪ",
       "february": "ፌብሩዋሪ",
       "march": "ማርች",
@@ -1010,29 +1122,6 @@
       "friday": "ዓርብ",
       "saturday": "ቅዳሜ"
     }
-  },
-  "qibla": {
-    "title": "ቅብላ",
-    "titleHighlight": "አቅጣጫ",
-    "description": "ለትክክለኛ የስግደት አቅጣጫ በመካ ውስጥ የካዕባ አቅጣጫን ያግኙ።",
-    "qiblaCompass": "ቅብላ ኮምፓስ",
-    "determiningQibla": "የቅብላ አቅጣጫ በመወሰን ላይ...",
-    "directionToKaaba": "ወደ ካዕባ፣ መካ አቅጣጫ",
-    "location": "አካባቢ",
-    "refreshDirection": "አቅጣጫ ዳግም ያድሱ",
-    "enableCompass": "ኮምፓስ ይክፈቱ",
-    "compassNotAvailable": "ኮምፓስ በዚህ መሣሪያ ላይ አይገኝም። የቅብላ አቅጣጫ ብቻ ይታያል።",
-    "unableToDetermineLocation": "አካባቢዎን ለመወሰን አልተቻለም። ነባሪ የቅብላ አቅጣጫ ጥቅም ላይ ይውላል።",
-    "compassPermissionDenied": "የኮምፓስ ፍቃድ ተቀብሏል",
-    "unableToAccessCompass": "ኮምፓስ ላይ መዳረስ አልተቻለም",
-    "compassActive": "ኮምፓስ ንቁ",
-    "compassInactive": "ኮምፓስ አይሰራም",
-    "aboutQibla": "ስለ ቅብላ",
-    "aboutQiblaDescription": "ቅብላ ሙስሊሞች ስግደት (ሶላህ) ሲያደርጉ ወደሚመለከቱበት አቅጣጫ ነው። ወደ ካዕባ፣ በመካ ውስጥ በሚገኘው ታላቁ መስጊድ መሃል ላይ የሚገኘው ቅዱስ ሕንጻ ያመለክታል።",
-    "howToUse": "እንዴት እንደሚጠቀሙ",
-    "allowLocationAccess": "ለትክክለኛ አቅጣጫ የአካባቢ መዳረሻ ይፍቀዱ",
-    "useDeviceCompass": "ለቀጥታ አቅጣጫ የመሣሪያ ኮምፓስ ይጠቀሙ",
-    "faceDirection": "በኮምፓስ ላይ የሚታየውን አቅጣጫ ይመለከቱ"
   },
   "eventDetail": {
     "loadingEvent": "ዝግጅት በመጫን ላይ...",

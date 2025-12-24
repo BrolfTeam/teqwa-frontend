@@ -5,17 +5,17 @@ import { differenceInSeconds, isAfter } from 'date-fns';
 // Helper function to calculate current/next from prayer times (outside component for use in initializer)
 const calculateCurrentNextFromTimes = (times, date) => {
   if (!times || !times.prayers) return null;
-  
+
   const prayers = Object.values(times.prayers);
   const now = new Date();
-  
+
   const validPrayers = prayers
     .filter(p => p && p.name && p.name.toLowerCase() !== 'sunrise')
     .sort((a, b) => a.time - b.time);
-  
+
   let currentPrayer = null;
   let nextPrayer = null;
-  
+
   // Find current prayer
   for (let i = validPrayers.length - 1; i >= 0; i--) {
     const prayerTime = validPrayers[i].time;
@@ -25,7 +25,7 @@ const calculateCurrentNextFromTimes = (times, date) => {
       break;
     }
   }
-  
+
   // Find next prayer
   for (let i = 0; i < validPrayers.length; i++) {
     if (validPrayers[i].time > now) {
@@ -33,11 +33,11 @@ const calculateCurrentNextFromTimes = (times, date) => {
       break;
     }
   }
-  
+
   const timeToNext = nextPrayer && nextPrayer.time
     ? Math.max(0, (nextPrayer.time - now) / 1000)
     : 0;
-  
+
   return {
     current: currentPrayer,
     next: nextPrayer,
@@ -55,7 +55,7 @@ export const usePrayerTimes = (date = new Date()) => {
       return null;
     }
   });
-  
+
   const [currentNext, setCurrentNext] = useState(() => {
     try {
       // Try to get cached current/next prayer
@@ -70,7 +70,7 @@ export const usePrayerTimes = (date = new Date()) => {
     }
     return null;
   });
-  
+
   const [loading, setLoading] = useState(false); // Never block UI with loading
   const [error, setError] = useState(null);
   const [locationStatus, setLocationStatus] = useState('found'); // Assume we have location from cache
@@ -78,17 +78,17 @@ export const usePrayerTimes = (date = new Date()) => {
   // Helper function to calculate current/next from prayer times (for updates)
   const calculateCurrentNextFromTimesCallback = useCallback((times) => {
     if (!times || !times.prayers) return null;
-    
+
     const prayers = Object.values(times.prayers);
     const now = new Date();
-    
+
     const validPrayers = prayers
       .filter(p => p && p.name && p.name.toLowerCase() !== 'sunrise')
       .sort((a, b) => a.time - b.time);
-    
+
     let currentPrayer = null;
     let nextPrayer = null;
-    
+
     // Find current prayer
     for (let i = validPrayers.length - 1; i >= 0; i--) {
       const prayerTime = validPrayers[i].time;
@@ -98,7 +98,7 @@ export const usePrayerTimes = (date = new Date()) => {
         break;
       }
     }
-    
+
     // Find next prayer
     for (let i = 0; i < validPrayers.length; i++) {
       if (validPrayers[i].time > now) {
@@ -106,7 +106,7 @@ export const usePrayerTimes = (date = new Date()) => {
         break;
       }
     }
-    
+
     return calculateCurrentNextFromTimes(times, date);
   }, [date]);
 
@@ -126,9 +126,9 @@ export const usePrayerTimes = (date = new Date()) => {
       // Get prayer times (cache-first, background refresh)
       const times = await prayerTimesService.getFormattedPrayerTimes(date, {
         skipCache: forceRefresh,
-        backgroundRefresh: !forceRefresh
+        backgroundRefresh: forceRefresh // Only refresh in background if forcing (or if user requested)
       });
-      
+
       if (times) {
         setPrayerTimes(times);
 
@@ -137,7 +137,7 @@ export const usePrayerTimes = (date = new Date()) => {
         if (isToday) {
           const currentNextData = await prayerTimesService.getCurrentAndNextPrayer(date, {
             skipCache: forceRefresh,
-            backgroundRefresh: !forceRefresh
+            backgroundRefresh: forceRefresh // Only refresh in background if forcing (or if user requested)
           });
           if (currentNextData) {
             setCurrentNext(currentNextData);
@@ -166,7 +166,7 @@ export const usePrayerTimes = (date = new Date()) => {
         if (updateDate.toDateString() === date.toDateString()) {
           // Silently update with fresh data
           setPrayerTimes(event.detail.data);
-          
+
           // Recalculate current/next if today
           const isToday = date.toDateString() === new Date().toDateString();
           if (isToday) {
@@ -174,7 +174,7 @@ export const usePrayerTimes = (date = new Date()) => {
               .then(data => {
                 if (data) setCurrentNext(data);
               })
-              .catch(() => {});
+              .catch(() => { });
           }
         }
       }
@@ -219,23 +219,23 @@ export const useCurrentPrayer = () => {
     }
     return null;
   });
-  
+
   const [currentTime, setCurrentTime] = useState(new Date());
 
   // Helper to calculate current/next from cached times
   const calculateCurrentNextFromCached = (times) => {
     if (!times || !times.prayers) return null;
-    
+
     const prayers = Object.values(times.prayers);
     const now = new Date();
-    
+
     const validPrayers = prayers
       .filter(p => p && p.name && p.name.toLowerCase() !== 'sunrise')
       .sort((a, b) => a.time - b.time);
-    
+
     let currentPrayer = null;
     let nextPrayer = null;
-    
+
     // Find current prayer
     for (let i = validPrayers.length - 1; i >= 0; i--) {
       const prayerTime = validPrayers[i].time;
@@ -245,7 +245,7 @@ export const useCurrentPrayer = () => {
         break;
       }
     }
-    
+
     // Find next prayer
     for (let i = 0; i < validPrayers.length; i++) {
       if (validPrayers[i].time > now) {
@@ -253,11 +253,11 @@ export const useCurrentPrayer = () => {
         break;
       }
     }
-    
+
     const timeToNext = nextPrayer && nextPrayer.time
       ? Math.max(0, (nextPrayer.time - now) / 1000)
       : 0;
-    
+
     return {
       current: currentPrayer,
       next: nextPrayer,
@@ -271,7 +271,7 @@ export const useCurrentPrayer = () => {
       try {
         const currentNextData = await prayerTimesService.getCurrentAndNextPrayer(new Date(), {
           skipCache: false,
-          backgroundRefresh: true
+          backgroundRefresh: false // Don't block or fetch in background for widgets
         });
         if (currentNextData) {
           setCurrentNext(currentNextData);
@@ -293,7 +293,7 @@ export const useCurrentPrayer = () => {
     // Update every second for countdown
     const timer = setInterval(() => {
       setCurrentTime(new Date());
-      
+
       // Recalculate timeToNext every second (no network call)
       setCurrentNext(prev => {
         if (!prev || !prev.next) return prev;
@@ -301,7 +301,7 @@ export const useCurrentPrayer = () => {
         const timeToNext = Math.max(0, (prev.next.time - now) / 1000);
         return { ...prev, timeToNext };
       });
-      
+
       // Update prayer data every minute (cache-first)
       if (new Date().getSeconds() === 0) {
         updateCurrentPrayer();
@@ -325,7 +325,7 @@ export const useMonthlyPrayerTimes = (year, month) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const loadMonthlyTimes = useCallback(async () => {
+  const loadMonthlyTimes = useCallback(async (enableNetwork = false) => {
     try {
       setLoading(true);
       setError(null);
@@ -333,8 +333,9 @@ export const useMonthlyPrayerTimes = (year, month) => {
       // Ensure location is available
       await prayerTimesService.getCurrentLocation();
 
-      // Get monthly prayer times
-      const times = await prayerTimesService.getMonthlyPrayerTimes(year, month);
+      // Get monthly prayer times - NO network by default unless specified (passed via param or new method)
+      // For now, default to offline/cache-only for initial load
+      const times = await prayerTimesService.getMonthlyPrayerTimes(year, month, { enableNetwork });
       setMonthlyTimes(times);
 
     } catch (err) {
@@ -353,7 +354,7 @@ export const useMonthlyPrayerTimes = (year, month) => {
     monthlyTimes,
     loading,
     error,
-    refreshMonthlyTimes: loadMonthlyTimes
+    refreshMonthlyTimes: (enableNetwork = true) => loadMonthlyTimes(enableNetwork)
   };
 };
 
@@ -374,7 +375,7 @@ export const useQiblaDirection = () => {
         // Check for compass availability
         if ('DeviceOrientationEvent' in window) {
           setIsCompassAvailable(true);
-          
+
           const handleOrientation = (event) => {
             if (event.webkitCompassHeading !== undefined) {
               // iOS
@@ -386,7 +387,7 @@ export const useQiblaDirection = () => {
           };
 
           window.addEventListener('deviceorientation', handleOrientation);
-          
+
           return () => {
             window.removeEventListener('deviceorientation', handleOrientation);
           };

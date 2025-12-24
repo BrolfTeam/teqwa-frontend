@@ -346,7 +346,7 @@ const PrayerTimesWidget = memo(({ className = '', showNavigation = true, compact
         if (updateDate.toDateString() === selectedDate.toDateString()) {
           // Silently update with fresh data
           setPrayerData(event.detail.data);
-          
+
           // Recalculate current/next if today
           const isToday = selectedDate.toDateString() === new Date().toDateString();
           if (isToday) {
@@ -355,7 +355,7 @@ const PrayerTimesWidget = memo(({ className = '', showNavigation = true, compact
               backgroundRefresh: false
             }).then(data => {
               if (data) setCurrentNext(data);
-            }).catch(() => {});
+            }).catch(() => { });
           }
         }
       }
@@ -517,10 +517,10 @@ const PrayerTimesWidget = memo(({ className = '', showNavigation = true, compact
           />
 
           {/* Main Card */}
-          <Card className={`w-full max-w-full flex flex-col max-h-[calc(85vh-9rem)] overflow-hidden relative border-white/20 shadow-2xl ${className} bg-background/80 backdrop-blur-xl`}
+          <Card className={`w-full max-w-full flex flex-col relative border-white/20 shadow-2xl ${className} bg-background/80 backdrop-blur-xl overflow-hidden`}
             style={{
-              transform: 'translateZ(0px)',
-              transformStyle: 'preserve-3d',
+              transform: isMobile ? 'none' : 'translateZ(0px)',
+              transformStyle: isMobile ? 'flat' : 'preserve-3d',
             }}
           >
             {/* Texture/Pattern Overlay */}
@@ -539,10 +539,10 @@ const PrayerTimesWidget = memo(({ className = '', showNavigation = true, compact
                   </button>
                 )}
                 <div className="text-center">
-                  <div className="text-sm font-semibold text-foreground tracking-wide">
+                  <div className="text-base font-bold text-foreground tracking-wide">
                     {format(selectedDate, 'EEEE, d MMMM')}
                   </div>
-                  <div className="text-xs text-muted-foreground font-medium mt-0.5">
+                  <div className="text-sm text-muted-foreground font-medium mt-0.5">
                     {prayerData?.hijriDate || 'Islamic Date'}
                   </div>
                 </div>
@@ -557,25 +557,25 @@ const PrayerTimesWidget = memo(({ className = '', showNavigation = true, compact
               {isToday && currentNext && (
                 <div className="bg-primary/5 rounded-xl p-3 mb-2 flex flex-wrap gap-y-2 items-center justify-between flex-shrink-0 border border-primary/10 relative overflow-hidden group">
                   <div className="relative z-10">
-                    <div className="flex items-center gap-2 mb-0.5">
-                      <span className="text-[10px] uppercase tracking-wider font-bold text-primary bg-primary/10 px-1.5 py-0.5 rounded-sm">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="text-[11px] uppercase tracking-wider font-extrabold text-primary bg-primary/10 px-2 py-0.5 rounded-md">
                         {t('prayer.next')} {currentNext.next?.name === 'Fajr' && new Date().getHours() > 12 ? `(${t('prayer.tomorrow')})` : ''}
                       </span>
-                      <span className="text-xl font-bold text-foreground">{getPrayerTranslation(currentNext.next?.name, t)}</span>
+                      <span className="text-2xl font-black text-foreground">{getPrayerTranslation(currentNext.next?.name, t)}</span>
                     </div>
-                    <div className="text-2xl font-light text-foreground/90 leading-none">
+                    <div className="text-3xl font-light text-foreground/90 leading-none">
                       {currentNext.next?.formatted}
                     </div>
                   </div>
 
                   <div className="text-right relative z-10">
                     {currentNext.timeToNext > 0 && (
-                      <div className="text-sm font-semibold text-primary mb-0.5 tabular-nums">
+                      <div className="text-base font-bold text-primary mb-1 tabular-nums">
                         - {prayerTimesService.formatTimeRemaining(currentNext.timeToNext)}
                       </div>
                     )}
-                    <div className="text-[10px] text-muted-foreground/80">
-                      {t('prayer.now')} <span className="font-medium text-foreground">{getPrayerTranslation(currentNext.current?.name, t)}</span>
+                    <div className="text-xs text-muted-foreground/80">
+                      {t('prayer.now')} <span className="font-bold text-foreground">{getPrayerTranslation(currentNext.current?.name, t)}</span>
                     </div>
                   </div>
 
@@ -604,28 +604,35 @@ const PrayerTimesWidget = memo(({ className = '', showNavigation = true, compact
                       return (
                         <div
                           key={prayer.name}
-                          className={`flex items-center justify-between px-3 py-2 rounded-lg transition-all ${isCurrent
-                            ? 'bg-primary text-primary-foreground shadow-sm font-medium translate-x-0.5'
+                          className={`flex items-center justify-between px-4 py-3 rounded-xl transition-all ${isCurrent
+                            ? 'bg-primary text-primary-foreground shadow-lg font-semibold scale-[1.02]'
                             : isNext
-                              ? 'bg-primary/5 text-primary font-medium'
-                              : 'text-muted-foreground/80 hover:bg-muted/50'
-                            }`}
+                              ? 'bg-primary/10 text-primary font-semibold'
+                              : 'text-foreground/90 hover:bg-muted font-medium'
+                            } mb-1`}
                         >
-                          <div className="flex items-center gap-3 flex-1 min-w-0">
-                            <span className="text-lg opacity-70 w-6 text-center flex-shrink-0">{prayer.icon || '🕌'}</span>
+                          <div className="flex items-center gap-4 flex-1 min-w-0">
+                            <span className="text-2xl opacity-80 w-8 text-center flex-shrink-0">{prayer.icon || '🕌'}</span>
                             <div className="flex flex-col min-w-0 flex-1">
-                              <span className="text-sm">{getPrayerTranslation(prayer.name, t)}</span>
+                              <span className="text-base">{getPrayerTranslation(prayer.name, t)}</span>
                               {imam && (
-                                <span className={`text-[10px] opacity-80 truncate ${isCurrent ? 'text-primary-foreground/80' : 'text-muted-foreground'}`}>
-                                  <FiUser className="inline h-2.5 w-2.5 mr-1" />
+                                <span className={`text-xs opacity-80 truncate ${isCurrent ? 'text-primary-foreground/90' : 'text-muted-foreground'}`}>
+                                  <FiUser className="inline h-3 w-3 mr-1" />
                                   {imam}
                                 </span>
                               )}
                             </div>
                           </div>
-                          <div className="flex items-center gap-3 flex-shrink-0">
-                            <span className="text-sm font-semibold tracking-wide">{prayer.formatted}</span>
-                            {isCurrent && <FiBell className="h-3.5 w-3.5" />}
+                          <div className="flex items-center gap-4 flex-shrink-0">
+                            <span className="text-base font-bold tracking-wide">{prayer.formatted}</span>
+                            {isCurrent && (
+                              <motion.div
+                                animate={{ scale: [1, 1.2, 1] }}
+                                transition={{ duration: 1.5, repeat: Infinity }}
+                              >
+                                <FiBell className="h-4 w-4" />
+                              </motion.div>
+                            )}
                           </div>
                         </div>
                       );
@@ -636,29 +643,35 @@ const PrayerTimesWidget = memo(({ className = '', showNavigation = true, compact
               </div>
 
               {/* 4. Sun Times Footer - Compact */}
-              <div className="flex justify-between items-center px-3 py-2 bg-muted/40 rounded-md mb-2 text-[10px] sm:text-xs text-muted-foreground flex-shrink-0">
-                <div className="flex items-center gap-1.5">
-                  <FiSun className="h-3 w-3 opacity-70" />
-                  <span>{t('prayer.sunrise')}: <span className="font-medium text-foreground/80">{sunrise?.formatted || '--'}</span></span>
+              <div className="grid grid-cols-2 gap-2 px-3 py-3 bg-muted/60 rounded-xl mb-3 text-sm text-muted-foreground flex-shrink-0">
+                <div className="flex items-center justify-center gap-2 border-r border-border/50">
+                  <FiSun className="h-4 w-4 text-orange-400" />
+                  <div className="flex flex-col">
+                    <span className="text-[10px] uppercase font-bold opacity-60 line-height-none mb-0.5">{t('prayer.sunrise')}</span>
+                    <span className="font-bold text-foreground text-sm leading-none">{sunrise?.formatted || '--'}</span>
+                  </div>
                 </div>
-                <div className="flex items-center gap-1.5">
-                  <FiMoon className="h-3 w-3 opacity-70" />
-                  <span>{t('prayer.maghrib')}: <span className="font-medium text-foreground/80">{sunset?.formatted || '--'}</span></span>
+                <div className="flex items-center justify-center gap-2">
+                  <FiMoon className="h-4 w-4 text-indigo-400" />
+                  <div className="flex flex-col">
+                    <span className="text-[10px] uppercase font-bold opacity-60 line-height-none mb-0.5">{t('prayer.maghrib')}</span>
+                    <span className="font-bold text-foreground text-sm leading-none">{sunset?.formatted || '--'}</span>
+                  </div>
                 </div>
               </div>
 
               {/* 5. Buttons - Compact */}
               {showNavigation && (
-                <div className="flex gap-2 mt-auto pt-1 border-t border-border/10 flex-shrink-0 pb-1">
-                  <Button asChild size="sm" className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm font-medium h-8 text-xs">
-                    <Link to="/prayer-times" className="flex items-center justify-center gap-1.5">
-                      <FiCalendar className="h-3.5 w-3.5" />
+                <div className="grid grid-cols-2 gap-3 mt-auto pt-2 border-t border-border/10 flex-shrink-0">
+                  <Button asChild size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg font-bold h-12 rounded-xl text-sm">
+                    <Link to="/prayer-times" className="flex items-center justify-center gap-2">
+                      <FiCalendar className="h-4 w-4" />
                       <span>{t('prayer.schedule')}</span>
                     </Link>
                   </Button>
-                  <Button asChild size="sm" variant="outline" className="flex-1 border-primary/20 text-primary hover:bg-primary/5 hover:text-primary shadow-sm font-medium h-8 text-xs">
-                    <Link to="/prayer-times#qibla" className="flex items-center justify-center gap-1.5">
-                      <FiCompass className="h-3.5 w-3.5" />
+                  <Button asChild size="lg" variant="outline" className="border-primary/30 text-primary hover:bg-primary/5 hover:text-primary shadow-sm font-bold h-12 rounded-xl text-sm">
+                    <Link to="/prayer-times#qibla" className="flex items-center justify-center gap-2">
+                      <FiCompass className="h-4 w-4" />
                       <span>{t('prayer.qibla')}</span>
                     </Link>
                   </Button>

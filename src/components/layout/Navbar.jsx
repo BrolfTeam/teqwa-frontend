@@ -41,7 +41,7 @@ const Navbar = memo(() => {
         { name: t('nav.news'), path: '/news', key: 'news' },
         { name: t('nav.gallery'), path: '/gallery', key: 'gallery' },
         { name: t('nav.itikafProgram'), path: '/itikaf', key: 'itikaf' },
-        { name: t('nav.dersProgram'), path: '/ders', key: 'ders' },
+        { name: t('nav.dersProgram'), path: '/ders-program', key: 'ders' },
       ]
     },
     { name: t('nav.membership'), path: '/membership', icon: FiUser, key: 'membership' },
@@ -110,7 +110,7 @@ const Navbar = memo(() => {
                     : 'text-gray-600 hover:text-emerald-700 hover:bg-emerald-50/50 dark:text-gray-300 dark:hover:text-emerald-400 dark:hover:bg-emerald-900/20'
                     }`}
                 >
-                    <span>{item.name}</span>
+                  <span>{item.name}</span>
                   <FiChevronDown className={`h-4 w-4 transition-transform duration-200 ${activeDropdown === item.key ? 'rotate-180' : ''}`} />
                 </button>
               ) : (

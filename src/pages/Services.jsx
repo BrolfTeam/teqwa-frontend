@@ -9,7 +9,7 @@ import mesjidBg from '@/assets/mesjid2.jpg';
 
 const Services = () => {
     const { t } = useTranslation();
-    
+
     const services = [
         {
             id: 'daily-prayers',
@@ -34,6 +34,14 @@ const Services = () => {
             icon: FiBookOpen,
             link: '/education',
             action: t('services.classes')
+        },
+        {
+            id: 'weekly-ders-program',
+            title: t('services.weeklyDersProgram'),
+            description: t('services.weeklyDersProgramDesc'),
+            icon: FiCalendar,
+            link: '/ders-program',
+            action: t('services.learnMore')
         },
         {
             id: 'charity-zakat',

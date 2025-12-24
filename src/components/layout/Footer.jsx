@@ -20,7 +20,7 @@ import { siteConfig } from '@/config/site';
 import { useTranslation } from '@/hooks/useTranslation';
 
 const Footer = memo(() => {
-  const { t } = useTranslation();
+  const { t, translate } = useTranslation();
   const currentYear = new Date().getFullYear();
 
   const scrollToTop = () => {
@@ -279,7 +279,7 @@ const Footer = memo(() => {
               className="flex items-center gap-2 px-4 py-2 rounded-lg bg-muted border border-border/50 text-sm text-muted-foreground hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all duration-200"
               aria-label="Scroll to top"
             >
-              <span>{t('footer.backToTop')}</span>
+              <span>{translate('footer.backToTop', 'Back to Top')}</span>
               <FiArrowUp className="w-4 h-4" />
             </motion.button>
           </div>

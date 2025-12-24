@@ -32,7 +32,9 @@
     "joinUs": "انضم إلينا",
     "explore": "استكشف",
     "refresh": "تحديث",
-    "viewAll": "عرض الكل"
+    "viewAll": "عرض الكل",
+    "quickAccess": "الوصول السريع",
+    "browseAll": "تصفح الكل"
   },
   "nav": {
     "home": "الرئيسية",
@@ -49,7 +51,67 @@
     "gallery": "المعرض",
     "itikafProgram": "برنامج الاعتكاف",
     "dersProgram": "برنامج الدروس",
-    "donate": "تبرع"
+    "donate": "تبرع",
+    "islamicCalendar": "التقويم الإسلامي",
+    "resources": "المصادر",
+    "qiblaDirection": "اتجاه القبلة"
+  },
+  "calendar": {
+    "title": "التقويم",
+    "titleHighlight": "الإسلامي",
+    "description": "عرض التقويم الإسلامي (الهجري) جنباً إلى جنب مع التقويم الميلادي.",
+    "todayGregorian": "اليوم (ميلادي)",
+    "todayHijri": "اليوم (هجري)",
+    "gregorianCalendar": "التقويم الميلادي",
+    "selectedDate": "التاريخ المختار",
+    "hijriApprox": "هجري (تقريبي)",
+    "gregorian": "ميلادي",
+    "hijriSuffix": "هـ",
+    "aboutTitle": "حول التقويم الهجري",
+    "aboutDescription": "التقويم الإسلامي (التقويم الهجري) هو تقويم قمري يتكون من 12 شهراً في سنة مكونة من 354 أو 355 يوماً.",
+    "note": "ملاحظة",
+    "accuracyNote": "يظهر هذا التقويم تواريخ هجرية تقريبية. للتواريخ الدقيقة، استشر السلطة الإسلامية المحلية أو الحسابات الفلكية.",
+    "importantMonths": "أشهر إسلامية مهمة",
+    "ramadan": "رمضان",
+    "fasting": "صيام",
+    "dhulHijjah": "ذو الحجة",
+    "hajj": "الحج",
+    "muharram": "محرم",
+    "newYear": "رأس السنة",
+    "prevMonth": "الشهر السابق",
+    "nextMonth": "الشهر التالي",
+    "adjustment": "تعديل التاريخ الهجري",
+    "adjustmentDesc": "قم بتعديل التاريخ الهجري بمقدار +/- 2 يوم لمطابقة رؤية الهلال المحلية.",
+    "adjustmentNote": "سيتم عكس التغييرات في النظام بالكامل.",
+    "syncing": "جاري مزامنة التواريخ...",
+    "accurateSource": "متزامن مع Aladhan API",
+    "verified": "تم التحقق",
+    "calculated": "تم حسابه",
+    "months": {
+      "hijri": [
+        "محرم",
+        "صفر",
+        "ربيع الأول",
+        "ربيع الثاني",
+        "جمادى الأولى",
+        "جمادى الآخرة",
+        "رجب",
+        "شعبان",
+        "رمضان",
+        "شوال",
+        "ذو القعدة",
+        "ذو الحجة"
+      ]
+    },
+    "weekdays": {
+      "sun": "أح",
+      "mon": "إث",
+      "tue": "ثل",
+      "wed": "أر",
+      "thu": "خم",
+      "fri": "جم",
+      "sat": "سب"
+    }
   },
   "hero": {
     "welcomeToTeqwa": "مرحباً بكم في تقوى",
@@ -103,9 +165,7 @@
     "home": "الرئيسية",
     "prayerTimes": "أوقات الصلاة",
     "events": "الفعاليات",
-    "contact": "اتصل بنا",
-    "quickLinks": "روابط سريعة",
-    "placeOfWorship": "مكان للعبادة والتعلم والمجتمع للمسلمين في منطقتنا"
+    "contact": "اتصل بنا"
   },
   "prayer": {
     "fajr": "الفجر",
@@ -208,7 +268,7 @@
     "howDonationsHelp": "كيف تساعد تبرعاتك",
     "educationSupport": "التعليم",
     "educationSupportDesc": "دعم الدراسات الإسلامية وبرامج حفظ القرآن والموارد التعليمية لجميع الأعمار.",
-    "communitySupport": "المجتمع",
+    "communitySupportCategory": "المجتمع",
     "communitySupportDesc": "تمويل التجمعات المجتمعية ووجبات الإفطار وبرامج الرعاية الاجتماعية لتقوية روابطنا.",
     "maintenanceSupport": "الصيانة",
     "maintenanceSupportDesc": "ضمان بقاء مساحتنا المقدسة نظيفة وآمنة ومحفوظة جيداً للصلاة اليومية والعبادة.",
@@ -217,7 +277,6 @@
     "noActiveCausesDesc": "لا توجد حالياً قضايا تبرع محددة متاحة.",
     "generalDonationAvailable": "يمكنك إجراء تبرع عام أدناه.",
     "goToDonationForm": "انتقل إلى نموذج التبرع",
-    "makeDonation": "تبرع",
     "supportCommunitySubtitle": "ادعم مجتمعنا بمساهمتك السخية",
     "enterCustomAmount": "أدخل مبلغاً مخصصاً",
     "donationSummary": "ملخص التبرع",
@@ -250,7 +309,13 @@
     "donate": "تبرع",
     "fullName": "الاسم الكامل",
     "emailAddress": "عنوان البريد الإلكتروني",
-    "phoneNumber": "رقم الهاتف (اختياري)"
+    "phoneNumber": "رقم الهاتف (اختياري)",
+    "zakatCalculator": "حاسبة الزكاة",
+    "eligibleAmount": "المبلغ المؤهل",
+    "calculatedZakat": "الزكاة المحسوبة (2.5%)",
+    "applyToDonation": "تطبيق على التبرع",
+    "zakatCalculationDesc": "احسب زكاتك بناءً على 2.5% من أصولك المؤهلة.",
+    "donationAmountUpdated": "تم تحديث مبلغ التبرع من حساب الزكاة"
   },
   "education": {
     "title": "التعليم",
@@ -287,6 +352,11 @@
     "noServicesFound": "لم يتم العثور على خدمات",
     "noServicesAvailable": "لا توجد خدمات تعليمية متاحة حالياً.",
     "tryAdjustingFilters": "حاول تعديل المرشحات لرؤية المزيد من الخدمات.",
+    "enrollNow": "سجل الآن",
+    "enrolling": "جاري التسجيل...",
+    "enrollSucceeded": "تم التسجيل بنجاح!",
+    "enrollFailed": "فشل التسجيل في الخدمة",
+    "alreadyEnrolled": "مسجل بالفعل",
     "instructor": "المدرب",
     "filterServices": "تصفية الخدمات",
     "serviceType": "نوع الخدمة",
@@ -312,7 +382,28 @@
     "quranRecitation": "تلاوة القرآن (القراءة)",
     "quranMemorizationHifz": "حفظ القرآن (الحفظ)",
     "tajweed": "التجويد",
-    "hadithStudies": "دراسات الحديث"
+    "hadithStudies": "دراسات الحديث",
+    "weeklySchedule": "الجدول الأسبوعي",
+    "dersProgram": "برنامج الدروس الأسبوعي",
+    "dersProgramDesc": "عرض جدولنا الأسبوعي للمحاضرات والدروس الإسلامية.",
+    "days": {
+      "monday": "الاثنين",
+      "tuesday": "الثلاثاء",
+      "wednesday": "الأربعاء",
+      "thursday": "الخميس",
+      "friday": "الجمعة",
+      "saturday": "السبت",
+      "sunday": "الأحد"
+    },
+    "schedule": {
+      "title": "جدول الدروس",
+      "subtitle": "انضم إلى جلساتنا العلمية الأسبوعية التي يقودها علماء مؤهلون.",
+      "time": "الوقت",
+      "subject": "الموضوع",
+      "instructor": "المدرس",
+      "location": "الموقع",
+      "noClasses": "لا توجد دروس محددة لهذا اليوم."
+    }
   },
   "futsal": {
     "title": "حجز ملعب كرة القدم",
@@ -521,7 +612,7 @@
       "enterEmailAddress": "يرجى إدخال عنوان بريدك الإلكتروني",
       "failedToSend": "فشل إرسال بريد إعادة التعيين. يرجى المحاولة مرة أخرى."
     },
-    "resetPassword": {
+    "resetPasswordPage": {
       "title": "إعادة تعيين كلمة المرور",
       "enterNewPassword": "أدخل كلمة المرور الجديدة",
       "newPassword": "كلمة المرور الجديدة",
@@ -541,7 +632,7 @@
       "rememberPassword": "تذكرت كلمة المرور؟",
       "signIn": "تسجيل الدخول"
     },
-    "verifyEmail": {
+    "verifyEmailPage": {
       "verifying": "التحقق من البريد الإلكتروني",
       "verifyingMessage": "جاري التحقق من بريدك الإلكتروني...",
       "emailVerified": "تم التحقق من البريد الإلكتروني!",
@@ -597,11 +688,6 @@
       "teacher": "الموظف / المعلم"
     }
   },
-  "membership": {
-    "title": "العضوية",
-    "becomeMember": "كن عضواً",
-    "membershipBenefits": "فوائد العضوية"
-  },
   "gallery": {
     "title": "المعرض",
     "viewAll": "عرض جميع الصور",
@@ -631,6 +717,8 @@
   "news": {
     "title": "الأخبار",
     "latestNews": "آخر الأخبار",
+    "latestUpdates": "آخر التحديثات",
+    "description": "ابق على اطلاع بآخر الأحداث والإعلانات في مجتمعنا.",
     "readMore": "اقرأ المزيد",
     "searchNews": "البحث في الأخبار...",
     "filter": "تصفية",
@@ -794,6 +882,10 @@
     "youthPrograms": "برامج الشباب",
     "youthProgramsDesc": "أنشطة جذابة ورياضات وبرامج إرشادية مصممة خصيصاً لشبابنا. ترقبوا المزيد من المعلومات.",
     "join": "انضم",
+    "weeklyDersProgram": "برنامج الدروس الأسبوعي",
+    "weeklyDersProgramDesc": "برنامج أسبوعي منظم للمحاضرات والدروس الإسلامية (دروس) يغطي مواضيع متنوعة لجميع المستويات.",
+    "viewAll": "عرض الكل",
+    "checkBackSoon": "ترقبوا التحديثات قريبا!",
     "needSpecificService": "تحتاج خدمة محددة؟",
     "contactSubtitle": "اتصل بنا للترتيبات المخصصة أو إذا كان لديك أسئلة حول أي من مرافقنا.",
     "getInTouch": "تواصل معنا"
@@ -838,6 +930,8 @@
   },
   "membership": {
     "title": "العضوية",
+    "becomeMember": "كن عضواً",
+    "membershipBenefits": "فوائد العضوية",
     "subtitle": "انضم إلى مجتمعنا وكن عضواً في مجمع التقوى.",
     "loginToJoin": "تسجيل الدخول للانضمام",
     "chooseMembershipTier": "اختر مستوى العضوية الخاص بك",
@@ -853,6 +947,7 @@
   "ders": {
     "title": "أرشيف الدروس والمحاضرات",
     "description": "استكشف مجموعتنا من المحاضرات الإسلامية والتفسير والتسجيلات التعليمية.",
+    "archiveDescription": "الوصول إلى المحاضرات المسجلة والمواد التعليمية من علمائنا ومعلمينا.",
     "searchLectures": "ابحث عن المحاضرات بالعنوان أو الوصف...",
     "allSubjects": "جميع المواضيع",
     "quranRecitation": "تلاوة القرآن",
@@ -978,7 +1073,7 @@
       "fri": "جمعة",
       "sat": "سبت"
     },
-    "monthNames": {
+    "gregorianMonthNames": {
       "january": "يناير",
       "february": "فبراير",
       "march": "مارس",

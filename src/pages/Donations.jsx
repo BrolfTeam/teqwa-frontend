@@ -34,6 +34,7 @@ const Donations = memo(() => {
     phone: '',
     anonymous: false,
   });
+  const [zakatEligibleAmount, setZakatEligibleAmount] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [loading, setLoading] = useState(true);
   const { user, isAuthenticated } = useAuth();
@@ -64,7 +65,7 @@ const Donations = memo(() => {
         if (mappedCategories.length > 0) {
           // Pre-select cause from URL parameter if provided, otherwise use first category
           const causeIdFromUrl = causeParam ? parseInt(causeParam, 10) : null;
-          const matchingCause = causeIdFromUrl 
+          const matchingCause = causeIdFromUrl
             ? mappedCategories.find(cat => cat.id === causeIdFromUrl)
             : null;
           setSelectedCategory(matchingCause ? matchingCause.id : mappedCategories[0].id);
@@ -365,7 +366,7 @@ const Donations = memo(() => {
                       icon: FiBook
                     },
                     {
-                      title: t('donations.communitySupport'),
+                      title: t('donations.communitySupportCategory'),
                       description: t('donations.communitySupportDesc'),
                       icon: FiUsers
                     },
@@ -479,7 +480,7 @@ const Donations = memo(() => {
                           </div>
                         </div>
                       )}
-                      
+
                       <CardHeader className="text-center pb-4 pt-6">
                         <CardTitle className="text-lg leading-tight">{category.title}</CardTitle>
                       </CardHeader>
@@ -487,7 +488,7 @@ const Donations = memo(() => {
                         <p className="text-sm text-muted-foreground text-center line-clamp-3 mb-4">
                           {category.description}
                         </p>
-                        
+
                         {/* Progress Bar (if target_amount exists) */}
                         {category.target_amount && category.target_amount > 0 && (
                           <div className="mb-4">
@@ -510,7 +511,7 @@ const Donations = memo(() => {
                             </p>
                           </div>
                         )}
-                        
+
                         <Button variant="ghost" className="w-full mt-4 text-primary hover:text-primary/80 group-hover:underline">
                           {t('donations.donateNow')}
                         </Button>
@@ -547,7 +548,7 @@ const Donations = memo(() => {
                         </div>
                       </div>
                     </div>
-                    
+
                     <CardContent className="p-6 space-y-8">
                       {/* Amount Selection */}
                       <div className="space-y-4">
@@ -555,7 +556,7 @@ const Donations = memo(() => {
                           <label className="text-base font-semibold text-foreground">{t('donations.selectAmount')}</label>
                           <span className="text-xs text-muted-foreground">{t('donations.customAmount')}</span>
                         </div>
-                        
+
                         {/* Quick Amount Buttons */}
                         <div className="grid grid-cols-3 md:grid-cols-5 gap-3">
                           {donationAmounts.map((amount) => (
@@ -585,7 +586,7 @@ const Donations = memo(() => {
                             </motion.button>
                           ))}
                         </div>
-                        
+
                         {/* Custom Amount Input */}
                         <div className="relative group">
                           <div className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center gap-2 text-muted-foreground group-focus-within:text-primary transition-colors">
@@ -718,7 +719,7 @@ const Donations = memo(() => {
                             </div>
                           )}
                         </Button>
-                        
+
                         <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
                           <FiShield className="w-4 h-4" />
                           <span>{t('donations.securePaymentChapa')}</span>
@@ -730,6 +731,73 @@ const Donations = memo(() => {
 
                 {/* Donation Summary Sidebar */}
                 <div className="lg:col-span-1">
+                  <motion.div
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.1 }}
+                    className="mb-6"
+                  >
+                    <Card className="shadow-xl border-border/50 bg-gradient-to-br from-primary/5 to-background overflow-hidden group">
+                      <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity pointer-events-none">
+                        <IslamicPattern className="w-32 h-32 text-primary" />
+                      </div>
+                      <CardHeader className="pb-4">
+                        <CardTitle className="text-lg font-bold flex items-center gap-2">
+                          <FiSun className="w-5 h-5 text-primary" />
+                          {t('donations.zakatCalculator')}
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        <p className="text-xs text-muted-foreground leading-relaxed">
+                          {t('donations.zakatCalculationDesc')}
+                        </p>
+                        <div className="space-y-2">
+                          <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{t('donations.eligibleAmount')}</label>
+                          <div className="relative group/input">
+                            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within/input:text-primary transition-colors">
+                              <span className="text-xs font-bold">ETB</span>
+                            </div>
+                            <input
+                              type="number"
+                              value={zakatEligibleAmount}
+                              onChange={(e) => setZakatEligibleAmount(e.target.value)}
+                              placeholder="0.00"
+                              className="w-full pl-12 pr-4 py-3 rounded-xl border border-border bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-sm font-bold"
+                            />
+                          </div>
+                        </div>
+
+                        {parseFloat(zakatEligibleAmount) > 0 && (
+                          <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            className="pt-4 border-t border-dashed border-border/50 space-y-3"
+                          >
+                            <div className="flex justify-between items-center px-1">
+                              <span className="text-xs font-medium text-muted-foreground">{t('donations.calculatedZakat')}</span>
+                              <span className="text-lg font-bold text-primary">
+                                {(parseFloat(zakatEligibleAmount) * 0.025).toLocaleString()} <span className="text-[10px] text-muted-foreground font-normal">ETB</span>
+                              </span>
+                            </div>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="w-full py-5 rounded-xl border-primary/20 hover:bg-primary hover:text-white transition-all duration-300 gap-2"
+                              onClick={() => {
+                                const amount = (parseFloat(zakatEligibleAmount) * 0.025).toFixed(2);
+                                handleCustomAmount(amount);
+                                toast.success(t('donations.donationAmountUpdated'));
+                              }}
+                            >
+                              <FiCheck className="w-4 h-4" />
+                              <span className="text-xs font-bold uppercase tracking-widest">{t('donations.applyToDonation')}</span>
+                            </Button>
+                          </motion.div>
+                        )}
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+
                   <motion.div
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}

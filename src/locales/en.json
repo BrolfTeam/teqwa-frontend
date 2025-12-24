@@ -36,7 +36,9 @@
     "today": "Today",
     "share": "Share",
     "schedule": "Schedule",
-    "refresh": "Refresh"
+    "refresh": "Refresh",
+    "quickAccess": "Quick Access",
+    "browseAll": "Browse All"
   },
   "nav": {
     "home": "Home",
@@ -53,7 +55,67 @@
     "gallery": "Gallery",
     "itikafProgram": "Iʿtikāf Program",
     "dersProgram": "Ders Program",
-    "donate": "Donate"
+    "donate": "Donate",
+    "islamicCalendar": "Islamic Calendar",
+    "resources": "Resources",
+    "qiblaDirection": "Qibla Direction"
+  },
+  "calendar": {
+    "title": "Islamic",
+    "titleHighlight": "Calendar",
+    "description": "View the Islamic (Hijri) calendar alongside the Gregorian calendar.",
+    "todayGregorian": "Today (Gregorian)",
+    "todayHijri": "Today (Hijri)",
+    "gregorianCalendar": "Gregorian Calendar",
+    "selectedDate": "Selected Date",
+    "hijriApprox": "Hijri (Approximate)",
+    "gregorian": "Gregorian",
+    "hijriSuffix": "AH",
+    "aboutTitle": "About Hijri Calendar",
+    "aboutDescription": "The Islamic calendar (Hijri calendar) is a lunar calendar consisting of 12 months in a year of 354 or 355 days.",
+    "note": "Note",
+    "accuracyNote": "This calendar shows approximate Hijri dates. For precise dates, consult your local Islamic authority or astronomical calculations.",
+    "importantMonths": "Important Islamic Months",
+    "ramadan": "Ramadan",
+    "fasting": "Fasting",
+    "dhulHijjah": "Dhu al-Hijjah",
+    "hajj": "Hajj",
+    "muharram": "Muharram",
+    "newYear": "New Year",
+    "prevMonth": "Previous Month",
+    "nextMonth": "Next Month",
+    "adjustment": "Hijri Adjustment",
+    "adjustmentDesc": "Adjust the Hijri date by +/- 2 days to match local sightings.",
+    "adjustmentNote": "Changes will be reflected across the entire system.",
+    "syncing": "Syncing precise dates...",
+    "accurateSource": "Synced with Aladhan API",
+    "verified": "Verified",
+    "calculated": "Calculated",
+    "months": {
+      "hijri": [
+        "Muharram",
+        "Safar",
+        "Rabi' al-awwal",
+        "Rabi' al-thani",
+        "Jumada al-awwal",
+        "Jumada al-thani",
+        "Rajab",
+        "Sha'ban",
+        "Ramadan",
+        "Shawwal",
+        "Dhu al-Qi'dah",
+        "Dhu al-Hijjah"
+      ]
+    },
+    "weekdays": {
+      "sun": "Sun",
+      "mon": "Mon",
+      "tue": "Tue",
+      "wed": "Wed",
+      "thu": "Thu",
+      "fri": "Fri",
+      "sat": "Sat"
+    }
   },
   "hero": {
     "welcomeToTeqwa": "Welcome to Teqwa",
@@ -90,6 +152,7 @@
     "privacyPolicy": "Privacy Policy",
     "termsOfService": "Terms of Service",
     "cookiePolicy": "Cookie Policy",
+    "backToTop": "Back to Top",
     "allRightsReserved": "All rights reserved",
     "servingFaith": "Serving faith, learning, and community",
     "generalInquiries": "General inquiries",
@@ -97,7 +160,6 @@
     "openDaily": "Open Daily",
     "builtWith": "Built with",
     "forCommunity": "for our community",
-    "backToTop": "Back to Top",
     "poweredBy": "Powered by Teqwa Builders at Brolf",
     "donations": "Donations",
     "futsalBooking": "Futsal Booking",
@@ -127,6 +189,23 @@
     "schedule": "Schedule",
     "qibla": "Qibla",
     "noDataAvailable": "No data available"
+  },
+  "qibla": {
+    "title": "Find Your",
+    "titleHighlight": "Qibla Direction",
+    "description": "Locate the Qibla (Kaaba) direction accurately from anywhere in the world.",
+    "aboutQibla": "About Qibla",
+    "aboutQiblaDescription": "The Qibla is the direction that Muslims face during prayer. It points towards the Kaaba in Mecca, Saudi Arabia. This tool helps you find the precise direction based on your current location.",
+    "howToUse": "How to Use",
+    "allowLocationAccess": "Allow location access for accurate results.",
+    "useDeviceCompass": "Calibrate your device compass by moving it in a figure-8 motion.",
+    "faceDirection": "Align yourself with the arrow on the compass.",
+    "qiblaCompass": "Qibla Compass",
+    "qiblaFromNorth": "Qibla is",
+    "fromNorth": "from North",
+    "compassActive": "Compass Active",
+    "enableCompassDescription": "Enable device orientation for live compass tracking",
+    "enableCompass": "Enable Compass"
   },
   "events": {
     "title": "Events",
@@ -223,7 +302,7 @@
     "howDonationsHelp": "How Your Donations Help",
     "educationSupport": "Education",
     "educationSupportDesc": "Supporting Islamic studies, Quran memorization programs, and educational resources for all ages.",
-    "communitySupport": "Community",
+    "communitySupportCategory": "Community",
     "communitySupportDesc": "Funding community gatherings, Iftar meals, and social welfare programs to strengthen our bonds.",
     "maintenanceSupport": "Maintenance",
     "maintenanceSupportDesc": "Ensuring our sacred space remains clean, safe, and well-maintained for daily prayers and worship.",
@@ -232,7 +311,6 @@
     "noActiveCausesDesc": "There are currently no specific donation causes available.",
     "generalDonationAvailable": "You may still make a general donation below.",
     "goToDonationForm": "Go to Donation Form",
-    "makeDonation": "Make a Donation",
     "supportCommunitySubtitle": "Support our community with your generous contribution",
     "enterCustomAmount": "Enter custom amount",
     "donationSummary": "Donation Summary",
@@ -254,10 +332,17 @@
     "thankYouDonation": "Thank you for your {{amount}} ETB donation!",
     "paymentFailed": "Payment failed. Please try again.",
     "validationError": "Validation Error",
-    "failedToLoadCauses": "Failed to load donation causes"
+    "failedToLoadCauses": "Failed to load donation causes",
+    "zakatCalculator": "Zakat Calculator",
+    "eligibleAmount": "Eligible Amount",
+    "calculatedZakat": "Calculated Zakat (2.5%)",
+    "applyToDonation": "Apply to Donation",
+    "zakatCalculationDesc": "Calculate your Zakat based on 2.5% of your eligible assets.",
+    "donationAmountUpdated": "Donation amount updated from Zakat calculation"
   },
   "education": {
     "title": "Education",
+    "heroPrefix": "Our",
     "educationalPrograms": "Educational Programs",
     "enhanceKnowledge": "Enhance your Islamic knowledge through our comprehensive educational programs. From Quran memorization to Arabic language, we offer courses for all ages and levels.",
     "quranMemorization": "Quran Memorization",
@@ -276,9 +361,11 @@
     "teens": "Teens (13-17)",
     "adults": "Adults (18+)",
     "seniors": "Seniors (60+)",
-    "alreadyEnrolled": "Already Enrolled",
     "enrollNow": "Enroll Now",
     "enrolling": "Enrolling...",
+    "enrollSucceeded": "Enrollment successful!",
+    "enrollFailed": "Failed to enroll in service",
+    "alreadyEnrolled": "Already Enrolled",
     "myEnrollments": "My Enrollments",
     "myCourses": "My Courses",
     "enrolled": "Enrolled",
@@ -325,7 +412,28 @@
     "noServicesFound": "No Services Found",
     "noServicesAvailable": "No educational services are currently available.",
     "tryAdjustingFilters": "Try adjusting your filters to see more services.",
-    "instructor": "Instructor"
+    "instructor": "Instructor",
+    "weeklySchedule": "Weekly Schedule",
+    "dersProgram": "Weekly Ders Program",
+    "dersProgramDesc": "View our weekly schedule of Islamic lectures and classes.",
+    "days": {
+      "monday": "Monday",
+      "tuesday": "Tuesday",
+      "wednesday": "Wednesday",
+      "thursday": "Thursday",
+      "friday": "Friday",
+      "saturday": "Saturday",
+      "sunday": "Sunday"
+    },
+    "schedule": {
+      "title": "Ders Schedule",
+      "subtitle": "Join our weekly knowledge sessions led by qualified scholars.",
+      "time": "Time",
+      "subject": "Subject",
+      "instructor": "Instructor",
+      "location": "Location",
+      "noClasses": "No classes scheduled for this day."
+    }
   },
   "futsal": {
     "title": "Futsal Booking",
@@ -532,7 +640,7 @@
       "enterEmailAddress": "Please enter your email address",
       "failedToSend": "Failed to send reset email. Please try again."
     },
-    "resetPassword": {
+    "resetPasswordPage": {
       "title": "Reset Password",
       "enterNewPassword": "Enter your new password",
       "newPassword": "New Password",
@@ -552,7 +660,7 @@
       "rememberPassword": "Remember your password?",
       "signIn": "Sign in"
     },
-    "verifyEmail": {
+    "verifyEmailPage": {
       "verifying": "Verifying Email",
       "verifyingMessage": "Verifying your email...",
       "emailVerified": "Email Verified!",
@@ -637,6 +745,8 @@
   "news": {
     "title": "News",
     "latestNews": "Latest News",
+    "latestUpdates": "Latest Updates",
+    "description": "Stay informed about the latest happenings and announcements in our community.",
     "readMore": "Read More",
     "searchNews": "Search news...",
     "filter": "Filter",
@@ -800,6 +910,10 @@
     "youthPrograms": "Youth Programs",
     "youthProgramsDesc": "Engaging activities, sports, and mentorship programs specifically designed for our youth. stay tuned for more information.",
     "join": "Join",
+    "weeklyDersProgram": "Weekly Ders Program",
+    "weeklyDersProgramDesc": "A structured weekly program of Islamic lectures and lessons (Ders) covering various topics for all levels.",
+    "viewAll": "View All",
+    "checkBackSoon": "Check back soon for updates!",
     "needSpecificService": "Need a specific service?",
     "contactSubtitle": "Contact us for custom arrangements or if you have questions about any of our facilities.",
     "getInTouch": "Get in Touch"
@@ -870,6 +984,7 @@
   "ders": {
     "title": "Ders & Lecture Archive",
     "description": "Explore our collection of Islamic lectures, Tafseer, and educational recordings.",
+    "archiveDescription": "Access recorded lectures and educational materials from our scholars and teachers.",
     "searchLectures": "Search lectures by title or description...",
     "allSubjects": "All Subjects",
     "quranRecitation": "Quran Recitation",
@@ -994,23 +1109,6 @@
       "fri": "Fri",
       "sat": "Sat"
     }
-  },
-  "qibla": {
-    "title": "Qibla",
-    "titleHighlight": "Direction",
-    "description": "Find the direction to the Kaaba in Mecca for accurate prayer orientation.",
-    "qiblaCompass": "Qibla Compass",
-    "determiningQibla": "Determining Qibla direction...",
-    "directionToKaaba": "Direction to Kaaba, Mecca",
-    "location": "Location",
-    "refreshDirection": "Refresh Direction",
-    "enableCompass": "Enable Compass",
-    "compassNotAvailable": "Compass not available on this device. Showing Qibla direction only.",
-    "unableToDetermineLocation": "Unable to determine your location. Using default Qibla direction.",
-    "compassPermissionDenied": "Compass permission denied",
-    "unableToAccessCompass": "Unable to access compass",
-    "compassActive": "Compass active",
-    "compassInactive": "Compass inactive"
   },
   "eventDetail": {
     "loadingEvent": "Loading event...",

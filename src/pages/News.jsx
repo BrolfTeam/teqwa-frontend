@@ -168,9 +168,9 @@ const News = memo(() => {
     <div className="min-h-screen bg-gradient-to-b from-background via-muted/20 to-background">
       <Hero
         title={t('news.title')}
-        titleHighlight={t('news.latestNews')}
+        titleHighlight={t('news.latestUpdates')}
         align="center"
-        description={t('news.latestNews')}
+        description={t('news.description')}
         backgroundImage={mesjidBg}
       />
 

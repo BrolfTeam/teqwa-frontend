@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiCalendar, FiClock, FiMapPin, FiArrowRight, FiHeart, FiUsers, FiBookOpen, FiTrendingUp, FiTarget, FiDollarSign, FiCheckCircle, FiMoon, FiCoffee, FiShield, FiActivity } from 'react-icons/fi';
+import { FiCalendar, FiClock, FiMapPin, FiArrowRight, FiHeart, FiUsers, FiBookOpen, FiTrendingUp, FiTarget, FiDollarSign, FiCheckCircle, FiMoon, FiCoffee, FiShield, FiActivity, FiSun, FiGrid, FiCompass } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/Button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/Card';
@@ -56,14 +56,14 @@ const DonationProgressWidget = memo(({ className = '' }) => {
   useEffect(() => {
     let isMounted = true;
     let intervalId = null;
-    
+
     const fetchDonationData = async () => {
       try {
         setLoading(true);
-        
+
         // Check if user is authenticated before calling protected endpoints
         const token = localStorage.getItem('authToken');
-        
+
         // Try to get stats (may require auth, so handle gracefully)
         let stats = { total_amount: 0, total_donations: 0 };
         if (token) {
@@ -135,7 +135,7 @@ const DonationProgressWidget = memo(({ className = '' }) => {
         fetchDonationData();
       }
     }, 5 * 60 * 1000);
-    
+
     return () => {
       isMounted = false;
       if (intervalId) {
@@ -339,7 +339,7 @@ const Home = memo(() => {
   useEffect(() => {
     let isMounted = true;
     let intervalId = null;
-    
+
     const fetchData = async () => {
       try {
         setLoading(true);
@@ -377,7 +377,7 @@ const Home = memo(() => {
         fetchData();
       }
     }, 5 * 60 * 1000);
-    
+
     return () => {
       isMounted = false;
       if (intervalId) {
@@ -389,7 +389,7 @@ const Home = memo(() => {
   // Fetch Iʿtikāf programs
   useEffect(() => {
     let isMounted = true;
-    
+
     const fetchItikafPrograms = async () => {
       try {
         const programs = await dataService.getUpcomingItikafPrograms(3);
@@ -406,9 +406,9 @@ const Home = memo(() => {
         }
       }
     };
-    
+
     fetchItikafPrograms();
-    
+
     return () => {
       isMounted = false;
     };
@@ -419,7 +419,7 @@ const Home = memo(() => {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-background font-sans selection:bg-primary/20 w-full overflow-x-hidden">
       {/* Enhanced Hero Section */}
-      <section 
+      <section
         className="relative h-[90vh] min-h-[600px] flex items-center overflow-hidden bg-primary"
         onTouchStart={onTouchStart}
         onTouchMove={onTouchMove}
@@ -429,14 +429,14 @@ const Home = memo(() => {
         <div className="absolute inset-0 z-0 overflow-hidden">
           <motion.div
             className="flex h-full"
-            animate={{ 
+            animate={{
               x: `-${(currentSlide / heroSlides.length) * 100}%`
             }}
-            transition={{ 
+            transition={{
               duration: 0.7,
               ease: [0.4, 0, 0.2, 1],
             }}
-            style={{ 
+            style={{
               width: `${heroSlides.length * 100}%`
             }}
           >
@@ -444,7 +444,7 @@ const Home = memo(() => {
               <div
                 key={slide.id || index}
                 className="relative flex-shrink-0 h-full"
-                style={{ 
+                style={{
                   width: `${100 / heroSlides.length}%`
                 }}
               >
@@ -470,202 +470,202 @@ const Home = memo(() => {
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
-                transition={{ 
+                transition={{
                   duration: 0.6,
                   ease: [0.4, 0, 0.2, 1]
                 }}
               >
-              {/* Dynamic Badge */}
-              {currentSlideData?.badge && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/20 backdrop-blur-md border border-white/30 mb-6 mx-auto lg:mx-0"
-                >
-                  <span className={`w-2 h-2 rounded-full ${occasion === 'jumuah' ? 'bg-green-400 animate-pulse' : 'bg-accent'}`} />
-                  <span className="text-sm font-semibold tracking-wide">{currentSlideData.badge}</span>
-                </motion.div>
-              )}
-
-              {/* Title */}
-              <motion.h1
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
-                className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold leading-tight mb-6 drop-shadow-2xl text-white"
-              >
-                {currentSlideData?.title || "Welcome to Teqwa"}
-                {currentSlideData?.titleHighlight && (
-                  <>
-                    <br />
-                    <motion.span 
-                      className="text-accent drop-shadow-lg"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
-                    >
-                      {currentSlideData.titleHighlight}
-                    </motion.span>
-                  </>
+                {/* Dynamic Badge */}
+                {currentSlideData?.badge && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/20 backdrop-blur-md border border-white/30 mb-6 mx-auto lg:mx-0"
+                  >
+                    <span className={`w-2 h-2 rounded-full ${occasion === 'jumuah' ? 'bg-green-400 animate-pulse' : 'bg-accent'}`} />
+                    <span className="text-sm font-semibold tracking-wide">{currentSlideData.badge}</span>
+                  </motion.div>
                 )}
-              </motion.h1>
 
-              {/* Subtitle */}
-              <motion.p
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
-                className="text-lg md:text-xl lg:text-2xl text-white/95 mb-8 max-w-2xl mx-auto lg:mx-0 leading-relaxed drop-shadow-md font-medium"
-              >
-                {currentSlideData?.subtitle || "Join us in our daily prayers, educational programs, and community events."}
-              </motion.p>
+                {/* Title */}
+                <motion.h1
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+                  className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold leading-tight mb-6 drop-shadow-2xl text-white"
+                >
+                  {currentSlideData?.title || "Welcome to Teqwa"}
+                  {currentSlideData?.titleHighlight && (
+                    <>
+                      <br />
+                      <motion.span
+                        className="text-accent drop-shadow-lg"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+                      >
+                        {currentSlideData.titleHighlight}
+                      </motion.span>
+                    </>
+                  )}
+                </motion.h1>
 
-              {/* Khatib/Imam Info for Jumuah */}
-              {currentSlideData?.khatib && currentSlideData.khatib.name && (
-                <motion.div
+                {/* Subtitle */}
+                <motion.p
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
-                  className="mb-6 flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20 max-w-md mx-auto lg:mx-0"
+                  className="text-lg md:text-xl lg:text-2xl text-white/95 mb-8 max-w-2xl mx-auto lg:mx-0 leading-relaxed drop-shadow-md font-medium"
                 >
-                  <div className="flex-shrink-0 w-16 h-16 rounded-full bg-accent/20 flex items-center justify-center overflow-hidden border-2 border-white/30 relative">
-                    {currentSlideData.khatib.photo ? (
-                      <>
-                        <img 
-                          src={currentSlideData.khatib.photo} 
-                          alt={currentSlideData.khatib.name}
-                          className="w-full h-full object-cover"
-                          onError={(e) => {
-                            // Hide image and show icon fallback
-                            e.target.style.display = 'none';
-                            const iconFallback = e.target.nextElementSibling;
-                            if (iconFallback) {
-                              iconFallback.style.display = 'flex';
-                            }
-                          }}
-                        />
-                        <div className="absolute inset-0 w-full h-full flex items-center justify-center hidden">
+                  {currentSlideData?.subtitle || "Join us in our daily prayers, educational programs, and community events."}
+                </motion.p>
+
+                {/* Khatib/Imam Info for Jumuah */}
+                {currentSlideData?.khatib && currentSlideData.khatib.name && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+                    className="mb-6 flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20 max-w-md mx-auto lg:mx-0"
+                  >
+                    <div className="flex-shrink-0 w-16 h-16 rounded-full bg-accent/20 flex items-center justify-center overflow-hidden border-2 border-white/30 relative">
+                      {currentSlideData.khatib.photo ? (
+                        <>
+                          <img
+                            src={currentSlideData.khatib.photo}
+                            alt={currentSlideData.khatib.name}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              // Hide image and show icon fallback
+                              e.target.style.display = 'none';
+                              const iconFallback = e.target.nextElementSibling;
+                              if (iconFallback) {
+                                iconFallback.style.display = 'flex';
+                              }
+                            }}
+                          />
+                          <div className="absolute inset-0 w-full h-full flex items-center justify-center hidden">
+                            <FiUsers className="h-8 w-8 text-accent" />
+                          </div>
+                        </>
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
                           <FiUsers className="h-8 w-8 text-accent" />
                         </div>
-                      </>
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center">
-                        <FiUsers className="h-8 w-8 text-accent" />
+                      )}
+                    </div>
+                    <div>
+                      <p className="text-sm text-white/80 mb-1">{t('home.todayKhutbahBy')}</p>
+                      <p className="text-lg font-semibold text-white">{currentSlideData.khatib.name}</p>
+                      {currentSlideData.khatib.title && (
+                        <p className="text-sm text-white/70">{currentSlideData.khatib.title}</p>
+                      )}
+                    </div>
+                  </motion.div>
+                )}
+
+                {/* Event/Campaign Specific Info */}
+                {currentSlideData?.type === 'event' && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+                    className="flex flex-wrap gap-4 mb-8 text-white/90"
+                  >
+                    {currentSlideData.date && (
+                      <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-lg">
+                        <FiCalendar className="h-4 w-4" />
+                        <span className="text-sm font-medium">
+                          {new Date(currentSlideData.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                        </span>
                       </div>
                     )}
-                  </div>
-                  <div>
-                    <p className="text-sm text-white/80 mb-1">{t('home.todayKhutbahBy')}</p>
-                    <p className="text-lg font-semibold text-white">{currentSlideData.khatib.name}</p>
-                    {currentSlideData.khatib.title && (
-                      <p className="text-sm text-white/70">{currentSlideData.khatib.title}</p>
+                    {currentSlideData.time && (
+                      <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-lg">
+                        <FiClock className="h-4 w-4" />
+                        <span className="text-sm font-medium">{currentSlideData.time}</span>
+                      </div>
                     )}
-                  </div>
-                </motion.div>
-              )}
+                    {currentSlideData.location && (
+                      <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-lg">
+                        <FiMapPin className="h-4 w-4" />
+                        <span className="text-sm font-medium">{currentSlideData.location}</span>
+                      </div>
+                    )}
+                  </motion.div>
+                )}
 
-              {/* Event/Campaign Specific Info */}
-              {currentSlideData?.type === 'event' && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
-                  className="flex flex-wrap gap-4 mb-8 text-white/90"
-                >
-                  {currentSlideData.date && (
-                    <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-lg">
-                      <FiCalendar className="h-4 w-4" />
-                      <span className="text-sm font-medium">
-                        {new Date(currentSlideData.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                {/* Campaign Progress */}
+                {currentSlideData?.type === 'campaign' && currentSlideData.raised !== undefined && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+                    className="mb-8 bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20"
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm font-medium text-white/90">{t('home.progress')}</span>
+                      <span className="text-sm font-bold text-white">
+                        {Math.round(((currentSlideData.raised || 0) / (currentSlideData.target || 1)) * 100)}%
                       </span>
                     </div>
-                  )}
-                  {currentSlideData.time && (
-                    <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-lg">
-                      <FiClock className="h-4 w-4" />
-                      <span className="text-sm font-medium">{currentSlideData.time}</span>
+                    <div className="w-full bg-white/20 rounded-full h-2.5 overflow-hidden">
+                      <motion.div
+                        className="h-full bg-gradient-to-r from-accent to-accent/80 rounded-full"
+                        initial={{ width: 0 }}
+                        animate={{ width: `${Math.min(((currentSlideData.raised || 0) / (currentSlideData.target || 1)) * 100, 100)}%` }}
+                        transition={{ duration: 1, ease: "easeOut" }}
+                      />
                     </div>
-                  )}
-                  {currentSlideData.location && (
-                    <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-lg">
-                      <FiMapPin className="h-4 w-4" />
-                      <span className="text-sm font-medium">{currentSlideData.location}</span>
+                    <div className="flex items-center justify-between mt-2 text-xs text-white/80">
+                      <span>{(currentSlideData.raised || 0).toLocaleString()} ETB {t('home.raised')}</span>
+                      <span>{t('home.goal')}: {(currentSlideData.target || 0).toLocaleString()} ETB</span>
                     </div>
-                  )}
-                </motion.div>
-              )}
+                  </motion.div>
+                )}
 
-              {/* Campaign Progress */}
-              {currentSlideData?.type === 'campaign' && currentSlideData.raised !== undefined && (
+                {/* CTA Buttons */}
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
-                  className="mb-8 bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20"
+                  className="flex flex-wrap justify-center lg:justify-start gap-4"
                 >
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-white/90">{t('home.progress')}</span>
-                    <span className="text-sm font-bold text-white">
-                      {Math.round(((currentSlideData.raised || 0) / (currentSlideData.target || 1)) * 100)}%
-                    </span>
-                  </div>
-                  <div className="w-full bg-white/20 rounded-full h-2.5 overflow-hidden">
-                    <motion.div
-                      className="h-full bg-gradient-to-r from-accent to-accent/80 rounded-full"
-                      initial={{ width: 0 }}
-                      animate={{ width: `${Math.min(((currentSlideData.raised || 0) / (currentSlideData.target || 1)) * 100, 100)}%` }}
-                      transition={{ duration: 1, ease: "easeOut" }}
-                    />
-                  </div>
-                  <div className="flex items-center justify-between mt-2 text-xs text-white/80">
-                    <span>{(currentSlideData.raised || 0).toLocaleString()} ETB {t('home.raised')}</span>
-                    <span>{t('home.goal')}: {(currentSlideData.target || 0).toLocaleString()} ETB</span>
-                  </div>
-                </motion.div>
-              )}
-
-              {/* CTA Buttons */}
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
-                className="flex flex-wrap justify-center lg:justify-start gap-4"
-              >
-                {currentSlideData?.cta && (
-                  <Button size="xl" className="bg-accent text-primary-900 hover:bg-accent/90 shadow-xl min-w-[180px] font-bold text-lg px-8 py-6 group">
-                    <Link to={currentSlideData.cta.link} className="flex items-center gap-2">
-                      {currentSlideData.cta.label}
-                      {currentSlideData.cta.icon === 'arrow' && <FiArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />}
-                      {currentSlideData.cta.icon === 'calendar' && <FiCalendar className="h-5 w-5" />}
-                      {currentSlideData.cta.icon === 'heart' && <FiHeart className="h-5 w-5" />}
-                      {currentSlideData.cta.icon === 'users' && <FiUsers className="h-5 w-5" />}
-                      {currentSlideData.cta.icon === 'book' && <FiBookOpen className="h-5 w-5" />}
-                      {!currentSlideData.cta.icon && <FiArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />}
-                    </Link>
-                  </Button>
-                )}
-                {currentSlideData?.secondaryCta && (
-                  <Button size="xl" variant="outline" className="border-white/40 text-white hover:bg-white/20 backdrop-blur-sm min-w-[180px] font-semibold text-lg px-8 py-6">
-                    {currentSlideData.secondaryCta.external ? (
-                      <a 
-                        href={currentSlideData.secondaryCta.link} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-2"
-                      >
-                        {currentSlideData.secondaryCta.label}
-                        {currentSlideData.secondaryCta.icon === 'book' && <FiBookOpen className="h-5 w-5" />}
-                      </a>
-                    ) : (
-                      <Link to={currentSlideData.secondaryCta.link} className="flex items-center gap-2">
-                        {currentSlideData.secondaryCta.label}
-                        {currentSlideData.secondaryCta.icon === 'book' && <FiBookOpen className="h-5 w-5" />}
+                  {currentSlideData?.cta && (
+                    <Button size="xl" className="bg-accent text-primary-900 hover:bg-accent/90 shadow-xl min-w-[180px] font-bold text-lg px-8 py-6 group">
+                      <Link to={currentSlideData.cta.link} className="flex items-center gap-2">
+                        {currentSlideData.cta.label}
+                        {currentSlideData.cta.icon === 'arrow' && <FiArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />}
+                        {currentSlideData.cta.icon === 'calendar' && <FiCalendar className="h-5 w-5" />}
+                        {currentSlideData.cta.icon === 'heart' && <FiHeart className="h-5 w-5" />}
+                        {currentSlideData.cta.icon === 'users' && <FiUsers className="h-5 w-5" />}
+                        {currentSlideData.cta.icon === 'book' && <FiBookOpen className="h-5 w-5" />}
+                        {!currentSlideData.cta.icon && <FiArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />}
                       </Link>
-                    )}
-                  </Button>
-                )}
-              </motion.div>
+                    </Button>
+                  )}
+                  {currentSlideData?.secondaryCta && (
+                    <Button size="xl" variant="outline" className="border-white/40 text-white hover:bg-white/20 backdrop-blur-sm min-w-[180px] font-semibold text-lg px-8 py-6">
+                      {currentSlideData.secondaryCta.external ? (
+                        <a
+                          href={currentSlideData.secondaryCta.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-2"
+                        >
+                          {currentSlideData.secondaryCta.label}
+                          {currentSlideData.secondaryCta.icon === 'book' && <FiBookOpen className="h-5 w-5" />}
+                        </a>
+                      ) : (
+                        <Link to={currentSlideData.secondaryCta.link} className="flex items-center gap-2">
+                          {currentSlideData.secondaryCta.label}
+                          {currentSlideData.secondaryCta.icon === 'book' && <FiBookOpen className="h-5 w-5" />}
+                        </Link>
+                      )}
+                    </Button>
+                  )}
+                </motion.div>
               </motion.div>
             </AnimatePresence>
 
@@ -709,11 +709,10 @@ const Home = memo(() => {
                     className="relative group"
                     aria-label={`Go to slide ${idx + 1}`}
                   >
-                    <div className={`h-2 rounded-full transition-all duration-300 ${
-                      currentSlide === idx
-                        ? 'w-8 bg-white shadow-lg shadow-white/50'
-                        : 'w-2 bg-white/50 hover:bg-white/80'
-                    }`}>
+                    <div className={`h-2 rounded-full transition-all duration-300 ${currentSlide === idx
+                      ? 'w-8 bg-white shadow-lg shadow-white/50'
+                      : 'w-2 bg-white/50 hover:bg-white/80'
+                      }`}>
                       {currentSlide === idx && (
                         <motion.div
                           className="h-full bg-white rounded-full"
@@ -735,7 +734,7 @@ const Home = memo(() => {
       </section>
 
       {/* Quick Links Section - Enhanced */}
-      <section className="bg-gray-50 dark:bg-background py-12 sm:py-16 md:py-20">
+      <section className="bg-gray-50 dark:bg-background py-16">
         <div className="container container-padding">
           <div className="mx-auto max-w-7xl">
             <motion.div
@@ -754,44 +753,45 @@ const Home = memo(() => {
                 <DonationProgressWidget />
               </div>
 
-              {/* Section Title - Mobile Only */}
-              <div className="flex items-center justify-center mb-10 sm:hidden">
-                <div className="text-center">
-                  <h2 className="text-3xl font-bold text-foreground mb-3">{t('home.quickActions')}</h2>
-                  <p className="text-muted-foreground text-lg">{t('home.accessServices')}</p>
-                </div>
+              {/* Section Title */}
+              <div className="flex flex-col items-center justify-center mb-12 text-center">
+                <h2 className="text-3xl font-bold text-foreground mb-3">{t('home.quickActions')}</h2>
+                <div className="h-1 w-20 bg-accent rounded-full mb-4" />
+                <p className="text-muted-foreground text-lg">{t('home.accessServices')}</p>
               </div>
 
               {/* Quick Links Grid */}
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4 md:gap-6 items-stretch">
-              {[
-                { title: t('news.title'), icon: FiBookOpen, to: '/news', color: 'text-blue-500', bg: 'bg-blue-500/10', hoverBg: 'hover:bg-blue-500/20' },
-                { title: t('education.title'), icon: FiBookOpen, to: '/education', color: 'text-green-500', bg: 'bg-green-500/10', hoverBg: 'hover:bg-green-500/20' },
-                { title: t('events.title'), icon: FiCalendar, to: '/events', color: 'text-purple-500', bg: 'bg-purple-500/10', hoverBg: 'hover:bg-purple-500/20' },
-                { title: t('donations.title'), icon: FiHeart, to: '/donations', color: 'text-red-500', bg: 'bg-red-500/10', hoverBg: 'hover:bg-red-500/20' },
-                { title: t('services.title'), icon: FiUsers, to: '/services', color: 'text-orange-500', bg: 'bg-orange-500/10', hoverBg: 'hover:bg-orange-500/20' },
-                { title: t('contact.title'), icon: FiMapPin, to: '/contact', color: 'text-teal-500', bg: 'bg-teal-500/10', hoverBg: 'hover:bg-teal-500/20' },
-              ].map((item, index) => (
-                <motion.div
-                  key={item.title}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: index * 0.1, type: 'spring', stiffness: 300 }}
-                  whileHover={{ y: -8, scale: 1.05 }}
-                  className="h-full flex"
-                >
-                  <Link to={item.to} className="block h-full w-full group">
-                    <Card className="h-full w-full border-border/40 dark:border-border/60 group-hover:border-primary/50 dark:group-hover:border-primary/60 group-hover:shadow-xl transition-all duration-300 bg-card/80 dark:bg-card/70 backdrop-blur-sm flex flex-col items-center justify-center p-4 sm:p-5 md:p-6 lg:p-6 hover:bg-gradient-to-br hover:from-primary/5 hover:to-accent/5 dark:hover:from-primary/10 dark:hover:to-accent/10">
-                      <div className={`p-3 sm:p-3.5 md:p-4 lg:p-4 rounded-2xl ${item.bg} ${item.color} mb-3 sm:mb-3.5 md:mb-4 lg:mb-4 group-hover:scale-110 transition-transform duration-300 ${item.hoverBg} flex-shrink-0 flex items-center justify-center w-fit mx-auto`}>
-                        <item.icon className="h-6 w-6 sm:h-6 sm:w-6 md:h-7 md:w-7 lg:h-7 lg:w-7" />
-                      </div>
-                      <span className="font-semibold text-sm sm:text-sm md:text-base lg:text-base text-foreground group-hover:text-primary transition-colors text-center leading-tight w-full block mt-auto">{item.title}</span>
-                    </Card>
-                  </Link>
-                </motion.div>
-              ))}
-            </div>
+              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4 md:gap-6 items-stretch">
+                {[
+                  { title: t('nav.news'), icon: FiBookOpen, to: '/news', color: 'text-blue-500', bg: 'bg-blue-500/10', hoverBg: 'hover:bg-blue-500/20' },
+                  { title: t('nav.educationalServices'), icon: FiBookOpen, to: '/education', color: 'text-green-500', bg: 'bg-green-500/10', hoverBg: 'hover:bg-green-500/20' },
+                  { title: t('nav.events'), icon: FiCalendar, to: '/events', color: 'text-purple-500', bg: 'bg-purple-500/10', hoverBg: 'hover:bg-purple-500/20' },
+                  { title: t('nav.donate'), icon: FiHeart, to: '/donate', color: 'text-red-500', bg: 'bg-red-500/10', hoverBg: 'hover:bg-red-500/20' },
+                  { title: t('nav.islamicCalendar'), icon: FiMoon, to: '/islamic-calendar', color: 'text-indigo-500', bg: 'bg-indigo-500/10', hoverBg: 'hover:bg-indigo-500/20' },
+                  { title: t('nav.qiblaDirection'), icon: FiCompass, to: '/qibla', color: 'text-emerald-500', bg: 'bg-emerald-500/10', hoverBg: 'hover:bg-emerald-500/20' },
+                  { title: t('nav.services'), icon: FiGrid, to: '/services', color: 'text-orange-500', bg: 'bg-orange-500/10', hoverBg: 'hover:bg-orange-500/20' },
+                  { title: t('nav.contact'), icon: FiMapPin, to: '/contact', color: 'text-teal-500', bg: 'bg-teal-500/10', hoverBg: 'hover:bg-teal-500/20' },
+                ].map((item, index) => (
+                  <motion.div
+                    key={item.title}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: index * 0.1, type: 'spring', stiffness: 300 }}
+                    whileHover={{ y: -8, scale: 1.05 }}
+                    className="h-full flex"
+                  >
+                    <Link to={item.to} className="block h-full w-full group">
+                      <Card className="h-full w-full border-border/40 dark:border-border/60 group-hover:border-primary/50 dark:group-hover:border-primary/60 group-hover:shadow-xl transition-all duration-300 bg-card/80 dark:bg-card/70 backdrop-blur-sm flex flex-col items-center justify-center p-4 sm:p-5 md:p-6 lg:p-6 hover:bg-gradient-to-br hover:from-primary/5 hover:to-accent/5 dark:hover:from-primary/10 dark:hover:to-accent/10">
+                        <div className={`p-3 sm:p-3.5 md:p-4 lg:p-4 rounded-2xl ${item.bg} ${item.color} mb-3 sm:mb-3.5 md:mb-4 lg:mb-4 group-hover:scale-110 transition-transform duration-300 ${item.hoverBg} flex-shrink-0 flex items-center justify-center w-fit mx-auto`}>
+                          <item.icon className="h-6 w-6 sm:h-6 sm:w-6 md:h-7 md:w-7 lg:h-7 lg:w-7" />
+                        </div>
+                        <span className="font-semibold text-sm sm:text-sm md:text-base lg:text-base text-foreground group-hover:text-primary transition-colors text-center leading-tight w-full block mt-auto">{item.title}</span>
+                      </Card>
+                    </Link>
+                  </motion.div>
+                ))}
+              </div>
             </motion.div>
           </div>
         </div>
@@ -818,7 +818,7 @@ const Home = memo(() => {
           <img src={mesjidBg} alt="Iʿtikāf Background" className="w-full h-full object-cover" />
           <div className="absolute inset-0 bg-primary/90" />
         </div>
-        
+
         <div className="container container-padding relative z-10">
           <div className="max-w-7xl mx-auto">
             {/* Section Header */}
@@ -839,25 +839,22 @@ const Home = memo(() => {
             </motion.div>
 
             {/* Three Image Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 mb-8">
               {[
                 {
                   image: itikafImage,
                   title: t('home.itikafSection.card1Title'),
-                  description: t('home.itikafSection.card1Description'),
-                  color: "text-orange-500"
+                  description: t('home.itikafSection.card1Description')
                 },
                 {
                   image: itikafImage2,
                   title: t('home.itikafSection.card2Title'),
-                  description: t('home.itikafSection.card2Description'),
-                  color: "text-orange-500"
+                  description: t('home.itikafSection.card2Description')
                 },
                 {
                   image: mesjidBg,
                   title: t('home.itikafSection.card3Title'),
-                  description: t('home.itikafSection.card3Description'),
-                  color: "text-orange-500"
+                  description: t('home.itikafSection.card3Description')
                 }
               ].map((card, index) => (
                 <motion.div
@@ -866,19 +863,21 @@ const Home = memo(() => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
-                  whileHover={{ y: -5 }}
+                  whileHover={{ y: -8, scale: 1.02 }}
+                  className="group"
                 >
-                  <Card className="h-full overflow-hidden border-none shadow-lg hover:shadow-xl transition-all duration-300 bg-card dark:bg-card/90">
-                    <div className="relative h-48 overflow-hidden">
-                      <img 
-                        src={card.image} 
+                  <Card className="h-full overflow-hidden border-2 border-white/20 hover:border-emerald-300/50 shadow-2xl hover:shadow-emerald-500/20 transition-all duration-500 bg-white dark:bg-slate-800/95 backdrop-blur-sm">
+                    <div className="relative h-56 md:h-48 lg:h-56 overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent z-10" />
+                      <img
+                        src={card.image}
                         alt={card.title}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
                       />
                     </div>
-                    <CardContent className="p-6 text-center">
-                      <h3 className={`text-xl font-bold mb-3 ${card.color}`}>{card.title}</h3>
-                      <p className="text-muted-foreground text-sm leading-relaxed">{card.description}</p>
+                    <CardContent className="p-6 md:p-5 lg:p-6 text-center bg-gradient-to-b from-white to-emerald-50/30 dark:from-slate-800 dark:to-slate-800/80 backdrop-blur-md">
+                      <h3 className="text-xl md:text-lg lg:text-xl font-bold mb-3 text-emerald-600 dark:text-emerald-400 group-hover:text-emerald-700 dark:group-hover:text-emerald-300 transition-colors">{card.title}</h3>
+                      <p className="text-muted-foreground text-sm md:text-xs lg:text-sm leading-relaxed">{card.description}</p>
                     </CardContent>
                   </Card>
                 </motion.div>
@@ -905,7 +904,7 @@ const Home = memo(() => {
           <img src={futsalImage} alt="Futsal Background" className="w-full h-full object-cover" />
           <div className="absolute inset-0 bg-primary/90" />
         </div>
-        
+
         <div className="container container-padding relative z-10">
           <div className="max-w-7xl mx-auto">
             {/* Section Header */}
@@ -926,25 +925,22 @@ const Home = memo(() => {
             </motion.div>
 
             {/* Three Image Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 mb-8">
               {[
                 {
                   image: futsalImage1,
                   title: t('home.futsalSection.card1Title'),
-                  description: t('home.futsalSection.card1Description'),
-                  color: "text-green-600"
+                  description: t('home.futsalSection.card1Description')
                 },
                 {
                   image: futsalImage2,
                   title: t('home.futsalSection.card2Title'),
-                  description: t('home.futsalSection.card2Description'),
-                  color: "text-green-600"
+                  description: t('home.futsalSection.card2Description')
                 },
                 {
                   image: futsalImage3,
                   title: t('home.futsalSection.card3Title'),
-                  description: t('home.futsalSection.card3Description'),
-                  color: "text-green-600"
+                  description: t('home.futsalSection.card3Description')
                 }
               ].map((card, index) => (
                 <motion.div
@@ -953,19 +949,21 @@ const Home = memo(() => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
-                  whileHover={{ y: -5 }}
+                  whileHover={{ y: -8, scale: 1.02 }}
+                  className="group"
                 >
-                  <Card className="h-full overflow-hidden border-none shadow-lg hover:shadow-xl transition-all duration-300 bg-card dark:bg-card/90">
-                    <div className="relative h-48 overflow-hidden">
-                      <img 
-                        src={card.image} 
+                  <Card className="h-full overflow-hidden border-2 border-white/20 hover:border-emerald-300/50 shadow-2xl hover:shadow-emerald-500/20 transition-all duration-500 bg-white dark:bg-slate-800/95 backdrop-blur-sm">
+                    <div className="relative h-56 md:h-48 lg:h-56 overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent z-10" />
+                      <img
+                        src={card.image}
                         alt={card.title}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
                       />
                     </div>
-                    <CardContent className="p-6 text-center">
-                      <h3 className={`text-xl font-bold mb-3 ${card.color}`}>{card.title}</h3>
-                      <p className="text-muted-foreground text-sm leading-relaxed">{card.description}</p>
+                    <CardContent className="p-6 md:p-5 lg:p-6 text-center bg-gradient-to-b from-white to-emerald-50/30 dark:from-slate-800 dark:to-slate-800/80 backdrop-blur-md">
+                      <h3 className="text-xl md:text-lg lg:text-xl font-bold mb-3 text-emerald-600 dark:text-emerald-400 group-hover:text-emerald-700 dark:group-hover:text-emerald-300 transition-colors">{card.title}</h3>
+                      <p className="text-muted-foreground text-sm md:text-xs lg:text-sm leading-relaxed">{card.description}</p>
                     </CardContent>
                   </Card>
                 </motion.div>
@@ -1128,7 +1126,7 @@ const Home = memo(() => {
         {/* Gradient Overlay */}
         <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary to-primary/90" />
         <div className="absolute inset-0 bg-gradient-to-t from-primary/95 via-transparent to-transparent" />
-        
+
         <div className="container container-padding relative z-10">
           <div className="max-w-7xl mx-auto">
             <motion.div

@@ -31,17 +31,17 @@ const ResetPassword = memo(() => {
         e.preventDefault();
 
         if (!formData.password || !formData.confirmPassword) {
-            toast.error(t('auth.resetPassword.fillAllFields'));
+            toast.error(t('auth.resetPasswordPage.fillAllFields'));
             return;
         }
 
         if (formData.password !== formData.confirmPassword) {
-            toast.error(t('auth.resetPassword.passwordsDoNotMatch'));
+            toast.error(t('auth.resetPasswordPage.passwordsDoNotMatch'));
             return;
         }
 
         if (formData.password.length < 8) {
-            toast.error(t('auth.resetPassword.minLength'));
+            toast.error(t('auth.resetPasswordPage.minLength'));
             return;
         }
 
@@ -49,12 +49,12 @@ const ResetPassword = memo(() => {
 
         try {
             await apiService.confirmPasswordReset(token, formData.password);
-            toast.success(t('auth.resetPassword.resetSuccessful'));
+            toast.success(t('auth.resetPasswordPage.resetSuccessful'));
             setTimeout(() => {
                 navigate('/login');
             }, 2000);
         } catch (error) {
-            toast.error(error.message || t('auth.resetPassword.resetFailed'));
+            toast.error(error.message || t('auth.resetPasswordPage.resetFailed'));
         } finally {
             setIsLoading(false);
         }
@@ -77,7 +77,7 @@ const ResetPassword = memo(() => {
                         <form onSubmit={handleSubmit} className="space-y-4">
                             <div>
                                 <label htmlFor="password" className="block text-sm font-medium mb-2">
-                                    {t('auth.resetPassword.newPassword')}
+                                    {t('auth.resetPasswordPage.newPassword')}
                                 </label>
                                 <div className="relative">
                                     <FiLock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -88,7 +88,7 @@ const ResetPassword = memo(() => {
                                         value={formData.password}
                                         onChange={handleChange}
                                         className="w-full pl-10 pr-12 py-3 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                                        placeholder={t('auth.resetPassword.newPasswordPlaceholder')}
+                                        placeholder={t('auth.resetPasswordPage.newPasswordPlaceholder')}
                                         required
                                     />
                                     <button
@@ -103,7 +103,7 @@ const ResetPassword = memo(() => {
 
                             <div>
                                 <label htmlFor="confirmPassword" className="block text-sm font-medium mb-2">
-                                    {t('auth.resetPassword.confirmNewPassword')}
+                                    {t('auth.resetPasswordPage.confirmNewPassword')}
                                 </label>
                                 <div className="relative">
                                     <FiLock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -114,7 +114,7 @@ const ResetPassword = memo(() => {
                                         value={formData.confirmPassword}
                                         onChange={handleChange}
                                         className="w-full pl-10 pr-12 py-3 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                                        placeholder={t('auth.resetPassword.confirmNewPasswordPlaceholder')}
+                                        placeholder={t('auth.resetPasswordPage.confirmNewPasswordPlaceholder')}
                                         required
                                     />
                                     <button
@@ -128,11 +128,11 @@ const ResetPassword = memo(() => {
                             </div>
 
                             <div className="text-sm text-muted-foreground">
-                                <p>{t('auth.resetPassword.passwordRequirements')}</p>
+                                <p>{t('auth.resetPasswordPage.passwordRequirements')}</p>
                                 <ul className="list-disc list-inside space-y-1 mt-2">
-                                    <li>{t('auth.resetPassword.minLength')}</li>
-                                    <li>{t('auth.resetPassword.uppercaseLowercase')}</li>
-                                    <li>{t('auth.resetPassword.includeNumber')}</li>
+                                    <li>{t('auth.resetPasswordPage.minLength')}</li>
+                                    <li>{t('auth.resetPasswordPage.uppercaseLowercase')}</li>
+                                    <li>{t('auth.resetPasswordPage.includeNumber')}</li>
                                 </ul>
                             </div>
 
@@ -145,12 +145,12 @@ const ResetPassword = memo(() => {
                                 {isLoading ? (
                                     <div className="flex items-center space-x-2">
                                         <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                                        <span>{t('auth.resetPassword.resetting')}</span>
+                                        <span>{t('auth.resetPasswordPage.resetting')}</span>
                                     </div>
                                 ) : (
                                     <div className="flex items-center space-x-2">
                                         <FiCheck className="h-4 w-4" />
-                                        <span>{t('auth.resetPassword.resetPasswordButton')}</span>
+                                        <span>{t('auth.resetPasswordPage.resetPasswordButton')}</span>
                                     </div>
                                 )}
                             </Button>
@@ -158,12 +158,12 @@ const ResetPassword = memo(() => {
 
                         <div className="mt-6 text-center">
                             <p className="text-sm text-muted-foreground">
-                                {t('auth.resetPassword.rememberPassword')}{' '}
+                                {t('auth.resetPasswordPage.rememberPassword')}{' '}
                                 <Link
                                     to="/login"
                                     className="text-primary hover:text-primary/80 font-medium transition-colors"
                                 >
-                                    {t('auth.resetPassword.signIn')}
+                                    {t('auth.resetPasswordPage.signIn')}
                                 </Link>
                             </p>
                         </div>

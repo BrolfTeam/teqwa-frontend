@@ -45,7 +45,8 @@ const Education = () => {
         { value: 'tajweed', label: t('education.tajweed') },
         { value: 'fiqh', label: t('education.fiqh') },
         { value: 'hadith', label: t('education.hadithStudies') },
-        { value: 'tafseer', label: t('education.tafseer') }
+        { value: 'tafseer', label: t('education.tafseer') },
+        { value: 'ders_program', label: t('education.dersProgram') }
     ];
 
     const levels = [
@@ -253,7 +254,7 @@ const Education = () => {
         <div className="min-h-screen bg-background font-sans">
             {/* Hero Section */}
             <Hero
-                title={t('education.title')}
+                title={t('education.heroPrefix')}
                 titleHighlight={t('education.educationalPrograms')}
                 align="left"
                 description={t('education.enhanceKnowledge')}
@@ -572,13 +573,13 @@ const Education = () => {
                             <div>
                                 <h2 className="text-3xl font-bold mb-2">{t('education.myEnrollments')}</h2>
                                 <p className="text-muted-foreground">
-                                    {user.role === 'student' 
+                                    {user.role === 'student'
                                         ? 'Access your courses, assignments, and grades from your Student Dashboard'
                                         : 'Manage your enrolled courses'}
                                 </p>
                             </div>
                             {user.role === 'student' && (
-                                <Button 
+                                <Button
                                     onClick={() => navigate('/dashboard')}
                                     className="flex items-center gap-2"
                                 >
@@ -659,7 +660,7 @@ const Education = () => {
                             {myEnrollments.map((enrollment, index) => {
                                 const isConfirmed = enrollment.status === 'confirmed';
                                 const service = services.find(s => s.id === (enrollment.service?.id || enrollment.service));
-                                
+
                                 return (
                                     <motion.div
                                         key={enrollment.id}
@@ -720,7 +721,7 @@ const Education = () => {
                                             </CardContent>
                                             <CardFooter className="pt-4 border-t">
                                                 {isConfirmed && user.role === 'student' ? (
-                                                    <Button 
+                                                    <Button
                                                         onClick={() => navigate('/dashboard')}
                                                         className="w-full flex items-center justify-center gap-2"
                                                         variant="primary"
