@@ -34,7 +34,31 @@
     "refresh": "አድስ",
     "viewAll": "ሁሉንም እይ",
     "quickAccess": "ፈጣን መዳረሻ",
-    "browseAll": "ሁሉንም ይመልከቱ"
+    "browseAll": "ሁሉንም ይመልከቱ",
+    "fileSelected": "ፋይል ለመጫን ዝግጁ ነው",
+    "clickToUpload": "ለመስቀል ጠቅ ያድርጉ",
+    "orDragAndDrop": "ወይም ይጎትቱ እና ይጣሉ",
+    "viewDetails": "ዝርዝሮችን እይ",
+    "invalidFileType": "እባክዎ የምስል ፋይል ይስቀሉ"
+  },
+  "payment": {
+    "selectMethod": "የክፍያ ዘዴ ይምረጡ",
+    "onlinePayment": "የመስመር ላይ ክፍያ",
+    "payWithChapa": "በChapa (Telebirr, CBE, Cards) በደህና ይክፈሉ",
+    "manualTransfer": "በእጅ ማስተላለፍ / QR",
+    "scanQrDesc": "QR ኮድን ይቃኙ ወይም ወደ ባንክ ሂሳብ ያስተላልፉ",
+    "bankDetails": "የባንክ ዝርዝሮች",
+    "bankName": "የኢትዮጵያ ንግድ ባንክ",
+    "telebirr": "ቴሌብር",
+    "scanToPay": "ለመክፈል ይቃኙ",
+    "uploadProof": "የክፍያ ማረጋገጫ ይስቀሉ (ቅጽበታዊ ገጽ እይታ/ደረሰኝ)",
+    "proofRequired": "እባክዎ የክፍያ ማረጋገጫ ፋይል ይስቀሉ",
+    "processingPayment": "ክፍያ በማስተናገድ ላይ...",
+    "redirectingToChapa": "ወደ Chapa በመምራት ላይ...",
+    "paymentInitialized": "ክፍያ በተሳካ ሁኔታ ተጀምሯል",
+    "paymentFailed": "የክፍያ ማስጀመር አልተሳካም",
+    "proofUploaded": "ማረጋገጫ በተሳካ ሁኔታ ተሰቅሏል",
+    "invalidFileType": "ልክ ያልሆነ የፋይል አይነት። እባክዎ ምስል ይስቀሉ።"
   },
   "nav": {
     "home": "መነሻ",
@@ -332,7 +356,8 @@
     "calculatedZakat": "የተሰላ ዘካት (2.5%)",
     "applyToDonation": "ወደ ምጽዋት ተግብር",
     "zakatCalculationDesc": "ዘካትዎን ከተገቢ ንብረቶችዎ 2.5% በማስላት ያግኙ።",
-    "donationAmountUpdated": "የምጽዋት መጠን ከዘካት ስሌት ዘምኗል"
+    "donationAmountUpdated": "የምጽዋት መጠን ከዘካት ስሌት ዘምኗል",
+    "donationSubmittedForReview": "ምጽዋት ለግምገማ ቀርቧል! አንዴ ከተረጋገጠ እናሳውቃለን።"
   },
   "education": {
     "title": "ትምህርት",
@@ -403,6 +428,10 @@
     "hadithStudies": "የሀዲስ ጥናት",
     "dersProgram": "የሳምንት ደርስ ፕሮግራም",
     "dersProgramDesc": "የእስላም ንግግሮች እና ክፍሎች የሳምንት መርሐግብርን ይመልከቱ።",
+    "failedToLoadServices": "የትምህርት አገልግሎቶችን ለመጫን አልተሳካም",
+    "enrollmentSubmitted": "ምዝገባ ለግምገማ ቀርቧል! አንዴ ከተረጋገጠ እናሳውቃለን።",
+    "enrollmentSuccessRedirect": "ምዝገባ ተሳክቷል! ወደ ክፍያ እየተሸጋገረ...",
+    "enrollmentPaymentFailed": "ምዝገባ ተሳክቷል ነገር ግን ክፍያ አልተሳካም። እባክዎ ምዝገባዎችዎን ያረጋግጡ።",
     "days": {
       "monday": "ሰኞ",
       "tuesday": "ማክሰኞ",
@@ -464,7 +493,12 @@
     "price": "ዋጋ",
     "etb": "ብር",
     "maxPlayers": "ከፍተኛ {{count}} ተጫዋቾች",
-    "mainCourt": "ዋናው አዳራሽ"
+    "mainCourt": "ዋናው አዳራሽ",
+    "bookingSubmitted": "ቦታ ማስያዝ ለግምገማ ቀርቧል! አንዴ ከተረጋገጠ እናሳውቃለን።",
+    "bookingCreatedRedirecting": "ቦታ ተይዟል! ወደ ክፍያ አቅጣጫ በመምራት ላይ...",
+    "bookingPaymentFailed": "ቦታ ማስያዝ ተፈጥሯል ነገር ግን የክፍያ ማስጀመር አልተሳካም። እባክዎ የእርስዎን ቦታ ማስያዣዎች ያረጋግጡ።",
+    "slotsLoadFailed": "የፉትሳል ቦታዎችን መጫን አልተሳካም",
+    "loginToBook": "እባክዎ ቦታ ለማስያዝ ይግቡ"
   },
   "itikaf": {
     "title": "ኢትከፍ ፕሮግራም",
@@ -548,7 +582,9 @@
     "failedToLoadDetails": "የፕሮግራም ዝርዝሮችን ማጭን አልተቻለም",
     "failedToRegister": "ምዝገባ አልተሳካም",
     "successfullyRegistered": "ለኢትከፍ ፕሮግራም በተሳካ ሁኔታ ተመዝግቧል!",
-    "close": "ዝጋ"
+    "close": "ዝጋ",
+    "registrationInitiated": "ምዝገባ ተጀምሯል! ወደ ክፍያ አቅጣጫ በመምራት ላይ...",
+    "registrationSuccessPaymentFailed": "ምዝገባ ተሳክቷል ነገር ግን ክፍያ አልተሳካም።"
   },
   "auth": {
     "login": "ግባ",
@@ -959,7 +995,11 @@
     "failedToLoad": "የአባልነት አማራጮችን ለመጫን አልተሳካም",
     "failedToProcess": "የአባልነት ጥያቄን ለመስራት አልተሳካም",
     "becomeMember": "አባል ይሁኑ",
-    "membershipBenefits": "የአባልነት ጥቅሞች"
+    "membershipBenefits": "የአባልነት ጥቅሞች",
+    "completeSubscription": "ምዝገባውን አጠናቅቅ",
+    "subscriptionSubmitted": "የደንበኝነት ምዝገባ ለግምገማ ቀርቧል! አንዴ ከተረጋገጠ እናሳውቃለን።",
+    "paymentFailed": "አባልነት ተፈጥሯል ነገር ግን ክፍያ አልተሳካም። እባክዎ ዳሽቦርድዎን ያረጋግጡ።",
+    "subscriptionSuccess": "የአባልነት ምዝገባ ተሳክቷል!"
   },
   "ders": {
     "title": "ደርስ እና የንግግር ማህደር",

@@ -139,7 +139,7 @@ const Donations = memo(() => {
     }
 
     if (paymentMethod === 'manual_qr' && !proofFile) {
-      toast.error(t('payment.proofRequired') || "Please upload a payment proof");
+      toast.error(t('payment.proofRequired'));
       return;
     }
 
@@ -173,7 +173,7 @@ const Donations = memo(() => {
 
         response = await apiService.createDonation(formData);
 
-        toast.success(t('donations.donationSubmittedForReview') || "Donation submitted for review!");
+        toast.success(t('donations.donationSubmittedForReview'));
 
         // Reset form immediately for manual payments
         setSelectedAmount(100);

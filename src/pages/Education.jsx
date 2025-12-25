@@ -99,7 +99,7 @@ const Education = () => {
                 setServices([]);
             } else {
                 console.error('Failed to fetch education services:', error);
-                toast.error('Failed to load educational services');
+                toast.error(t('education.failedToLoadServices'));
                 setServices([]);
             }
         } finally {
@@ -150,7 +150,7 @@ const Education = () => {
 
             if (method === 'manual_qr') {
                 if (!proofFile) {
-                    toast.error(t('payment.proofRequired') || "Please upload a payment proof");
+                    toast.error(t('payment.proofRequired'));
                     setEnrolling(null);
                     return;
                 }
@@ -160,7 +160,7 @@ const Education = () => {
                 formData.append('proof_image', proofFile);
 
                 enrollmentResponse = await dataService.enrollInService(service.id, formData);
-                toast.success('Enrollment submitted for review! You will be notified once confirmed.');
+                toast.success(t('education.enrollmentSubmitted'));
             } else {
                 // Card or Free
                 const apiPayload = {
@@ -184,16 +184,16 @@ const Education = () => {
                         });
 
                         if (paymentResponse && paymentResponse.checkout_url) {
-                            toast.success('Enrollment successful! Redirecting to payment...');
+                            toast.success(t('education.enrollmentSuccessRedirect'));
                             window.location.href = paymentResponse.checkout_url;
                             return;
                         }
                     } catch (paymentError) {
                         console.error('Payment initialization error:', paymentError);
-                        toast.error('Enrollment successful but payment failed. Please check your bookings.');
+                        toast.error(t('education.enrollmentPaymentFailed'));
                     }
                 } else {
-                    toast.success('Successfully enrolled in service!');
+                    toast.success(t('education.enrollSucceeded'));
                 }
             }
 

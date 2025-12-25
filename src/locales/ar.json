@@ -34,7 +34,31 @@
     "refresh": "تحديث",
     "viewAll": "عرض الكل",
     "quickAccess": "الوصول السريع",
-    "browseAll": "تصفح الكل"
+    "browseAll": "تصفح الكل",
+    "fileSelected": "الملف جاهز للتحميل",
+    "clickToUpload": "انقر للتحميل",
+    "orDragAndDrop": "أو اسحب وأفلت",
+    "viewDetails": "عرض التفاصيل",
+    "invalidFileType": "يرجى تحميل ملف صورة"
+  },
+  "payment": {
+    "selectMethod": "اختر طريقة الدفع",
+    "onlinePayment": "الدفع عبر الإنترنت",
+    "payWithChapa": "ادفع بأمان عبر Chapa (Telebirr, CBE, البطاقات)",
+    "manualTransfer": "تحويل يدوي / QR",
+    "scanQrDesc": "امسح رمز الاستجابة السريعة أو حول إلى الحساب المصرفي",
+    "bankDetails": "تفاصيل البنك",
+    "bankName": "البنك التجاري الإثيوبي",
+    "telebirr": "تيليبير",
+    "scanToPay": "امسح للدفع",
+    "uploadProof": "تحميل إثبات الدفع (لقطة شاشة/إيصال)",
+    "proofRequired": "يرجى تحميل إثبات الدفع",
+    "processingPayment": "جاري معالجة الدفع...",
+    "redirectingToChapa": "جاري التوجيه إلى Chapa...",
+    "paymentInitialized": "تم بدء الدفع بنجاح",
+    "paymentFailed": "فشل بدء الدفع",
+    "proofUploaded": "تم رفع الإثبات بنجاح",
+    "invalidFileType": "نوع الملف غير صالح. يرجى تحميل صورة."
   },
   "nav": {
     "home": "الرئيسية",
@@ -315,7 +339,8 @@
     "calculatedZakat": "الزكاة المحسوبة (2.5%)",
     "applyToDonation": "تطبيق على التبرع",
     "zakatCalculationDesc": "احسب زكاتك بناءً على 2.5% من أصولك المؤهلة.",
-    "donationAmountUpdated": "تم تحديث مبلغ التبرع من حساب الزكاة"
+    "donationAmountUpdated": "تم تحديث مبلغ التبرع من حساب الزكاة",
+    "donationSubmittedForReview": "تم إرسال التبرع للمراجعة! سيتم إخطارك بمجرد التأكيد."
   },
   "education": {
     "title": "التعليم",
@@ -386,6 +411,10 @@
     "weeklySchedule": "الجدول الأسبوعي",
     "dersProgram": "برنامج الدروس الأسبوعي",
     "dersProgramDesc": "عرض جدولنا الأسبوعي للمحاضرات والدروس الإسلامية.",
+    "failedToLoadServices": "فشل تحميل الخدمات التعليمية",
+    "enrollmentSubmitted": "تم إرسال التسجيل للمراجعة! سيتم إخطارك بمجرد التأكيد.",
+    "enrollmentSuccessRedirect": "تم التسجيل بنجاح! جاري التوجيه للدفع...",
+    "enrollmentPaymentFailed": "تم التسجيل بنجاح ولكن فشل الدفع. يرجى التحقق من حجوزاتك.",
     "days": {
       "monday": "الاثنين",
       "tuesday": "الثلاثاء",
@@ -447,7 +476,12 @@
     "price": "السعر",
     "etb": "بير",
     "maxPlayers": "حد أقصى {{count}} لاعب",
-    "mainCourt": "الملعب الرئيسي"
+    "mainCourt": "الملعب الرئيسي",
+    "bookingSubmitted": "تم إرسال الحجز للمراجعة! سيتم إخطارك بمجرد التأكيد.",
+    "bookingCreatedRedirecting": "تم إنشاء الحجز! جاري التوجيه للدفع...",
+    "bookingPaymentFailed": "تم إنشاء الحجز ولكن فشل بدء الدفع. يرجى التحقق من حجوزاتك.",
+    "slotsLoadFailed": "فشل تحميل أماكن كرة القدم",
+    "loginToBook": "يرجى تسجيل الدخول لحجز مكان"
   },
   "itikaf": {
     "title": "برنامج الاعتكاف",
@@ -531,7 +565,9 @@
     "failedToLoadDetails": "فشل تحميل تفاصيل البرنامج",
     "failedToRegister": "فشل التسجيل",
     "successfullyRegistered": "تم التسجيل بنجاح في برنامج الاعتكاف!",
-    "close": "إغلاق"
+    "close": "إغلاق",
+    "registrationInitiated": "تم بدء التسجيل! جاري التوجيه للدفع...",
+    "registrationSuccessPaymentFailed": "تم التسجيل بنجاح ولكن فشل الدفع."
   },
   "auth": {
     "login": "تسجيل الدخول",
@@ -942,7 +978,11 @@
     "joinNow": "انضم الآن",
     "pleaseLogin": "يرجى تسجيل الدخول للانضمام إلى برنامج العضوية لدينا",
     "failedToLoad": "فشل تحميل خيارات العضوية",
-    "failedToProcess": "فشل معالجة طلب العضوية"
+    "failedToProcess": "فشل معالجة طلب العضوية",
+    "completeSubscription": "إكمال الاشتراك",
+    "subscriptionSubmitted": "تم إرسال الاشتراك للمراجعة! سيتم إخطارك بمجرد التأكيد.",
+    "paymentFailed": "تم إنشاء العضوية ولكن فشل الدفع. يرجى التحقق من لوحة التحكم.",
+    "subscriptionSuccess": "تم الاشتراك في العضوية بنجاح!"
   },
   "ders": {
     "title": "أرشيف الدروس والمحاضرات",

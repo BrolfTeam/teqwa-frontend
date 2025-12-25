@@ -376,7 +376,7 @@ const BookingHistory = memo(({ bookings, onRefresh }) => {
                                         {booking.status === 'pending' && (
                                             <Button variant="outline" size="sm">
                                                 <FiEye className="w-4 h-4 mr-2" />
-                                                View Details
+                                                {t('common.viewDetails')}
                                             </Button>
                                         )}
                                     </div>
@@ -428,7 +428,7 @@ const Futsal = memo(() => {
             setSlots(Array.isArray(data) ? data : data?.data || []);
         } catch (error) {
             console.error('Failed to fetch slots:', error);
-            toast.error('Failed to load futsal slots');
+            toast.error(t('futsal.slotsLoadFailed'));
             setSlots([]);
         } finally {
             setLoading(false);
@@ -482,7 +482,7 @@ const Futsal = memo(() => {
 
     const handleSlotSelect = (slot) => {
         if (!isAuthenticated) {
-            toast.error('Please login to book a slot');
+            toast.error(t('futsal.loginToBook'));
             navigate('/login');
             return;
         }
@@ -523,7 +523,7 @@ const Futsal = memo(() => {
         if (!selectedSlot) return;
 
         if (paymentMethod === 'manual_qr' && !proofFile) {
-            toast.error(t('payment.proofRequired') || "Please upload a payment proof");
+            toast.error(t('payment.proofRequired'));
             return;
         }
 
@@ -556,7 +556,7 @@ const Futsal = memo(() => {
 
                 await dataService.bookFutsalSlot(parsed.slotId, formData);
 
-                toast.success('Booking submitted for review! You will be notified once confirmed.');
+                toast.success(t('futsal.bookingSubmitted'));
             } else {
                 // Prepare API payload
                 const apiPayload = {
@@ -591,13 +591,13 @@ const Futsal = memo(() => {
                     });
 
                     if (paymentResponse?.checkout_url) {
-                        toast.success('Booking created! Redirecting to payment...');
+                        toast.success(t('futsal.bookingCreatedRedirecting'));
                         window.location.href = paymentResponse.checkout_url;
                         return;
                     }
                 } catch (paymentError) {
                     console.error('Payment initialization error:', paymentError);
-                    toast.error('Booking created but payment initialization failed. Please check your bookings.');
+                    toast.error(t('futsal.bookingPaymentFailed'));
                 }
 
                 toast.success('Booking confirmed successfully!');

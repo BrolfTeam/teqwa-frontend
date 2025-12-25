@@ -38,7 +38,31 @@
     "schedule": "Schedule",
     "refresh": "Refresh",
     "quickAccess": "Quick Access",
-    "browseAll": "Browse All"
+    "browseAll": "Browse All",
+    "fileSelected": "File Ready to Upload",
+    "clickToUpload": "Click to upload",
+    "orDragAndDrop": "or drag and drop",
+    "viewDetails": "View Details",
+    "invalidFileType": "Please upload an image file"
+  },
+  "payment": {
+    "selectMethod": "Select Payment Method",
+    "onlinePayment": "Online Payment",
+    "payWithChapa": "Pay securely with Chapa (Telebirr, CBE, Cards)",
+    "manualTransfer": "Manual Transfer / QR",
+    "scanQrDesc": "Scan QR code or transfer to bank account",
+    "bankDetails": "Bank Details",
+    "bankName": "Commercial Bank of Ethiopia",
+    "telebirr": "Telebirr",
+    "scanToPay": "Scan to Pay",
+    "uploadProof": "Upload Payment Proof (Screenshot/Receipt)",
+    "proofRequired": "Please upload a payment proof",
+    "processingPayment": "Processing Payment...",
+    "redirectingToChapa": "Redirecting to Chapa...",
+    "paymentInitialized": "Payment initialized successfully",
+    "paymentFailed": "Payment initialization failed",
+    "proofUploaded": "Proof uploaded successfully",
+    "invalidFileType": "Invalid file type. Please upload an image."
   },
   "nav": {
     "home": "Home",
@@ -338,7 +362,8 @@
     "calculatedZakat": "Calculated Zakat (2.5%)",
     "applyToDonation": "Apply to Donation",
     "zakatCalculationDesc": "Calculate your Zakat based on 2.5% of your eligible assets.",
-    "donationAmountUpdated": "Donation amount updated from Zakat calculation"
+    "donationAmountUpdated": "Donation amount updated from Zakat calculation",
+    "donationSubmittedForReview": "Donation submitted for review! You will be notified once confirmed."
   },
   "education": {
     "title": "Education",
@@ -416,6 +441,10 @@
     "weeklySchedule": "Weekly Schedule",
     "dersProgram": "Weekly Ders Program",
     "dersProgramDesc": "View our weekly schedule of Islamic lectures and classes.",
+    "failedToLoadServices": "Failed to load educational services",
+    "enrollmentSubmitted": "Enrollment submitted for review! You will be notified once confirmed.",
+    "enrollmentSuccessRedirect": "Enrollment successful! Redirecting to payment...",
+    "enrollmentPaymentFailed": "Enrollment successful but payment failed. Please check your bookings.",
     "days": {
       "monday": "Monday",
       "tuesday": "Tuesday",
@@ -475,7 +504,12 @@
     "viewTodaySlots": "View Today's Slots",
     "loadingSlots": "Loading available slots...",
     "gridView": "Grid View",
-    "calendarView": "Calendar View"
+    "calendarView": "Calendar View",
+    "bookingSubmitted": "Booking submitted for review! You will be notified once confirmed.",
+    "bookingCreatedRedirecting": "Booking created! Redirecting to payment...",
+    "bookingPaymentFailed": "Booking created but payment initialization failed. Please check your bookings.",
+    "slotsLoadFailed": "Failed to load futsal slots",
+    "loginToBook": "Please login to book a slot"
   },
   "itikaf": {
     "title": "I'tikaf Program",
@@ -559,7 +593,9 @@
     "failedToLoadDetails": "Failed to load program details",
     "failedToRegister": "Failed to register",
     "successfullyRegistered": "Successfully registered for Iʿtikāf program!",
-    "close": "Close"
+    "close": "Close",
+    "registrationInitiated": "Registration initiated! Redirecting to payment...",
+    "registrationSuccessPaymentFailed": "Registration successful but payment failed."
   },
   "auth": {
     "login": "Login",
@@ -979,7 +1015,11 @@
     "failedToLoad": "Failed to load membership options",
     "failedToProcess": "Failed to process membership request",
     "becomeMember": "Become a Member",
-    "membershipBenefits": "Membership Benefits"
+    "membershipBenefits": "Membership Benefits",
+    "completeSubscription": "Complete Subscription",
+    "subscriptionSubmitted": "Subscription submitted for review! You will be notified once confirmed.",
+    "paymentFailed": "Membership created but payment failed. Please check your dashboard.",
+    "subscriptionSuccess": "Membership subscription successful!"
   },
   "ders": {
     "title": "Ders & Lecture Archive",

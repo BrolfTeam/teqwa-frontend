@@ -27,7 +27,7 @@ export const PaymentMethodSelector = ({
             // Validate file type
             if (!file.type.startsWith('image/')) {
                 // You might want to bubble this error up differently
-                alert(t('common.invalidFileType') || "Please upload an image file");
+                alert(t('common.invalidFileType'));
                 return;
             }
 
@@ -61,7 +61,7 @@ export const PaymentMethodSelector = ({
             <div className="space-y-3">
                 <label className="text-base font-semibold text-foreground flex items-center gap-2">
                     <FiCreditCard className="w-5 h-5 text-primary" />
-                    {t('payment.selectMethod') || "Select Payment Method"}
+                    {t('payment.selectMethod')}
                 </label>
 
                 <div className="grid md:grid-cols-2 gap-4">
@@ -86,7 +86,7 @@ export const PaymentMethodSelector = ({
                         <div className="flex-1">
                             <div className="flex justify-between items-start">
                                 <h4 className="font-semibold text-foreground">
-                                    {t('payment.onlinePayment') || "Online Payment"}
+                                    {t('payment.onlinePayment')}
                                 </h4>
                                 {selectedMethod === 'card' && (
                                     <motion.div
@@ -99,7 +99,7 @@ export const PaymentMethodSelector = ({
                                 )}
                             </div>
                             <p className="text-sm text-muted-foreground mt-1">
-                                {t('payment.payWithChapa') || "Pay securely with Chapa (Telebirr, CBE, Cards)"}
+                                {t('payment.payWithChapa')}
                             </p>
                         </div>
                     </div>
@@ -125,7 +125,7 @@ export const PaymentMethodSelector = ({
                         <div className="flex-1">
                             <div className="flex justify-between items-start">
                                 <h4 className="font-semibold text-foreground">
-                                    {t('payment.manualTransfer') || "Manual Transfer / QR"}
+                                    {t('payment.manualTransfer')}
                                 </h4>
                                 {selectedMethod === 'manual_qr' && (
                                     <motion.div
@@ -138,7 +138,7 @@ export const PaymentMethodSelector = ({
                                 )}
                             </div>
                             <p className="text-sm text-muted-foreground mt-1">
-                                {t('payment.scanQrDesc') || "Scan QR code or transfer to bank account"}
+                                {t('payment.scanQrDesc')}
                             </p>
                         </div>
                     </div>
@@ -160,16 +160,16 @@ export const PaymentMethodSelector = ({
                                 <div className="space-y-4">
                                     <h4 className="font-semibold text-foreground flex items-center gap-2">
                                         <FiInfo className="w-4 h-4 text-primary" />
-                                        {t('payment.bankDetails') || "Bank Details"}
+                                        {t('payment.bankDetails')}
                                     </h4>
                                     <div className="space-y-3 text-sm">
                                         <div className="bg-background p-3 rounded-lg border border-border">
-                                            <span className="block text-xs text-muted-foreground uppercase">{t('payment.bankName') || "Commercial Bank of Ethiopia"}</span>
+                                            <span className="block text-xs text-muted-foreground uppercase">{t('payment.bankName')}</span>
                                             <span className="font-mono font-medium">1000123456789</span>
                                             <span className="block text-xs text-primary mt-1">Mujemaa Teqwa</span>
                                         </div>
                                         <div className="bg-background p-3 rounded-lg border border-border">
-                                            <span className="block text-xs text-muted-foreground uppercase">{t('payment.telebirr') || "Telebirr"}</span>
+                                            <span className="block text-xs text-muted-foreground uppercase">{t('payment.telebirr')}</span>
                                             <span className="font-mono font-medium">0911223344</span>
                                             <span className="block text-xs text-primary mt-1">Mujemaa Teqwa</span>
                                         </div>
@@ -183,14 +183,14 @@ export const PaymentMethodSelector = ({
                                             QR Code
                                         </div>
                                     </div>
-                                    <span className="text-xs text-muted-foreground">{t('payment.scanToPay') || "Scan to Pay"}</span>
+                                    <span className="text-xs text-muted-foreground">{t('payment.scanToPay')}</span>
                                 </div>
                             </div>
 
                             {/* File Upload */}
                             <div className="space-y-2">
                                 <label className="text-sm font-medium text-foreground">
-                                    {t('payment.uploadProof') || "Upload Payment Proof (Screenshot/Receipt)"}
+                                    {t('payment.uploadProof')}
                                 </label>
 
                                 <div
@@ -235,7 +235,7 @@ export const PaymentMethodSelector = ({
                                             </button>
                                             <div className="mt-2 text-sm text-primary font-medium flex items-center justify-center gap-2">
                                                 <FiCheck className="w-4 h-4" />
-                                                {t('common.fileSelected') || "File Ready to Upload"}
+                                                {t('common.fileSelected')}
                                             </div>
                                         </div>
                                     ) : (
@@ -244,8 +244,8 @@ export const PaymentMethodSelector = ({
                                                 <FiUploadCloud className="w-6 h-6" />
                                             </div>
                                             <div className="text-sm">
-                                                <span className="font-semibold text-primary">{t('common.clickToUpload') || "Click to upload"}</span>
-                                                <span className="text-muted-foreground"> {t('common.orDragAndDrop') || "or drag and drop"}</span>
+                                                <span className="font-semibold text-primary">{t('common.clickToUpload')}</span>
+                                                <span className="text-muted-foreground"> {t('common.orDragAndDrop')}</span>
                                             </div>
                                             <p className="text-xs text-muted-foreground">PNG, JPG, GIF up to 5MB</p>
                                         </div>

@@ -168,13 +168,13 @@ const Itikaf = memo(() => {
               });
 
               if (paymentResponse && paymentResponse.checkout_url) {
-                toast.success('Registration initiated! Redirecting to payment...');
+                toast.success(t('itikaf.registrationInitiated'));
                 window.location.href = paymentResponse.checkout_url;
                 return;
               }
             } catch (paymentError) {
               console.error('Payment initialization error:', paymentError);
-              toast.error('Registration successful but payment failed.');
+              toast.error(t('itikaf.registrationSuccessPaymentFailed'));
             }
           }
         }

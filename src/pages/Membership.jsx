@@ -71,7 +71,7 @@ const Membership = () => {
 
         // Validation for manual payment
         if (paymentMethod === 'manual_qr' && !proofFile) {
-            toast.error(t('payment.proofRequired') || "Please upload a payment proof");
+            toast.error(t('payment.proofRequired'));
             return;
         }
 
@@ -87,7 +87,7 @@ const Membership = () => {
                 formData.append('proof_image', proofFile);
 
                 membershipResponse = await apiService.subscribeToMembership(formData);
-                toast.success('Subscription submitted for review! You will be notified once confirmed.');
+                toast.success(t('membership.subscriptionSubmitted'));
             } else {
                 // 1. Create Membership Record (Card Flow)
                 const apiPayload = {
@@ -118,10 +118,10 @@ const Membership = () => {
                         }
                     } catch (paymentError) {
                         console.error('Payment initialization error:', paymentError);
-                        toast.error('Membership created but payment failed. Please check your dashboard.');
+                        toast.error(t('membership.paymentFailed'));
                     }
                 }
-                toast.success('Membership subscription successful!');
+                toast.success(t('membership.subscriptionSuccess'));
             }
 
             setIsPaymentModalOpen(false);
@@ -226,7 +226,7 @@ const Membership = () => {
             <Modal
                 open={isPaymentModalOpen}
                 onClose={() => setIsPaymentModalOpen(false)}
-                title={t('membership.completeSubscription') || "Complete Subscription"}
+                title={t('membership.completeSubscription')}
                 size="md"
             >
                 <div className="space-y-6">
