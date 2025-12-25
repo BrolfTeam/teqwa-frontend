@@ -3,6 +3,10 @@
     {
       "source": "/api/:path*",
       "destination": "https://api.mujemaateqwa.org/api/:path*"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ],
   "headers": [

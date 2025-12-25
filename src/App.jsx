@@ -27,7 +27,6 @@ const Futsal = lazy(() => import('@/pages/Futsal'));
 const Membership = lazy(() => import('@/pages/Membership'));
 const Itikaf = lazy(() => import('@/pages/Itikaf'));
 const Ders = lazy(() => import('@/pages/Ders'));
-const DersProgram = lazy(() => import('@/pages/DersProgram'));
 const Qibla = lazy(() => import('@/pages/Qibla'));
 const IslamicCalendar = lazy(() => import('@/pages/IslamicCalendar'));
 const PaymentSuccess = lazy(() => import('@/pages/PaymentSuccess'));
@@ -100,7 +99,7 @@ const AppContent = memo(() => {
             <Route path="membership" element={<Membership />} />
             <Route path="itikaf" element={<Itikaf />} />
             <Route path="ders" element={<Ders />} />
-            <Route path="ders-program" element={<DersProgram />} />
+
             <Route path="qibla" element={<Qibla />} />
             <Route path="islamic-calendar" element={<IslamicCalendar />} />
             <Route path="payment/success/:txRef" element={<PaymentSuccess />} />
