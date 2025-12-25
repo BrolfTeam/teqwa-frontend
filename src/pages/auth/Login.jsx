@@ -64,6 +64,7 @@ const Login = memo(() => {
       const response = await apiService.login({
         email: formData.email,
         password: formData.password,
+        role: role || 'visitor'
       });
 
       login(response.user, response.tokens);
@@ -118,9 +119,9 @@ const Login = memo(() => {
             transition={{ duration: 0.8 }}
           >
             <div className="mx-auto mb-8 flex items-center justify-center">
-              <img 
-                src={authLogo} 
-                alt="Teqwa Logo" 
+              <img
+                src={authLogo}
+                alt="Teqwa Logo"
                 className="w-20 h-20 object-contain drop-shadow-lg"
               />
             </div>
@@ -147,9 +148,9 @@ const Login = memo(() => {
             {/* Mobile Header */}
             <div className="lg:hidden text-center mb-8">
               <div className="mx-auto mb-4 flex items-center justify-center">
-                <img 
-                  src={authLogo} 
-                  alt="Teqwa Logo" 
+                <img
+                  src={authLogo}
+                  alt="Teqwa Logo"
                   className="w-16 h-16 object-contain"
                 />
               </div>
@@ -293,16 +294,19 @@ const Login = memo(() => {
               </form>
 
               <div className="mt-8 text-center pt-6 border-t border-stone-100 dark:border-slate-700 space-y-2">
-                <p className="text-stone-500 dark:text-stone-400 text-sm">
-                  {t('auth.dontHaveAccount')}{' '}
-                  <Link
-                    to={role ? `/register?role=${role}` : "/role-selection"}
-                    className="font-semibold text-emerald-700 hover:text-amber-600 transition-colors"
-                  >
-                    {t('auth.loginPage.createAccount')}
-                  </Link>
-                </p>
-                {!role && (
+                {role !== 'admin' && (
+                  <p className="text-stone-500 dark:text-stone-400 text-sm">
+                    {t('auth.dontHaveAccount')}{' '}
+                    <Link
+                      to={role ? `/register?role=${role}` : "/role-selection"}
+                      className="font-semibold text-emerald-700 hover:text-amber-600 transition-colors"
+                    >
+                      {t('auth.loginPage.createAccount')}
+                    </Link>
+                  </p>
+                )}
+                {/* Hide role selection and registration link for admin login to prevent unauthorized access */}
+                {role !== 'admin' && !role && (
                   <p className="text-stone-500 dark:text-stone-400 text-xs">
                     {t('auth.roleSelection.selectRole')}{' '}
                     <Link
