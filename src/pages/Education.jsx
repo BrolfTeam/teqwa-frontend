@@ -13,6 +13,8 @@ import { useTranslation } from 'react-i18next';
 import Hero from '@/components/ui/Hero';
 import educationBg from '@/assets/mesjid2.jpg';
 import IslamicPattern from '@/components/ui/IslamicPattern';
+import Modal from '@/components/ui/Modal';
+import { PaymentMethodSelector } from '@/components/payment/PaymentMethodSelector';
 
 const Education = () => {
     const { t } = useTranslation();
@@ -23,6 +25,12 @@ const Education = () => {
     const [enrolling, setEnrolling] = useState(null);
     const { user } = useAuth();
     const navigate = useNavigate();
+
+    // Payment UI State
+    const [selectedService, setSelectedService] = useState(null);
+    const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+    const [paymentMethod, setPaymentMethod] = useState('card');
+    const [proofFile, setProofFile] = useState(null);
 
     // ... (rest of state and logic unrelated to UI structure)
 
@@ -118,58 +126,97 @@ const Education = () => {
         setFilteredServices(filtered);
     };
 
-    const handleEnroll = async (serviceId) => {
+    const handleEnrollClick = (service) => {
         if (!user) {
             toast.error(t('education.pleaseLogin'));
             return;
         }
 
+        if (service.is_free || !service.fee || service.fee <= 0) {
+            processEnrollment(service, 'free');
+        } else {
+            setSelectedService(service);
+            setPaymentMethod('card');
+            setProofFile(null);
+            setIsPaymentModalOpen(true);
+        }
+    };
+
+    const processEnrollment = async (service, method) => {
         try {
-            setEnrolling(serviceId);
-            const enrollmentResponse = await dataService.enrollInService(serviceId);
+            setEnrolling(service.id);
 
-            // Handle Payment if not free
-            const service = services.find(s => s.id === serviceId);
-            if (service && !service.is_free && service.fee > 0 && enrollmentResponse && enrollmentResponse.data && enrollmentResponse.data.id) {
-                try {
-                    const paymentResponse = await paymentService.initializePayment({
-                        amount: parseFloat(service.fee),
-                        currency: 'ETB',
-                        email: user.email,
-                        first_name: user.first_name,
-                        last_name: user.last_name,
-                        content_type_model: 'serviceenrollment',
-                        object_id: enrollmentResponse.data.id
-                    });
+            let enrollmentResponse;
 
-                    if (paymentResponse && paymentResponse.checkout_url) {
-                        toast.success('Enrollment successful! Redirecting to payment...');
-                        window.location.href = paymentResponse.checkout_url;
-                        return;
-                    }
-                } catch (paymentError) {
-                    console.error('Payment initialization error:', paymentError);
-                    toast.error('Enrollment successful but payment failed. Please check your bookings.');
+            if (method === 'manual_qr') {
+                if (!proofFile) {
+                    toast.error(t('payment.proofRequired') || "Please upload a payment proof");
+                    setEnrolling(null);
+                    return;
                 }
+
+                const formData = new FormData();
+                formData.append('payment_method', 'manual_qr');
+                formData.append('proof_image', proofFile);
+
+                enrollmentResponse = await dataService.enrollInService(service.id, formData);
+                toast.success('Enrollment submitted for review! You will be notified once confirmed.');
             } else {
-                toast.success('Successfully enrolled in service!');
-                // If user is a student, suggest going to dashboard
-                if (user?.role === 'student') {
-                    setTimeout(() => {
-                        toast.info('View your courses and assignments in the Student Dashboard!', {
-                            action: {
-                                label: 'Go to Dashboard',
-                                onClick: () => navigate('/dashboard')
-                            }
+                // Card or Free
+                const apiPayload = {
+                    payment_method: method === 'free' ? 'free' : 'card'
+                };
+
+                enrollmentResponse = await dataService.enrollInService(service.id, apiPayload);
+
+                // Handle Payment if not free and card
+                if (method === 'card' && !service.is_free && service.fee > 0 && enrollmentResponse && (enrollmentResponse.data?.id || enrollmentResponse.id)) {
+                    try {
+                        const objId = enrollmentResponse.data?.id || enrollmentResponse.id;
+                        const paymentResponse = await paymentService.initializePayment({
+                            amount: parseFloat(service.fee),
+                            currency: 'ETB',
+                            email: user.email,
+                            first_name: user.first_name,
+                            last_name: user.last_name,
+                            content_type_model: 'serviceenrollment', // Verify model name in backend
+                            object_id: objId
                         });
-                    }, 1000);
+
+                        if (paymentResponse && paymentResponse.checkout_url) {
+                            toast.success('Enrollment successful! Redirecting to payment...');
+                            window.location.href = paymentResponse.checkout_url;
+                            return;
+                        }
+                    } catch (paymentError) {
+                        console.error('Payment initialization error:', paymentError);
+                        toast.error('Enrollment successful but payment failed. Please check your bookings.');
+                    }
+                } else {
+                    toast.success('Successfully enrolled in service!');
                 }
             }
 
+            // Success actions (if not redirected)
+            if (user?.role === 'student') {
+                setTimeout(() => {
+                    toast.info('View your courses and assignments in the Student Dashboard!', {
+                        action: {
+                            label: 'Go to Dashboard',
+                            onClick: () => navigate('/dashboard')
+                        }
+                    });
+                }, 1000);
+            }
+
+            setIsPaymentModalOpen(false);
+            setSelectedService(null);
             fetchData(); // Refresh data
+
         } catch (error) {
             const errorMessage = error.message || 'Failed to enroll in service';
             toast.error(errorMessage);
+            console.error(error);
         } finally {
             setEnrolling(null);
         }
@@ -546,7 +593,7 @@ const Education = () => {
                                                     <Button
                                                         variant="primary"
                                                         className="w-full"
-                                                        onClick={() => handleEnroll(service.id)}
+                                                        onClick={() => handleEnrollClick(service)}
                                                         disabled={enrolling === service.id}
                                                     >
                                                         {enrolling === service.id ? t('education.enrolling') : t('education.enrollNow')}
@@ -779,6 +826,50 @@ const Education = () => {
                     </motion.div>
                 )}
             </section>
+
+            <Modal
+                open={isPaymentModalOpen}
+                onClose={() => setIsPaymentModalOpen(false)}
+                title={t('education.completeEnrollment') || "Complete Enrollment"}
+                size="md"
+            >
+                <div className="space-y-6">
+                    {selectedService && (
+                        <div className="bg-muted/30 p-4 rounded-lg border border-border">
+                            <h3 className="font-semibold text-lg">{selectedService.title}</h3>
+                            <p className="text-2xl font-bold text-primary">{selectedService.fee} ETB</p>
+                            <p className="text-sm text-muted-foreground">{selectedService.schedule}</p>
+                        </div>
+                    )}
+
+                    <PaymentMethodSelector
+                        selectedMethod={paymentMethod}
+                        onMethodChange={(method) => {
+                            setPaymentMethod(method);
+                            if (method !== 'manual_qr') setProofFile(null);
+                        }}
+                        onFileChange={setProofFile}
+                        amount={parseFloat(selectedService?.fee || 0)}
+                    />
+
+                    <div className="flex justify-end gap-3 pt-4 border-t border-border">
+                        <Button
+                            variant="ghost"
+                            onClick={() => setIsPaymentModalOpen(false)}
+                            disabled={!!enrolling}
+                        >
+                            {t('common.cancel')}
+                        </Button>
+                        <Button
+                            onClick={() => processEnrollment(selectedService, paymentMethod)}
+                            disabled={!!enrolling}
+                            isLoading={!!enrolling}
+                        >
+                            {t('common.confirm')}
+                        </Button>
+                    </div>
+                </div>
+            </Modal>
         </div>
     );
 };

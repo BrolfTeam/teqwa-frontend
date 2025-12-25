@@ -10,6 +10,8 @@ import paymentService from '@/services/paymentService';
 import { useAuth } from '@/context/AuthContext';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
+import { PaymentMethodSelector } from '@/components/payment/PaymentMethodSelector';
+import Modal from '@/components/ui/Modal';
 import background from '@/assets/background.png';
 
 const Membership = () => {
@@ -19,6 +21,12 @@ const Membership = () => {
     const [loading, setLoading] = useState(true);
     const [processingTierId, setProcessingTierId] = useState(null);
     const { isAuthenticated, user } = useAuth();
+
+    // Payment UI State
+    const [selectedTier, setSelectedTier] = useState(null);
+    const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+    const [paymentMethod, setPaymentMethod] = useState('card');
+    const [proofFile, setProofFile] = useState(null);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -47,36 +55,81 @@ const Membership = () => {
         fetchData();
     }, [isAuthenticated]);
 
-    const handleJoin = async (tier) => {
+    const handleJoinClick = (tier) => {
         if (!isAuthenticated) {
             toast.error(t('membership.pleaseLogin'));
             return;
         }
+        setSelectedTier(tier);
+        setIsPaymentModalOpen(true);
+        setPaymentMethod('card');
+        setProofFile(null);
+    };
 
-        setProcessingTierId(tier.id);
+    const handleSubscribe = async () => {
+        if (!selectedTier) return;
+
+        // Validation for manual payment
+        if (paymentMethod === 'manual_qr' && !proofFile) {
+            toast.error(t('payment.proofRequired') || "Please upload a payment proof");
+            return;
+        }
+
+        setProcessingTierId(selectedTier.id);
+
         try {
-            // 1. Create Membership Record
-            const membershipResponse = await apiService.subscribeToMembership({
-                tier: tier.id
-            });
+            let membershipResponse;
 
-            // 2. Initialize Payment
-            if (membershipResponse) {
-                const paymentResponse = await paymentService.initializePayment({
-                    amount: tier.price,
-                    currency: 'ETB',
-                    email: user.email,
-                    first_name: user.first_name,
-                    last_name: user.last_name,
-                    phone_number: user.phone || '0900000000',
-                    content_type_model: 'usermembership',
-                    object_id: membershipResponse.id || membershipResponse.data?.id
-                });
+            if (paymentMethod === 'manual_qr') {
+                const formData = new FormData();
+                formData.append('tier', selectedTier.id);
+                formData.append('payment_method', 'manual_qr');
+                formData.append('proof_image', proofFile);
 
-                if (paymentResponse && paymentResponse.checkout_url) {
-                    window.location.href = paymentResponse.checkout_url;
+                membershipResponse = await apiService.subscribeToMembership(formData);
+                toast.success('Subscription submitted for review! You will be notified once confirmed.');
+            } else {
+                // 1. Create Membership Record (Card Flow)
+                const apiPayload = {
+                    tier: selectedTier.id,
+                    payment_method: 'card'
+                };
+
+                membershipResponse = await apiService.subscribeToMembership(apiPayload);
+
+                // 2. Initialize Payment
+                if (membershipResponse) {
+                    const objId = membershipResponse.id || membershipResponse.data?.id;
+                    try {
+                        const paymentResponse = await paymentService.initializePayment({
+                            amount: selectedTier.price,
+                            currency: 'ETB',
+                            email: user.email,
+                            first_name: user.first_name,
+                            last_name: user.last_name,
+                            phone_number: user.phone || '0900000000',
+                            content_type_model: 'usermembership',
+                            object_id: objId
+                        });
+
+                        if (paymentResponse && paymentResponse.checkout_url) {
+                            window.location.href = paymentResponse.checkout_url;
+                            return;
+                        }
+                    } catch (paymentError) {
+                        console.error('Payment initialization error:', paymentError);
+                        toast.error('Membership created but payment failed. Please check your dashboard.');
+                    }
                 }
+                toast.success('Membership subscription successful!');
             }
+
+            setIsPaymentModalOpen(false);
+            setSelectedTier(null);
+
+            // Refresh membership data
+            // (Assuming existing logic or page reload will handle status update display eventually)
+
         } catch (error) {
             console.error('Join failed:', error);
             toast.error(t('membership.failedToProcess'));
@@ -157,7 +210,7 @@ const Membership = () => {
                                         <Button
                                             className="w-full"
                                             variant={tier.is_featured ? 'primary' : 'outline'}
-                                            onClick={() => handleJoin(tier)}
+                                            onClick={() => handleJoinClick(tier)}
                                             isLoading={processingTierId === tier.id}
                                         >
                                             {t('membership.joinNow')}
@@ -169,6 +222,49 @@ const Membership = () => {
                     </div>
                 )}
             </div>
+
+            <Modal
+                open={isPaymentModalOpen}
+                onClose={() => setIsPaymentModalOpen(false)}
+                title={t('membership.completeSubscription') || "Complete Subscription"}
+                size="md"
+            >
+                <div className="space-y-6">
+                    {selectedTier && (
+                        <div className="bg-muted/30 p-4 rounded-lg border border-border">
+                            <h3 className="font-semibold text-lg">{selectedTier.name}</h3>
+                            <p className="text-2xl font-bold text-primary">{selectedTier.price} ETB <span className="text-sm font-normal text-muted-foreground">/ month</span></p>
+                        </div>
+                    )}
+
+                    <PaymentMethodSelector
+                        selectedMethod={paymentMethod}
+                        onMethodChange={(method) => {
+                            setPaymentMethod(method);
+                            if (method !== 'manual_qr') setProofFile(null);
+                        }}
+                        onFileChange={setProofFile}
+                        amount={parseFloat(selectedTier?.price || 0)}
+                    />
+
+                    <div className="flex justify-end gap-3 pt-4 border-t border-border">
+                        <Button
+                            variant="ghost"
+                            onClick={() => setIsPaymentModalOpen(false)}
+                            disabled={!!processingTierId}
+                        >
+                            {t('common.cancel')}
+                        </Button>
+                        <Button
+                            onClick={handleSubscribe}
+                            disabled={!!processingTierId}
+                            isLoading={!!processingTierId}
+                        >
+                            {t('common.confirm')}
+                        </Button>
+                    </div>
+                </div>
+            </Modal>
         </div>
     );
 };

@@ -15,10 +15,12 @@ import { useTranslation } from 'react-i18next';
 import mesjidBg from '@/assets/mesjid2.jpg';
 import { useAuth } from '@/context/AuthContext';
 import Hero from '@/components/ui/Hero';
+import { PaymentMethodSelector } from '@/components/payment/PaymentMethodSelector';
+import paymentService from '@/services/paymentService';
 
 const Itikaf = memo(() => {
   const { t } = useTranslation();
-  
+
   const safeFormatDate = (date, formatStr = 'MMM dd, yyyy') => {
     if (!date) return t('itikaf.dateTBD');
     try {
@@ -46,6 +48,10 @@ const Itikaf = memo(() => {
     special_requirements: '',
     notes: ''
   });
+
+  // Payment State
+  const [paymentMethod, setPaymentMethod] = useState('card');
+  const [proofFile, setProofFile] = useState(null);
 
   const fetchPrograms = useCallback(async () => {
     try {
@@ -115,10 +121,68 @@ const Itikaf = memo(() => {
       return;
     }
 
+    // Validate Payment Proof if needed
+    if (selectedProgram?.fee > 0 && paymentMethod === 'manual_qr' && !proofFile) {
+      toast.error(t('payment.proofRequired') || "Please upload a payment proof");
+      return;
+    }
+
     try {
       setRegistering(true);
-      const response = await dataService.registerForItikaf(programId, registrationData);
-      toast.success(response?.message || t('itikaf.successfullyRegistered'));
+
+      let response;
+      const isPaid = selectedProgram?.fee > 0;
+
+      if (isPaid && paymentMethod === 'manual_qr') {
+        const formData = new FormData();
+        Object.keys(registrationData).forEach(key => {
+          formData.append(key, registrationData[key]);
+        });
+        formData.append('payment_method', 'manual_qr');
+        formData.append('proof_image', proofFile);
+
+        response = await dataService.registerForItikaf(programId, formData);
+        toast.success('Registration submitted for review! You will be notified once confirmed.');
+      } else {
+        // Card or Free
+        const payload = {
+          ...registrationData,
+          payment_method: isPaid ? 'card' : 'free' // backend should handle 'free' or default
+        };
+        response = await dataService.registerForItikaf(programId, payload);
+
+        // Handle Payment redirection
+        if (isPaid && paymentMethod === 'card' && response) {
+          const regId = response.data?.id || response.id;
+          if (regId) {
+            try {
+              const paymentResponse = await paymentService.initializePayment({
+                amount: parseFloat(selectedProgram.fee),
+                currency: 'ETB',
+                email: 'user@example.com', // ideally get from user context
+                first_name: registrationData.emergency_contact.split(' ')[0],
+                last_name: '',
+                phone_number: registrationData.emergency_phone,
+                content_type_model: 'itikafregistration',
+                object_id: regId
+              });
+
+              if (paymentResponse && paymentResponse.checkout_url) {
+                toast.success('Registration initiated! Redirecting to payment...');
+                window.location.href = paymentResponse.checkout_url;
+                return;
+              }
+            } catch (paymentError) {
+              console.error('Payment initialization error:', paymentError);
+              toast.error('Registration successful but payment failed.');
+            }
+          }
+        }
+        if (!isPaid || paymentMethod !== 'card') {
+          toast.success(response?.message || t('itikaf.successfullyRegistered'));
+        }
+      }
+
       setShowRegistrationForm(false);
       setRegistrationData({
         emergency_contact: '',
@@ -126,6 +190,9 @@ const Itikaf = memo(() => {
         special_requirements: '',
         notes: ''
       });
+      setProofFile(null);
+      setPaymentMethod('card');
+
       await fetchPrograms();
       await fetchMyRegistrations();
     } catch (error) {
@@ -134,7 +201,7 @@ const Itikaf = memo(() => {
     } finally {
       setRegistering(false);
     }
-  }, [registrationData, fetchPrograms, fetchMyRegistrations]);
+  }, [registrationData, fetchPrograms, fetchMyRegistrations, selectedProgram, paymentMethod, proofFile, t]);
 
   const isRegistered = useCallback((programId) => {
     return myRegistrations.some(reg =>
@@ -639,6 +706,8 @@ const Itikaf = memo(() => {
                       </div>
                     )}
                   </div>
+
+
                 </div>
               </div>
             </motion.div>
@@ -706,6 +775,20 @@ const Itikaf = memo(() => {
                     />
                   </div>
                 </div>
+
+                {selectedProgram?.fee > 0 && (
+                  <div className="pt-4 border-t border-border/50 mt-4">
+                    <PaymentMethodSelector
+                      selectedMethod={paymentMethod}
+                      onMethodChange={(method) => {
+                        setPaymentMethod(method);
+                        if (method !== 'manual_qr') setProofFile(null);
+                      }}
+                      onFileChange={setProofFile}
+                      amount={parseFloat(selectedProgram.fee)}
+                    />
+                  </div>
+                )}
               </div>
               <div className="p-6 pt-0 flex gap-3">
                 <Button variant="outline" className="flex-1" onClick={() => setShowRegistrationForm(false)}>{t('common.cancel')}</Button>
@@ -722,7 +805,7 @@ const Itikaf = memo(() => {
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
+    </div >
   );
 });
 

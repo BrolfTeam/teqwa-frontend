@@ -11,6 +11,7 @@ import paymentService from '@/services/paymentService';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import IslamicPattern from '@/components/ui/IslamicPattern';
+import { PaymentMethodSelector } from '@/components/payment/PaymentMethodSelector';
 import { DONATION_AMOUNTS } from '@/config/constants';
 import { API_URL } from '@/config/env';
 
@@ -34,6 +35,8 @@ const Donations = memo(() => {
     phone: '',
     anonymous: false,
   });
+  const [paymentMethod, setPaymentMethod] = useState('card');
+  const [proofFile, setProofFile] = useState(null);
   const [zakatEligibleAmount, setZakatEligibleAmount] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -135,6 +138,11 @@ const Donations = memo(() => {
       return;
     }
 
+    if (paymentMethod === 'manual_qr' && !proofFile) {
+      toast.error(t('payment.proofRequired') || "Please upload a payment proof");
+      return;
+    }
+
     setIsProcessing(true);
 
     try {
@@ -142,73 +150,99 @@ const Donations = memo(() => {
         ? (user.name || [user.first_name, user.last_name].filter(Boolean).join(' ') || user.username)
         : donorInfo.name;
 
-      const donationData = {
-        amount,
-        cause: parseInt(selectedCategory, 10),
-        method: 'card',
-        message: `${t('donations.donation')} for ${donationCategories.find(c => c.id == selectedCategory)?.title || t('donations.generalFund')}`,
-        donor_name: donorName,
-        email: isAuthenticated ? user.email : donorInfo.email,
-        phone: isAuthenticated ? (user.phone || '') : donorInfo.phone,
-        anonymous: isAuthenticated ? false : donorInfo.anonymous
-      };
-      const response = await apiService.createDonation(donationData);
+      const donorEmail = isAuthenticated ? user.email : donorInfo.email;
+      const donorPhone = isAuthenticated ? (user.phone || '') : donorInfo.phone;
+      const isAnonymous = isAuthenticated ? false : donorInfo.anonymous;
+      const causeId = parseInt(selectedCategory, 10);
+      const causeTitle = donationCategories.find(c => c.id === causeId)?.title || t('donations.generalFund');
 
-      // Initialize Payment
-      if (response && response.data) {
-        const donation = response.data;
+      let response;
 
-        try {
-          const nameParts = donorName.trim().split(' ');
-          const firstName = nameParts[0];
-          // Chapa/Backend requires last_name. Use '-' if no last name is available.
-          const lastName = nameParts.slice(1).join(' ') || '-';
+      if (paymentMethod === 'manual_qr') {
+        const formData = new FormData();
+        formData.append('amount', amount);
+        formData.append('cause', causeId);
+        formData.append('method', 'manual_qr');
+        formData.append('message', `${t('donations.donation')} for ${causeTitle}`);
+        formData.append('donor_name', donorName);
+        formData.append('email', donorEmail);
+        formData.append('proof_image', proofFile);
 
-          const paymentPayload = {
-            amount: amount,
-            currency: 'ETB', // Default currency
-            email: isAuthenticated ? user.email : donorInfo.email,
-            first_name: isAuthenticated ? user.first_name || firstName : firstName,
-            last_name: isAuthenticated ? user.last_name || lastName : lastName,
-            content_type_model: 'donation',
-            object_id: donation.id
-          };
+        if (donorPhone) formData.append('phone', donorPhone);
+        formData.append('anonymous', isAnonymous);
 
-          const paymentResponse = await paymentService.initializePayment(paymentPayload);
+        response = await apiService.createDonation(formData);
 
-          if (paymentResponse && paymentResponse.checkout_url) {
-            toast.success(t('donations.redirectingToPayment'));
-            window.location.href = paymentResponse.checkout_url;
-            return; // Stop further execution as we redirect
-          }
-        } catch (paymentError) {
-          console.error('Payment initialization error:', paymentError);
-          toast.error(t('donations.donationRecordedPaymentFailed'));
+        toast.success(t('donations.donationSubmittedForReview') || "Donation submitted for review!");
+
+        // Reset form immediately for manual payments
+        setSelectedAmount(100);
+        setCustomAmount('');
+        setIsCustom(false);
+        setProofFile(null);
+        if (!isAuthenticated) {
+          setDonorInfo({ name: '', email: '', phone: '', anonymous: false });
         }
+      } else {
+        // Card / Chapa Payment
+        const donationData = {
+          amount,
+          cause: causeId,
+          method: 'card',
+          message: `${t('donations.donation')} for ${causeTitle}`,
+          donor_name: donorName,
+          email: donorEmail,
+          phone: donorPhone,
+          anonymous: isAnonymous
+        };
+        response = await apiService.createDonation(donationData);
+
+        // Initialize Payment
+        if (response && response.data) {
+          const donation = response.data;
+
+          try {
+            const nameParts = donorName.trim().split(' ');
+            const firstName = nameParts[0];
+            const lastName = nameParts.slice(1).join(' ') || '-';
+
+            const paymentPayload = {
+              amount: amount,
+              currency: 'ETB',
+              email: donorEmail,
+              first_name: isAuthenticated ? user.first_name || firstName : firstName,
+              last_name: isAuthenticated ? user.last_name || lastName : lastName,
+              content_type_model: 'donation',
+              object_id: donation.id
+            };
+
+            const paymentResponse = await paymentService.initializePayment(paymentPayload);
+
+            if (paymentResponse && paymentResponse.checkout_url) {
+              toast.success(t('donations.redirectingToPayment'));
+              window.location.href = paymentResponse.checkout_url;
+              return;
+            }
+          } catch (paymentError) {
+            console.error('Payment initialization error:', paymentError);
+            toast.error(t('donations.donationRecordedPaymentFailed'));
+          }
+        }
+
+        toast.success(t('donations.thankYouDonation', { amount }));
       }
 
-      toast.success(t('donations.thankYouDonation', { amount }));
-
-      // Dispatch event to refresh dashboard (only if donation was created successfully)
-      // Note: For completed donations, we'll rely on payment success callback
+      // Dispatch event
       if (response?.data?.status === 'completed') {
         window.dispatchEvent(new CustomEvent('custom:data-change', { detail: { type: 'donation:completed' } }));
       } else {
         window.dispatchEvent(new CustomEvent('custom:data-change', { detail: { type: 'donation:created' } }));
       }
 
-      // Reset form
-      setSelectedAmount(100);
-      setCustomAmount('');
-      setIsCustom(false);
-      if (!isAuthenticated) {
-        setDonorInfo({ name: '', email: '', phone: '', anonymous: false });
-      }
     } catch (error) {
       console.error('Donation failed:', error);
       let errorMsg = t('donations.paymentFailed');
       if (error.data) {
-        // Format validation errors nicely
         const validations = Object.entries(error.data)
           .map(([key, value]) => `${key}: ${Array.isArray(value) ? value.join(', ') : value}`)
           .join('; ');
@@ -697,6 +731,20 @@ const Donations = memo(() => {
                           </label>
                         </motion.div>
                       )}
+
+                      {/* Payment Method Selection */}
+                      <div className="pt-4 border-t border-border/50">
+                        <PaymentMethodSelector
+                          selectedMethod={paymentMethod}
+                          onMethodChange={(method) => {
+                            setPaymentMethod(method);
+                            // Clear file if switching away from manual
+                            if (method !== 'manual_qr') setProofFile(null);
+                          }}
+                          onFileChange={setProofFile}
+                          amount={finalAmount}
+                        />
+                      </div>
 
                       {/* Donate Button */}
                       <div className="pt-4 space-y-3">

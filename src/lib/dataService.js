@@ -195,8 +195,8 @@ class DataService {
     return this.apiCall(() => apiService.getCourse(id), { id });
   }
 
-  async enrollInService(serviceId) {
-    return this.apiCall(() => apiService.enrollInService(serviceId), { serviceId }, { useCache: false });
+  async enrollInService(serviceId, data = {}) {
+    return this.apiCall(() => apiService.enrollInService(serviceId, data), { serviceId, ...data }, { useCache: false });
   }
 
   async getMyEnrollments() {

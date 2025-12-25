@@ -23,6 +23,7 @@ import {
     FiAlertCircle,
     FiInfo
 } from 'react-icons/fi';
+import { PaymentMethodSelector } from '@/components/payment/PaymentMethodSelector';
 import Hero from '@/components/ui/Hero';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
@@ -59,11 +60,11 @@ const STATUS_ICONS = {
 
 // Helper function for safe translations
 const getTranslation = (t, key, fallback) => {
-  const translation = t(key, { defaultValue: fallback });
-  if (translation === key && key.includes('.')) {
-    return fallback;
-  }
-  return translation;
+    const translation = t(key, { defaultValue: fallback });
+    if (translation === key && key.includes('.')) {
+        return fallback;
+    }
+    return translation;
 };
 
 // Calendar Component
@@ -71,7 +72,7 @@ const CalendarView = memo(({ selectedDate, onDateSelect, minDate }) => {
     const { t } = useTranslation();
     const [currentMonth, setCurrentMonth] = useState(new Date(selectedDate));
     const today = useMemo(() => new Date(), []);
-    
+
     const getDaysInMonth = useCallback((date) => {
         const year = date.getFullYear();
         const month = date.getMonth();
@@ -79,24 +80,24 @@ const CalendarView = memo(({ selectedDate, onDateSelect, minDate }) => {
         const lastDay = new Date(year, month + 1, 0);
         const daysInMonth = lastDay.getDate();
         const startingDayOfWeek = firstDay.getDay();
-        
+
         const days = [];
-        
+
         // Add empty cells for days before the first day of the month
         for (let i = 0; i < startingDayOfWeek; i++) {
             days.push(null);
         }
-        
+
         // Add all days of the month
         for (let day = 1; day <= daysInMonth; day++) {
             days.push(new Date(year, month, day));
         }
-        
+
         return days;
     }, []);
-    
+
     const days = useMemo(() => getDaysInMonth(currentMonth), [currentMonth, getDaysInMonth]);
-    
+
     const monthNames = [
         getTranslation(t, 'islamicCalendar.monthNames.january', 'January'),
         getTranslation(t, 'islamicCalendar.monthNames.february', 'February'),
@@ -111,7 +112,7 @@ const CalendarView = memo(({ selectedDate, onDateSelect, minDate }) => {
         getTranslation(t, 'islamicCalendar.monthNames.november', 'November'),
         getTranslation(t, 'islamicCalendar.monthNames.december', 'December')
     ];
-    
+
     const weekDays = [
         getTranslation(t, 'islamicCalendar.dayNamesShort.sun', 'Sun'),
         getTranslation(t, 'islamicCalendar.dayNamesShort.mon', 'Mon'),
@@ -121,7 +122,7 @@ const CalendarView = memo(({ selectedDate, onDateSelect, minDate }) => {
         getTranslation(t, 'islamicCalendar.dayNamesShort.fri', 'Fri'),
         getTranslation(t, 'islamicCalendar.dayNamesShort.sat', 'Sat')
     ];
-    
+
     const navigateMonth = (direction) => {
         setCurrentMonth(prev => {
             const newDate = new Date(prev);
@@ -129,24 +130,24 @@ const CalendarView = memo(({ selectedDate, onDateSelect, minDate }) => {
             return newDate;
         });
     };
-    
+
     const isDateDisabled = (date) => {
         if (!date) return true;
         const today = new Date();
         today.setHours(0, 0, 0, 0);
         return date < today;
     };
-    
+
     const isSelected = (date) => {
         if (!date) return false;
         return date.toDateString() === new Date(selectedDate).toDateString();
     };
-    
+
     const isToday = (date) => {
         if (!date) return false;
         return date.toDateString() === today.toDateString();
     };
-    
+
     return (
         <div className="bg-background rounded-2xl border border-border/50 shadow-lg overflow-hidden">
             <div className="bg-gradient-to-r from-primary/10 to-accent/10 p-4 border-b border-border/50">
@@ -170,7 +171,7 @@ const CalendarView = memo(({ selectedDate, onDateSelect, minDate }) => {
                     </button>
                 </div>
             </div>
-            
+
             <div className="p-4">
                 <div className="grid grid-cols-7 gap-1 mb-2">
                     {weekDays.map(day => (
@@ -179,17 +180,17 @@ const CalendarView = memo(({ selectedDate, onDateSelect, minDate }) => {
                         </div>
                     ))}
                 </div>
-                
+
                 <div className="grid grid-cols-7 gap-1">
                     {days.map((date, index) => {
                         if (!date) {
                             return <div key={`empty-${index}`} className="aspect-square" />;
                         }
-                        
+
                         const disabled = isDateDisabled(date);
                         const selected = isSelected(date);
                         const todayDate = isToday(date);
-                        
+
                         return (
                             <button
                                 key={date.toISOString()}
@@ -198,8 +199,8 @@ const CalendarView = memo(({ selectedDate, onDateSelect, minDate }) => {
                                 className={`
                                     aspect-square rounded-lg text-sm font-medium
                                     transition-all duration-200
-                                    ${disabled 
-                                        ? 'text-muted-foreground/30 cursor-not-allowed' 
+                                    ${disabled
+                                        ? 'text-muted-foreground/30 cursor-not-allowed'
                                         : selected
                                             ? 'bg-primary text-primary-foreground shadow-md scale-105'
                                             : todayDate
@@ -225,7 +226,7 @@ const TimeSlotCard = memo(({ slot, onSelect, isSelected }) => {
     const { t } = useTranslation();
     const status = slot.available ? 'available' : 'booked';
     const StatusIcon = STATUS_ICONS[status];
-    
+
     return (
         <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -238,8 +239,8 @@ const TimeSlotCard = memo(({ slot, onSelect, isSelected }) => {
                 className={`
                     cursor-pointer transition-all duration-300
                     ${isSelected ? 'ring-2 ring-primary shadow-lg' : ''}
-                    ${slot.available 
-                        ? 'border-primary/20 hover:border-primary/40 hover:shadow-md' 
+                    ${slot.available
+                        ? 'border-primary/20 hover:border-primary/40 hover:shadow-md'
                         : 'opacity-75 border-border/30 cursor-not-allowed'
                     }
                 `}
@@ -257,31 +258,31 @@ const TimeSlotCard = memo(({ slot, onSelect, isSelected }) => {
                                     <div className="text-xs text-muted-foreground uppercase tracking-wide">{t('futsal.timeSlot')}</div>
                                 </div>
                             </div>
-                            
+
                             <div className="flex items-center gap-2 mb-2 text-muted-foreground text-sm">
                                 <FiMapPin className="w-4 h-4" />
                                 <span>{slot.location || t('futsal.mainCourt')}</span>
                             </div>
-                            
+
                             <div className="flex items-center gap-2 mb-3 text-muted-foreground text-sm">
                                 <FiUsers className="w-4 h-4" />
                                 <span>{t('futsal.maxPlayers', { count: slot.max_players || 12 })}</span>
                             </div>
                         </div>
-                        
+
                         <Badge className={STATUS_COLORS[status]}>
                             <StatusIcon className="w-3.5 h-3.5 mr-1" />
                             {slot.available ? t('futsal.available') : t('futsal.booked')}
                         </Badge>
                     </div>
-                    
+
                     <div className="flex items-center justify-between pt-4 border-t border-border/50">
                         <div>
                             <div className="text-xs text-muted-foreground mb-1">{t('futsal.price')}</div>
                             <div className="text-2xl font-bold text-primary">{slot.price}</div>
                             <div className="text-xs text-muted-foreground">{t('futsal.etb')}</div>
                         </div>
-                        
+
                         <Button
                             disabled={!slot.available}
                             variant={slot.available ? 'primary' : 'ghost'}
@@ -301,7 +302,7 @@ const TimeSlotCard = memo(({ slot, onSelect, isSelected }) => {
                             )}
                         </Button>
                     </div>
-                    
+
                     {!slot.available && (
                         <div className="absolute bottom-0 left-0 right-0 h-1 bg-red-500" />
                     )}
@@ -319,7 +320,7 @@ const BookingHistory = memo(({ bookings, onRefresh }) => {
             {bookings.map((booking) => {
                 const StatusIcon = STATUS_ICONS[booking.status] || FiInfo;
                 const slot = booking.slot_info || booking.slot;
-                
+
                 return (
                     <motion.div
                         key={booking.id}
@@ -349,7 +350,7 @@ const BookingHistory = memo(({ bookings, onRefresh }) => {
                                                 </div>
                                             </div>
                                         </div>
-                                        
+
                                         <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
                                             <span className="flex items-center gap-1.5">
                                                 <FiMapPin className="w-4 h-4" />
@@ -365,13 +366,13 @@ const BookingHistory = memo(({ bookings, onRefresh }) => {
                                             </span>
                                         </div>
                                     </div>
-                                    
+
                                     <div className="flex items-center gap-4">
                                         <Badge className={STATUS_COLORS[booking.status] || STATUS_COLORS.pending}>
                                             <StatusIcon className="w-3.5 h-3.5 mr-1" />
                                             {booking.status?.charAt(0).toUpperCase() + booking.status?.slice(1) || 'Pending'}
                                         </Badge>
-                                        
+
                                         {booking.status === 'pending' && (
                                             <Button variant="outline" size="sm">
                                                 <FiEye className="w-4 h-4 mr-2" />
@@ -395,7 +396,7 @@ const Futsal = memo(() => {
     const { user, isAuthenticated } = useAuth();
     const navigate = useNavigate();
     const today = useMemo(() => new Date().toISOString().split('T')[0], []);
-    
+
     // State Management
     const [selectedDate, setSelectedDate] = useState(today);
     const [slots, setSlots] = useState([]);
@@ -405,7 +406,7 @@ const Futsal = memo(() => {
     const [bookings, setBookings] = useState([]);
     const [showBookingHistory, setShowBookingHistory] = useState(false);
     const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'calendar'
-    
+
     // Form State
     const [form, setForm] = useState({
         slotId: '',
@@ -418,7 +419,7 @@ const Futsal = memo(() => {
     });
     const [errors, setErrors] = useState({});
     const [isBooking, setIsBooking] = useState(false);
-    
+
     // Fetch slots for selected date
     const fetchSlots = useCallback(async (date) => {
         setLoading(true);
@@ -433,11 +434,17 @@ const Futsal = memo(() => {
             setLoading(false);
         }
     }, []);
-    
+
+
+
+    // Payment State
+    const [paymentMethod, setPaymentMethod] = useState('card');
+    const [proofFile, setProofFile] = useState(null);
+
     // Fetch user bookings
     const fetchBookings = useCallback(async () => {
         if (!isAuthenticated) return;
-        
+
         try {
             const data = await dataService.getMyFutsalBookings();
             setBookings(Array.isArray(data) ? data : data?.data || []);
@@ -445,48 +452,48 @@ const Futsal = memo(() => {
             console.error('Failed to fetch bookings:', error);
         }
     }, [isAuthenticated]);
-    
+
     // Effects
     useEffect(() => {
         fetchSlots(selectedDate);
     }, [selectedDate, fetchSlots]);
-    
+
     useEffect(() => {
         fetchBookings();
     }, [fetchBookings]);
-    
+
     // Computed values
-    const availableSlots = useMemo(() => 
-        slots.filter(s => s.available), 
+    const availableSlots = useMemo(() =>
+        slots.filter(s => s.available),
         [slots]
     );
-    
-    const bookedSlots = useMemo(() => 
-        slots.filter(s => !s.available), 
+
+    const bookedSlots = useMemo(() =>
+        slots.filter(s => !s.available),
         [slots]
     );
-    
+
     // Handlers
     const handleDateSelect = (date) => {
         const dateString = date.toISOString().split('T')[0];
         setSelectedDate(dateString);
         setSelectedSlot(null);
     };
-    
+
     const handleSlotSelect = (slot) => {
         if (!isAuthenticated) {
             toast.error('Please login to book a slot');
             navigate('/login');
             return;
         }
-        
+
         setSelectedSlot(slot);
         setForm(prev => ({
             ...prev,
             slotId: slot.id,
             date: slot.date || selectedDate,
-            contactName: user?.first_name && user?.last_name 
-                ? `${user.first_name} ${user.last_name}` 
+            contactName: user?.first_name && user?.last_name
+                ? `${user.first_name} ${user.last_name}`
                 : user?.username || '',
             contactEmail: user?.email || '',
             contactPhone: user?.phone || '',
@@ -495,7 +502,7 @@ const Futsal = memo(() => {
         setErrors({});
         setBookingModalOpen(true);
     };
-    
+
     const handleFormChange = (e) => {
         const { name, value, type, checked } = e.target;
         setForm(prev => ({
@@ -511,13 +518,18 @@ const Futsal = memo(() => {
             });
         }
     };
-    
+
     const handleBook = async () => {
         if (!selectedSlot) return;
-        
+
+        if (paymentMethod === 'manual_qr' && !proofFile) {
+            toast.error(t('payment.proofRequired') || "Please upload a payment proof");
+            return;
+        }
+
         setIsBooking(true);
         setErrors({});
-        
+
         try {
             // Validate form
             const parsed = formSchemas.futsalBooking.parse({
@@ -531,58 +543,77 @@ const Futsal = memo(() => {
                 contactPhone: form.contactPhone,
                 agreeToRules: form.agreeToRules
             });
-            
-            // Prepare API payload
-            const apiPayload = {
-                contact_name: parsed.contactName,
-                contact_email: parsed.contactEmail,
-                contact_phone: parsed.contactPhone || '',
-                player_count: parsed.playerCount,
-                agree_to_rules: parsed.agreeToRules
-            };
-            
-            // Create booking
-            const bookingResponse = await dataService.bookFutsalSlot(parsed.slotId, apiPayload);
-            const booking = bookingResponse?.data || bookingResponse;
-            
-            if (!booking?.id) {
-                throw new Error('Failed to create booking');
-            }
-            
-            // Initialize payment
-            try {
-                const price = parseFloat(selectedSlot.price) || 0;
-                const paymentResponse = await paymentService.initializePayment({
-                    amount: price,
-                    currency: 'ETB',
-                    email: parsed.contactEmail,
-                    first_name: parsed.contactName.split(' ')[0],
-                    last_name: parsed.contactName.split(' ').slice(1).join(' ') || '',
-                    phone_number: parsed.contactPhone || '0900000000',
-                    content_type_model: 'futsalbooking',
-                    object_id: booking.id
-                });
-                
-                if (paymentResponse?.checkout_url) {
-                    toast.success('Booking created! Redirecting to payment...');
-                    window.location.href = paymentResponse.checkout_url;
-                    return;
+
+            if (paymentMethod === 'manual_qr') {
+                const formData = new FormData();
+                formData.append('contact_name', parsed.contactName);
+                formData.append('contact_email', parsed.contactEmail);
+                formData.append('contact_phone', parsed.contactPhone || '');
+                formData.append('player_count', parsed.playerCount);
+                formData.append('agree_to_rules', parsed.agreeToRules);
+                formData.append('payment_method', 'manual_qr');
+                formData.append('proof_image', proofFile);
+
+                await dataService.bookFutsalSlot(parsed.slotId, formData);
+
+                toast.success('Booking submitted for review! You will be notified once confirmed.');
+            } else {
+                // Prepare API payload
+                const apiPayload = {
+                    contact_name: parsed.contactName,
+                    contact_email: parsed.contactEmail,
+                    contact_phone: parsed.contactPhone || '',
+                    player_count: parsed.playerCount,
+                    agree_to_rules: parsed.agreeToRules,
+                    payment_method: 'card'
+                };
+
+                // Create booking
+                const bookingResponse = await dataService.bookFutsalSlot(parsed.slotId, apiPayload);
+                const booking = bookingResponse?.data || bookingResponse;
+
+                if (!booking?.id) {
+                    throw new Error('Failed to create booking');
                 }
-            } catch (paymentError) {
-                console.error('Payment initialization error:', paymentError);
-                toast.error('Booking created but payment initialization failed. Please check your bookings.');
+
+                // Initialize payment
+                try {
+                    const price = parseFloat(selectedSlot.price) || 0;
+                    const paymentResponse = await paymentService.initializePayment({
+                        amount: price,
+                        currency: 'ETB',
+                        email: parsed.contactEmail,
+                        first_name: parsed.contactName.split(' ')[0],
+                        last_name: parsed.contactName.split(' ').slice(1).join(' ') || '',
+                        phone_number: parsed.contactPhone || '0900000000',
+                        content_type_model: 'futsalbooking',
+                        object_id: booking.id
+                    });
+
+                    if (paymentResponse?.checkout_url) {
+                        toast.success('Booking created! Redirecting to payment...');
+                        window.location.href = paymentResponse.checkout_url;
+                        return;
+                    }
+                } catch (paymentError) {
+                    console.error('Payment initialization error:', paymentError);
+                    toast.error('Booking created but payment initialization failed. Please check your bookings.');
+                }
+
+                toast.success('Booking confirmed successfully!');
             }
-            
-            toast.success('Booking confirmed successfully!');
+
             setBookingModalOpen(false);
             setSelectedSlot(null);
-            
+            setProofFile(null);
+            setPaymentMethod('card');
+
             // Refresh data
             dataService.clearCacheByPattern('getFutsalSlots');
             dataService.clearCacheByPattern('getMyFutsalBookings');
             fetchSlots(selectedDate);
             fetchBookings();
-            
+
         } catch (error) {
             console.error('Booking error:', error);
             if (error?.errors) {
@@ -599,7 +630,7 @@ const Futsal = memo(() => {
             setIsBooking(false);
         }
     };
-    
+
     return (
         <div className="min-h-screen bg-gradient-to-b from-background via-muted/20 to-background">
             {/* Hero Section */}
@@ -612,7 +643,7 @@ const Futsal = memo(() => {
                 primaryAction={<a href="#booking-section">{t('futsal.bookNow')}</a>}
                 secondaryAction={<a href="#features">{t('common.learnMore')}</a>}
             />
-            
+
             {/* Features Section */}
             <section id="features" className="container mx-auto px-4 py-16">
                 <div className="bg-muted/30 rounded-3xl p-8 md:p-16 relative overflow-hidden">
@@ -650,7 +681,7 @@ const Futsal = memo(() => {
                     </div>
                 </div>
             </section>
-            
+
             {/* Booking Section */}
             <section id="booking-section" className="container mx-auto px-4 py-12">
                 <div className="max-w-7xl mx-auto">
@@ -659,7 +690,7 @@ const Futsal = memo(() => {
                         <h2 className="text-3xl md:text-4xl font-bold mb-2">{t('futsal.bookYourSlotTitle')}</h2>
                         <p className="text-muted-foreground text-lg">{t('futsal.bookSubtitle')}</p>
                     </div>
-                    
+
                     {/* Date Selection & View Toggle */}
                     <Card className="mb-8 p-6 bg-muted/30 border-border/50">
                         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
@@ -684,7 +715,7 @@ const Futsal = memo(() => {
                                         />
                                     </div>
                                 </div>
-                                
+
                                 <div className="flex items-center gap-2">
                                     <Button
                                         variant={viewMode === 'grid' ? 'primary' : 'outline'}
@@ -702,7 +733,7 @@ const Futsal = memo(() => {
                                     </Button>
                                 </div>
                             </div>
-                            
+
                             {loading ? (
                                 <div className="flex items-center gap-2 text-muted-foreground">
                                     <FiLoader className="w-4 h-4 animate-spin" />
@@ -725,7 +756,7 @@ const Futsal = memo(() => {
                             )}
                         </div>
                     </Card>
-                    
+
                     {/* Calendar and Slots Grid */}
                     <div className="grid lg:grid-cols-4 gap-6 mb-8">
                         {/* Calendar View */}
@@ -738,7 +769,7 @@ const Futsal = memo(() => {
                                 />
                             </div>
                         )}
-                        
+
                         {/* Time Slots Grid */}
                         <div className={viewMode === 'calendar' ? 'lg:col-span-3' : 'lg:col-span-4'}>
                             {loading ? (
@@ -778,7 +809,7 @@ const Futsal = memo(() => {
                     </div>
                 </div>
             </section>
-            
+
             {/* Booking History Section */}
             {isAuthenticated && bookings.length > 0 && (
                 <section className="container mx-auto px-4 py-12">
@@ -806,7 +837,7 @@ const Futsal = memo(() => {
                                 )}
                             </Button>
                         </div>
-                        
+
                         <AnimatePresence>
                             {showBookingHistory && (
                                 <motion.div
@@ -823,7 +854,7 @@ const Futsal = memo(() => {
                     </div>
                 </section>
             )}
-            
+
             {/* Booking Modal */}
             <Modal
                 open={bookingModalOpen}
@@ -877,7 +908,7 @@ const Futsal = memo(() => {
                                 </div>
                             </CardContent>
                         </Card>
-                        
+
                         {/* Booking Form */}
                         <div className="space-y-4">
                             <h3 className="text-lg font-semibold">{t('contact.sendUsMessage')}</h3>
@@ -888,9 +919,8 @@ const Futsal = memo(() => {
                                         value={form.contactName}
                                         onChange={handleFormChange}
                                         placeholder="Enter your full name"
-                                        className={`w-full border rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all ${
-                                            errors['contactName'] ? 'border-red-500' : 'border-border'
-                                        }`}
+                                        className={`w-full border rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all ${errors['contactName'] ? 'border-red-500' : 'border-border'
+                                            }`}
                                     />
                                     {errors['contactName'] && (
                                         <div className="text-red-600 text-sm mt-1.5 flex items-center gap-1">
@@ -899,7 +929,7 @@ const Futsal = memo(() => {
                                         </div>
                                     )}
                                 </FormField>
-                                
+
                                 <FormField label="Contact Email" required>
                                     <input
                                         type="email"
@@ -907,9 +937,8 @@ const Futsal = memo(() => {
                                         value={form.contactEmail}
                                         onChange={handleFormChange}
                                         placeholder="your.email@example.com"
-                                        className={`w-full border rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all ${
-                                            errors['contactEmail'] ? 'border-red-500' : 'border-border'
-                                        }`}
+                                        className={`w-full border rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all ${errors['contactEmail'] ? 'border-red-500' : 'border-border'
+                                            }`}
                                     />
                                     {errors['contactEmail'] && (
                                         <div className="text-red-600 text-sm mt-1.5 flex items-center gap-1">
@@ -918,7 +947,7 @@ const Futsal = memo(() => {
                                         </div>
                                     )}
                                 </FormField>
-                                
+
                                 <FormField label="Number of Players" required>
                                     <input
                                         type="number"
@@ -928,9 +957,8 @@ const Futsal = memo(() => {
                                         min="1"
                                         max={selectedSlot.max_players || 12}
                                         placeholder="6"
-                                        className={`w-full border rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all ${
-                                            errors['playerCount'] ? 'border-red-500' : 'border-border'
-                                        }`}
+                                        className={`w-full border rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all ${errors['playerCount'] ? 'border-red-500' : 'border-border'
+                                            }`}
                                     />
                                     {errors['playerCount'] && (
                                         <div className="text-red-600 text-sm mt-1.5 flex items-center gap-1">
@@ -939,7 +967,7 @@ const Futsal = memo(() => {
                                         </div>
                                     )}
                                 </FormField>
-                                
+
                                 <FormField label="Phone Number (Optional)">
                                     <input
                                         type="tel"
@@ -952,7 +980,20 @@ const Futsal = memo(() => {
                                 </FormField>
                             </div>
                         </div>
-                        
+
+                        {/* Payment Method Selection */}
+                        <div className="pt-2">
+                            <PaymentMethodSelector
+                                selectedMethod={paymentMethod}
+                                onMethodChange={(method) => {
+                                    setPaymentMethod(method);
+                                    if (method !== 'manual_qr') setProofFile(null);
+                                }}
+                                onFileChange={setProofFile}
+                                amount={parseFloat(selectedSlot?.price || 0)}
+                            />
+                        </div>
+
                         {/* Terms and Conditions */}
                         <div className="bg-muted/30 rounded-lg p-4 border border-border/50">
                             <div className="flex items-start gap-3">
@@ -975,7 +1016,7 @@ const Futsal = memo(() => {
                                 </div>
                             )}
                         </div>
-                        
+
                         {/* Error Message */}
                         {errors['form'] && (
                             <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 flex items-center gap-2">
@@ -983,7 +1024,7 @@ const Futsal = memo(() => {
                                 <span className="text-sm text-red-600">{errors['form']}</span>
                             </div>
                         )}
-                        
+
                         {/* Action Buttons */}
                         <div className="flex flex-col sm:flex-row justify-end gap-3 pt-4 border-t border-border/50">
                             <Button

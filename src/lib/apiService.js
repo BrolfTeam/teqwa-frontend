@@ -85,13 +85,19 @@ class ApiService {
 
     const token = localStorage.getItem('authToken');
 
+    const isFormData = options.body instanceof FormData;
+
     const config = {
       headers: {
-        'Content-Type': 'application/json',
         ...options.headers,
       },
       ...options,
     };
+
+    // Only set Content-Type to json if NOT FormData
+    if (!isFormData) {
+      config.headers['Content-Type'] = 'application/json';
+    }
 
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
@@ -296,23 +302,26 @@ class ApiService {
   }
 
   post(url, data = {}) {
+    const isFormData = data instanceof FormData;
     return this.request(url, {
       method: 'POST',
-      body: JSON.stringify(data)
+      body: isFormData ? data : JSON.stringify(data)
     });
   }
 
   put(url, data = {}) {
+    const isFormData = data instanceof FormData;
     return this.request(url, {
       method: 'PUT',
-      body: JSON.stringify(data)
+      body: isFormData ? data : JSON.stringify(data)
     });
   }
 
   patch(url, data = {}) {
+    const isFormData = data instanceof FormData;
     return this.request(url, {
       method: 'PATCH',
-      body: JSON.stringify(data)
+      body: isFormData ? data : JSON.stringify(data)
     });
   }
 
@@ -489,9 +498,10 @@ class ApiService {
     });
   }
 
-  async enrollInService(serviceId) {
+  async enrollInService(serviceId, data = {}) {
     return this.request(`/education/${serviceId}/book/`, {
       method: 'POST',
+      body: data instanceof FormData ? data : JSON.stringify(data),
     });
   }
 
@@ -512,7 +522,7 @@ class ApiService {
   async bookFutsalSlot(slotId, bookingData) {
     return this.request(`/futsal/slots/${slotId}/book/`, {
       method: 'POST',
-      body: JSON.stringify(bookingData),
+      body: bookingData instanceof FormData ? bookingData : JSON.stringify(bookingData),
     });
   }
 
@@ -535,7 +545,7 @@ class ApiService {
   async createDonation(data) {
     return this.request('/donations/create/', {
       method: 'POST',
-      body: JSON.stringify(data),
+      body: data instanceof FormData ? data : JSON.stringify(data),
     });
   }
 
@@ -645,7 +655,7 @@ class ApiService {
   async registerForItikaf(programId, registrationData = {}) {
     return this.request(`/itikaf/${programId}/register/`, {
       method: 'POST',
-      body: JSON.stringify(registrationData),
+      body: registrationData instanceof FormData ? registrationData : JSON.stringify(registrationData),
     });
   }
 
@@ -750,7 +760,7 @@ class ApiService {
   async subscribeToMembership(data) {
     return this.request('/memberships/my-membership/', {
       method: 'POST',
-      body: JSON.stringify(data)
+      body: data instanceof FormData ? data : JSON.stringify(data)
     });
   }
 
