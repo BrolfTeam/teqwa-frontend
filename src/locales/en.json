@@ -43,7 +43,12 @@
     "clickToUpload": "Click to upload",
     "orDragAndDrop": "or drag and drop",
     "viewDetails": "View Details",
-    "invalidFileType": "Please upload an image file"
+    "invalidFileType": "Please upload an image file",
+    "pending": "Pending",
+    "confirmed": "Confirmed",
+    "cancelled": "Cancelled",
+    "completed": "Completed",
+    "waitlisted": "Waitlisted"
   },
   "payment": {
     "selectMethod": "Select Payment Method",
@@ -595,7 +600,8 @@
     "successfullyRegistered": "Successfully registered for Iʿtikāf program!",
     "close": "Close",
     "registrationInitiated": "Registration initiated! Redirecting to payment...",
-    "registrationSuccessPaymentFailed": "Registration successful but payment failed."
+    "registrationSuccessPaymentFailed": "Registration successful but payment failed.",
+    "registrationSubmitted": "Registration submitted for review! You will be notified once confirmed."
   },
   "auth": {
     "login": "Login",
