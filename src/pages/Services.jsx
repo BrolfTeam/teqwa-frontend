@@ -40,7 +40,7 @@ const Services = () => {
             title: t('services.weeklyDersProgram'),
             description: t('services.weeklyDersProgramDesc'),
             icon: FiCalendar,
-            link: '/ders-program',
+            link: '/ders',
             action: t('services.learnMore')
         },
         {

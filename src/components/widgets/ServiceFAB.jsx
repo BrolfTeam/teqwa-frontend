@@ -17,7 +17,7 @@ const ServiceFAB = () => {
 
     const services = [
         { name: t('nav.educationalServices'), path: '/education', icon: FiBookOpen, color: 'text-blue-500' },
-        { name: t('nav.dersProgram'), path: '/ders-program', icon: FiCalendar, color: 'text-emerald-500' },
+        { name: t('nav.dersProgram'), path: '/ders', icon: FiCalendar, color: 'text-emerald-500' },
         { name: t('nav.futsalBooking'), path: '/futsal', icon: FiActivity, color: 'text-orange-500' },
         { name: t('nav.prayerTimes'), path: '/prayer-times', icon: FiSun, color: 'text-yellow-600' },
         { name: t('nav.itikafProgram'), path: '/itikaf', icon: FiInfo, color: 'text-purple-500' },

@@ -41,7 +41,7 @@ const Navbar = memo(() => {
         { name: t('nav.news'), path: '/news', key: 'news' },
         { name: t('nav.gallery'), path: '/gallery', key: 'gallery' },
         { name: t('nav.itikafProgram'), path: '/itikaf', key: 'itikaf' },
-        { name: t('nav.dersProgram'), path: '/ders-program', key: 'ders' },
+        { name: t('nav.dersProgram'), path: '/ders', key: 'ders' },
       ]
     },
     { name: t('nav.membership'), path: '/membership', icon: FiUser, key: 'membership' },
