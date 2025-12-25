@@ -30,6 +30,14 @@ const Register = memo(() => {
   const { login } = useAuth();
   const navigate = useNavigate();
 
+  useEffect(() => {
+    // Check for restricted roles
+    if (role === 'teacher' || role === 'staff') {
+      toast.error(t ? t('auth.restrictedRole') : 'Registration for this role is restricted. Please contact an administrator.');
+      navigate(`/login?role=${role}`);
+    }
+  }, [role, navigate, t]);
+
   const ROLE_LABELS = {
     admin: t('auth.roleLabels.admin'),
     staff: t('auth.roleLabels.staff'),
@@ -99,20 +107,29 @@ const Register = memo(() => {
       toast.success(t('auth.registerPage.accountCreatedSuccess'));
       navigate('/dashboard');
     } catch (error) {
+      console.error('Registration error:', error);
+
       if (error.status === 400 && error.data) {
         const backendErrors = {};
-        if (error.data.email) backendErrors.email = error.data.email[0];
-        if (error.data.username) backendErrors.email = t('auth.registerPage.emailAlreadyTaken');
-        if (error.data.password) backendErrors.password = error.data.password[0];
-        if (error.data.first_name) backendErrors.name = error.data.first_name[0];
+        // Handle field-specific errors
+        if (error.data.email) backendErrors.email = Array.isArray(error.data.email) ? error.data.email[0] : error.data.email;
+        if (error.data.username) backendErrors.email = t ? t('auth.registerPage.emailAlreadyTaken') : 'Email/Username already taken';
+        if (error.data.password) backendErrors.password = Array.isArray(error.data.password) ? error.data.password[0] : error.data.password;
+        if (error.data.first_name) backendErrors.name = Array.isArray(error.data.first_name) ? error.data.first_name[0] : error.data.first_name;
+
+        // Handle non-field errors (e.g. general validation)
+        if (error.data.non_field_errors) {
+          toast.error(Array.isArray(error.data.non_field_errors) ? error.data.non_field_errors[0] : error.data.non_field_errors);
+        }
 
         if (Object.keys(backendErrors).length > 0) {
           setErrors(backendErrors);
-        } else {
-          toast.error(t('auth.registerPage.registrationFailed'));
+        } else if (!error.data.non_field_errors) {
+          // Fallback if no specific field errors and no non_field_errors found but status is 400
+          toast.error(t ? t('auth.registerPage.registrationFailed') : 'Registration failed');
         }
       } else {
-        toast.error(error.message || t('auth.registerPage.registrationFailed'));
+        toast.error(error.message || (t ? t('auth.registerPage.registrationFailed') : 'Registration failed'));
       }
     } finally {
       setIsLoading(false);
@@ -143,9 +160,9 @@ const Register = memo(() => {
             transition={{ duration: 0.8 }}
           >
             <div className="mx-auto mb-8 flex items-center justify-center">
-              <img 
-                src={authLogo} 
-                alt="Teqwa Logo" 
+              <img
+                src={authLogo}
+                alt="Teqwa Logo"
                 className="w-20 h-20 object-contain drop-shadow-lg"
               />
             </div>
@@ -192,9 +209,9 @@ const Register = memo(() => {
             {/* Mobile Header */}
             <div className="lg:hidden text-center mb-8">
               <div className="mx-auto mb-4 flex items-center justify-center">
-                <img 
-                  src={authLogo} 
-                  alt="Teqwa Logo" 
+                <img
+                  src={authLogo}
+                  alt="Teqwa Logo"
                   className="w-16 h-16 object-contain"
                 />
               </div>
@@ -252,8 +269,8 @@ const Register = memo(() => {
                       value={formData.name}
                       onChange={handleChange}
                       className={`block w-full pl-11 pr-4 py-3 bg-stone-50 border rounded-xl placeholder-stone-400 focus:outline-none focus:ring-2 transition-all ${errors.name
-                          ? 'border-red-500 focus:ring-red-500/20 focus:border-red-600 text-red-900'
-                          : 'border-stone-200 text-emerald-950 focus:ring-emerald-500/20 focus:border-emerald-600'
+                        ? 'border-red-500 focus:ring-red-500/20 focus:border-red-600 text-red-900'
+                        : 'border-stone-200 text-emerald-950 focus:ring-emerald-500/20 focus:border-emerald-600'
                         }`}
                       placeholder={t('auth.registerPage.fullNamePlaceholder')}
                       required
@@ -285,8 +302,8 @@ const Register = memo(() => {
                       value={formData.email}
                       onChange={handleChange}
                       className={`block w-full pl-11 pr-4 py-3 bg-stone-50 border rounded-xl placeholder-stone-400 focus:outline-none focus:ring-2 transition-all ${errors.email
-                          ? 'border-red-500 focus:ring-red-500/20 focus:border-red-600 text-red-900'
-                          : 'border-stone-200 text-emerald-950 focus:ring-emerald-500/20 focus:border-emerald-600'
+                        ? 'border-red-500 focus:ring-red-500/20 focus:border-red-600 text-red-900'
+                        : 'border-stone-200 text-emerald-950 focus:ring-emerald-500/20 focus:border-emerald-600'
                         }`}
                       placeholder={t('auth.loginPage.emailPlaceholder')}
                       required
@@ -339,8 +356,8 @@ const Register = memo(() => {
                         value={formData.password}
                         onChange={handleChange}
                         className={`block w-full pl-11 pr-10 py-3 bg-stone-50 border rounded-xl placeholder-stone-400 focus:outline-none focus:ring-2 transition-all text-sm ${errors.password
-                            ? 'border-red-500 focus:ring-red-500/20 focus:border-red-600 text-red-900'
-                            : 'border-stone-200 text-emerald-950 focus:ring-emerald-500/20 focus:border-emerald-600'
+                          ? 'border-red-500 focus:ring-red-500/20 focus:border-red-600 text-red-900'
+                          : 'border-stone-200 text-emerald-950 focus:ring-emerald-500/20 focus:border-emerald-600'
                           }`}
                         placeholder={t('auth.registerPage.passwordMinLength')}
                         required
@@ -379,8 +396,8 @@ const Register = memo(() => {
                         value={formData.confirmPassword}
                         onChange={handleChange}
                         className={`block w-full pl-11 pr-10 py-3 bg-stone-50 border rounded-xl placeholder-stone-400 focus:outline-none focus:ring-2 transition-all text-sm ${errors.confirmPassword
-                            ? 'border-red-500 focus:ring-red-500/20 focus:border-red-600 text-red-900'
-                            : 'border-stone-200 text-emerald-950 focus:ring-emerald-500/20 focus:border-emerald-600'
+                          ? 'border-red-500 focus:ring-red-500/20 focus:border-red-600 text-red-900'
+                          : 'border-stone-200 text-emerald-950 focus:ring-emerald-500/20 focus:border-emerald-600'
                           }`}
                         placeholder={t('auth.registerPage.confirmPlaceholder')}
                         required

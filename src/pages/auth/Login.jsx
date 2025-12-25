@@ -294,7 +294,7 @@ const Login = memo(() => {
               </form>
 
               <div className="mt-8 text-center pt-6 border-t border-stone-100 dark:border-slate-700 space-y-2">
-                {role !== 'admin' && (
+                {(role !== 'admin' && role !== 'teacher' && role !== 'staff') && (
                   <p className="text-stone-500 dark:text-stone-400 text-sm">
                     {t('auth.dontHaveAccount')}{' '}
                     <Link

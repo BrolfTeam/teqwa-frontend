@@ -77,7 +77,7 @@ class ApiService {
 
     // Create a unique key for this request to prevent duplicates
     const requestKey = `${options.method || 'GET'}_${url}_${JSON.stringify(options.body || {})}`;
-    
+
     // If the same request is already pending, return the existing promise
     if (this.pendingRequests.has(requestKey)) {
       return this.pendingRequests.get(requestKey);
@@ -99,10 +99,10 @@ class ApiService {
 
     // Create the request promise
     const requestPromise = this._makeRequest(url, config, requestKey);
-    
+
     // Store it to prevent duplicates
     this.pendingRequests.set(requestKey, requestPromise);
-    
+
     // Remove from pending when done (even if it fails)
     // Use a separate promise chain to avoid interfering with the main promise
     requestPromise.finally(() => {
@@ -122,7 +122,12 @@ class ApiService {
       const isStudentProfileError = error.status === 404 && (error.message?.includes('Student profile') || error.message?.includes('profile not found'));
       const isPermissionError = error.status === 403;
       if (error.status !== 401 && !isStudentProfileError && !isPermissionError) {
-        console.error('API request failed:', error);
+        console.groupCollapsed('API Request Failed');
+        console.error('URL:', url);
+        console.error('Status:', error.status);
+        console.error('Message:', error.message);
+        console.error('Data:', error.data);
+        console.groupEnd();
       }
       return Promise.reject(error);
     });
@@ -201,7 +206,7 @@ class ApiService {
       if (response.status === 429) {
         const retryAfter = response.headers.get('Retry-After');
         let waitTime = 60; // Default 60 seconds
-        
+
         if (retryAfter) {
           waitTime = parseInt(retryAfter, 10);
         } else {
@@ -224,10 +229,10 @@ class ApiService {
             // Use default
           }
         }
-        
+
         // Set rate limit expiration time
         this.rateLimitUntil = Date.now() + (waitTime * 1000);
-        
+
         throw new ApiError(`Request was throttled. Expected available in ${waitTime} seconds.`, { retryAfter: waitTime }, 429);
       }
 
@@ -271,12 +276,12 @@ class ApiService {
         console.error('Network error:', error.message, 'URL:', `${this.baseURL}${url}`);
         throw new ApiError('Network error: Unable to connect to server. Please check if the backend is running.', { networkError: true }, 0);
       }
-      
+
       // Re-throw ApiError as-is
       if (error instanceof ApiError) {
-      throw error;
+        throw error;
       }
-      
+
       // Wrap other errors
       throw new ApiError(error.message || 'An unexpected error occurred', { originalError: error }, 0);
     }
