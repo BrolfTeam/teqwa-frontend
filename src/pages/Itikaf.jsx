@@ -123,7 +123,7 @@ const Itikaf = memo(() => {
 
     // Validate Payment Proof if needed
     if (selectedProgram?.fee > 0 && paymentMethod === 'manual_qr' && !proofFile) {
-      toast.error(t('payment.proofRequired') || "Please upload a payment proof");
+      toast.error(t('payment.proofRequired'));
       return;
     }
 
@@ -142,7 +142,7 @@ const Itikaf = memo(() => {
         formData.append('proof_image', proofFile);
 
         response = await dataService.registerForItikaf(programId, formData);
-        toast.success('Registration submitted for review! You will be notified once confirmed.');
+        toast.success(t('itikaf.registrationSubmitted'));
       } else {
         // Card or Free
         const payload = {
@@ -441,7 +441,7 @@ const Itikaf = memo(() => {
                               registration.status === 'waitlisted' ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400' :
                                 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-400'
                               }`}>
-                              {registration.status}
+                              {t(`common.${registration.status}`)}
                             </span>
                           </div>
                         </div>

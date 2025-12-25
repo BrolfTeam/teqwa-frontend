@@ -524,7 +524,7 @@ const Education = () => {
                                                 <FiUsers className="h-4 w-4 text-accent-foreground" />
                                             </div>
                                             <span>
-                                                {service.enrolled_count || 0} / {service.capacity} enrolled
+                                                {service.enrolled_count || 0} / {service.capacity} {t('common.enrolled')}
                                             </span>
                                         </div>
 
@@ -534,7 +534,7 @@ const Education = () => {
                                                 <FiDollarSign className="h-4 w-4 text-secondary-foreground" />
                                             </div>
                                             <span className="font-semibold">
-                                                {service.is_free ? 'Free' : `${service.fee} ETB`}
+                                                {service.is_free ? t('common.free') : `${service.fee} ETB`}
                                             </span>
                                         </div>
 
@@ -560,7 +560,7 @@ const Education = () => {
                                                     aria-label="Download service details"
                                                 >
                                                     <FaDownload className="h-4 w-4 mr-2" />
-                                                    <span className="text-sm">Download</span>
+                                                    <span className="text-sm">{t('common.download')}</span>
                                                 </Button>
 
                                                 <Button
@@ -583,11 +583,11 @@ const Education = () => {
                                                     </Button>
                                                 ) : service.status === 'full' ? (
                                                     <Button variant="outline" className="w-full" disabled>
-                                                        Service Full
+                                                        {t('education.serviceFull')}
                                                     </Button>
                                                 ) : service.status !== 'active' ? (
                                                     <Button variant="outline" className="w-full" disabled>
-                                                        Not Available
+                                                        {t('education.notAvailable')}
                                                     </Button>
                                                 ) : (
                                                     <Button

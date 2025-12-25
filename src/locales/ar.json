@@ -39,7 +39,15 @@
     "clickToUpload": "انقر للتحميل",
     "orDragAndDrop": "أو اسحب وأفلت",
     "viewDetails": "عرض التفاصيل",
-    "invalidFileType": "يرجى تحميل ملف صورة"
+    "invalidFileType": "يرجى تحميل ملف صورة",
+    "free": "مجاني",
+    "download": "تحميل",
+    "enrolled": "مسجل",
+    "pending": "قيد الانتظار",
+    "confirmed": "تم التأكيد",
+    "cancelled": "تم الإلغاء",
+    "completed": "مكتمل",
+    "waitlisted": "في قائمة الانتظار"
   },
   "payment": {
     "selectMethod": "اختر طريقة الدفع",
@@ -411,6 +419,8 @@
     "weeklySchedule": "الجدول الأسبوعي",
     "dersProgram": "برنامج الدروس الأسبوعي",
     "dersProgramDesc": "عرض جدولنا الأسبوعي للمحاضرات والدروس الإسلامية.",
+    "serviceFull": "الخدمة ممتلئة",
+    "notAvailable": "غير متاح",
     "failedToLoadServices": "فشل تحميل الخدمات التعليمية",
     "enrollmentSubmitted": "تم إرسال التسجيل للمراجعة! سيتم إخطارك بمجرد التأكيد.",
     "enrollmentSuccessRedirect": "تم التسجيل بنجاح! جاري التوجيه للدفع...",
@@ -462,10 +472,6 @@
       }
     },
     "noSlotsMessage": "لا توجد أماكن متاحة للتاريخ المحدد. يرجى محاولة اختيار تاريخ مختلف.",
-    "viewTodaySlots": "عرض أماكن اليوم",
-    "loadingSlots": "جاري تحميل الأماكن المتاحة...",
-    "gridView": "عرض الشبكة",
-    "calendarView": "عرض التقويم",
     "bookYourSlotTitle": "احجز مكانك",
     "selectDate": "اختر التاريخ",
     "available": "متاح",
@@ -481,7 +487,25 @@
     "bookingCreatedRedirecting": "تم إنشاء الحجز! جاري التوجيه للدفع...",
     "bookingPaymentFailed": "تم إنشاء الحجز ولكن فشل بدء الدفع. يرجى التحقق من حجوزاتك.",
     "slotsLoadFailed": "فشل تحميل أماكن كرة القدم",
-    "loginToBook": "يرجى تسجيل الدخول لحجز مكان"
+    "loginToBook": "يرجى تسجيل الدخول لحجز مكان",
+    "gridView": "عرض الشبكة",
+    "calendarView": "عرض التقويم",
+    "viewTodaySlots": "عرض أماكن اليوم",
+    "loadingSlots": "جاري تحميل الأماكن المتاحة...",
+    "bookingHistory": "سجل الحجز الخاص بك",
+    "viewManageBookings": "عرض وإدارة حجوزات كرة القدم الخاصة بك",
+    "hideHistory": "إخفاء السجل",
+    "showHistory": "عرض السجل",
+    "confirmBooking": "تأكيد الحجز الخاص بك",
+    "bookingSummary": "ملخص الحجز",
+    "contactName": "اسم جهة الاتصال",
+    "contactEmail": "البريد الإلكتروني لجهة الاتصال",
+    "numberOfPlayers": "عدد اللاعبين",
+    "phoneNumberOptional": "رقم الهاتف (اختياري)",
+    "enterFullName": "أدخل اسمك الكامل",
+    "emailPlaceholder": "your.email@example.com",
+    "playersPlaceholder": "6",
+    "phonePlaceholder": "+251 9XX XXX XXXX"
   },
   "itikaf": {
     "title": "برنامج الاعتكاف",
@@ -567,7 +591,8 @@
     "successfullyRegistered": "تم التسجيل بنجاح في برنامج الاعتكاف!",
     "close": "إغلاق",
     "registrationInitiated": "تم بدء التسجيل! جاري التوجيه للدفع...",
-    "registrationSuccessPaymentFailed": "تم التسجيل بنجاح ولكن فشل الدفع."
+    "registrationSuccessPaymentFailed": "تم التسجيل بنجاح ولكن فشل الدفع.",
+    "registrationSubmitted": "تم إرسال التسجيل للمراجعة! سيتم إخطارك بمجرد التأكيد."
   },
   "auth": {
     "login": "تسجيل الدخول",

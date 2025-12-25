@@ -392,7 +392,7 @@ const BookingHistory = memo(({ bookings, onRefresh }) => {
 BookingHistory.displayName = 'BookingHistory';
 
 const Futsal = memo(() => {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const { user, isAuthenticated } = useAuth();
     const navigate = useNavigate();
     const today = useMemo(() => new Date().toISOString().split('T')[0], []);
@@ -817,7 +817,7 @@ const Futsal = memo(() => {
                         <div className="flex items-center justify-between mb-6">
                             <div>
                                 <h2 className="text-2xl md:text-3xl font-bold mb-2">{t('futsal.bookingHistory')}</h2>
-                                <p className="text-muted-foreground">View and manage your futsal bookings</p>
+                                <p className="text-muted-foreground">{t('futsal.viewManageBookings')}</p>
                             </div>
                             <Button
                                 variant="ghost"
@@ -827,12 +827,12 @@ const Futsal = memo(() => {
                                 {showBookingHistory ? (
                                     <>
                                         <FiChevronUp className="w-4 h-4 mr-2" />
-                                        Hide History
+                                        {t('futsal.hideHistory')}
                                     </>
                                 ) : (
                                     <>
                                         <FiChevronDown className="w-4 h-4 mr-2" />
-                                        Show History
+                                        {t('futsal.showHistory')}
                                     </>
                                 )}
                             </Button>
@@ -880,7 +880,7 @@ const Futsal = memo(() => {
                                             <div>
                                                 <div className="text-2xl font-bold">{selectedSlot.time}</div>
                                                 <div className="text-sm text-muted-foreground">
-                                                    {new Date(selectedSlot.date || selectedDate).toLocaleDateString('en-US', {
+                                                    {new Date(selectedSlot.date || selectedDate).toLocaleDateString(i18n.language === 'am' ? 'am-ET' : i18n.language === 'ar' ? 'ar-SA' : 'en-US', {
                                                         weekday: 'long',
                                                         year: 'numeric',
                                                         month: 'long',
@@ -892,11 +892,11 @@ const Futsal = memo(() => {
                                         <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
                                             <span className="flex items-center gap-1.5">
                                                 <FiMapPin className="w-4 h-4" />
-                                                {selectedSlot.location || 'Main Court'}
+                                                {selectedSlot.location || t('futsal.mainCourt')}
                                             </span>
                                             <span className="flex items-center gap-1.5">
                                                 <FiUsers className="w-4 h-4" />
-                                                Max {selectedSlot.max_players || 12} players
+                                                {t('futsal.maxPlayers', { count: selectedSlot.max_players || 12 })}
                                             </span>
                                         </div>
                                     </div>
@@ -911,14 +911,14 @@ const Futsal = memo(() => {
 
                         {/* Booking Form */}
                         <div className="space-y-4">
-                            <h3 className="text-lg font-semibold">{t('contact.sendUsMessage')}</h3>
+                            <h3 className="text-lg font-semibold">{t('futsal.bookingSummary')}</h3>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <FormField label="Contact Name" required>
+                                <FormField label={t('futsal.contactName')} required>
                                     <input
                                         name="contactName"
                                         value={form.contactName}
                                         onChange={handleFormChange}
-                                        placeholder="Enter your full name"
+                                        placeholder={t('futsal.enterFullName')}
                                         className={`w-full border rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all ${errors['contactName'] ? 'border-red-500' : 'border-border'
                                             }`}
                                     />
@@ -930,13 +930,13 @@ const Futsal = memo(() => {
                                     )}
                                 </FormField>
 
-                                <FormField label="Contact Email" required>
+                                <FormField label={t('futsal.contactEmail')} required>
                                     <input
                                         type="email"
                                         name="contactEmail"
                                         value={form.contactEmail}
                                         onChange={handleFormChange}
-                                        placeholder="your.email@example.com"
+                                        placeholder={t('futsal.emailPlaceholder')}
                                         className={`w-full border rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all ${errors['contactEmail'] ? 'border-red-500' : 'border-border'
                                             }`}
                                     />
@@ -948,7 +948,7 @@ const Futsal = memo(() => {
                                     )}
                                 </FormField>
 
-                                <FormField label="Number of Players" required>
+                                <FormField label={t('futsal.numberOfPlayers')} required>
                                     <input
                                         type="number"
                                         name="playerCount"
@@ -956,7 +956,7 @@ const Futsal = memo(() => {
                                         onChange={handleFormChange}
                                         min="1"
                                         max={selectedSlot.max_players || 12}
-                                        placeholder="6"
+                                        placeholder={t('futsal.playersPlaceholder')}
                                         className={`w-full border rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all ${errors['playerCount'] ? 'border-red-500' : 'border-border'
                                             }`}
                                     />
@@ -968,13 +968,13 @@ const Futsal = memo(() => {
                                     )}
                                 </FormField>
 
-                                <FormField label="Phone Number (Optional)">
+                                <FormField label={t('futsal.phoneNumberOptional')}>
                                     <input
                                         type="tel"
                                         name="contactPhone"
                                         value={form.contactPhone}
                                         onChange={handleFormChange}
-                                        placeholder="+251 9XX XXX XXXX"
+                                        placeholder={t('futsal.phonePlaceholder')}
                                         className="w-full border border-border rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
                                     />
                                 </FormField>
