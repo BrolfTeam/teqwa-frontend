@@ -176,6 +176,11 @@ const Ders = () => {
                 const id = url.split('watch?v=')[1].split('&')[0];
                 return `https://www.youtube.com/embed/${id}`;
             }
+            if (url.includes('t.me/') || url.includes('telegram.me/')) {
+                // Remove trailing slashes and existing query params to avoid redirects
+                let cleanUrl = url.split('?')[0].replace(/\/+$/, "");
+                return `${cleanUrl}?embed=1`;
+            }
             return url;
         } catch (e) {
             console.error('Error parsing video URL:', e);
@@ -494,18 +499,19 @@ const Ders = () => {
                                 <FiX className="w-6 h-6 group-hover:rotate-90 transition-transform" />
                             </button>
 
-                            {/* YouTube Video */}
+                            {/* Video Player (YouTube, Telegram, etc.) */}
                             {selectedLecture.video_url ? (
                                 <iframe
                                     src={getEmbedUrl(selectedLecture.video_url)}
                                     title={selectedLecture.title}
                                     className="w-full h-full"
-                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                                     allowFullScreen
+                                    frameBorder="0"
                                 ></iframe>
                             ) : selectedLecture.video_file ? (
                                 /* Local Video */
-                                <video controls autoPlay className="w-full h-full object-contain">
+                                <video controls autoPlay crossOrigin="anonymous" className="w-full h-full object-contain">
                                     <source src={selectedLecture.video_file} type="video/mp4" />
                                     Your browser does not support the video tag.
                                 </video>
@@ -517,6 +523,7 @@ const Ders = () => {
                                             <img
                                                 src={selectedLecture.thumbnail}
                                                 alt={selectedLecture.title}
+                                                crossOrigin="anonymous"
                                                 className="w-full h-full object-cover opacity-30 blur-xl scale-110"
                                             />
                                         </div>
@@ -528,13 +535,14 @@ const Ders = () => {
                                                 <img
                                                     src={selectedLecture.thumbnail}
                                                     alt={selectedLecture.title}
+                                                    crossOrigin="anonymous"
                                                     className="w-56 h-56 object-cover rounded-2xl shadow-2xl relative z-10 border-2 border-white/10"
                                                 />
                                             </div>
                                         )}
                                         <h2 className="text-white text-2xl font-black mb-6 text-center tracking-tight">{selectedLecture.title}</h2>
                                         <div className="w-full md:w-[400px]">
-                                            <audio controls autoPlay className="w-full custom-audio-player">
+                                            <audio controls autoPlay crossOrigin="anonymous" className="w-full custom-audio-player">
                                                 <source src={selectedLecture.audio_file} />
                                                 Your browser does not support the audio element.
                                             </audio>
