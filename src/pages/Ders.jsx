@@ -64,19 +64,30 @@ const Ders = () => {
     const fetchData = useCallback(async () => {
         try {
             setLoading(true);
-            // Fetch education services and filter for ders_program
-            const [servicesResponse, enrollmentsResponse] = await Promise.all([
-                dataService.getEducationServices({ type: 'ders_program' }),
-                user ? dataService.getMyEnrollments() : Promise.resolve([])
-            ]);
+            // Fetch timetable entries for the weekly schedule
+            const timetableResponse = await dataService.getTimetable({ active: 'true' });
 
-            const services = servicesResponse?.data || servicesResponse || [];
-            // Still filtering just in case the backend returns all services
-            const ders = services.filter(s => s.service_type === 'ders_program');
+            const entries = timetableResponse?.data || timetableResponse || [];
+            // Map backend fields to the format expected by the UI if necessary
+            // Model uses: title, imam, day_of_week (1-7), time, location
+            const ders = entries.map(entry => ({
+                id: entry.id,
+                title: entry.title,
+                instructor_name: entry.imam,
+                day_of_week: entry.day_of_week,
+                schedule: entry.time,
+                location: entry.location,
+                is_timetable: true // Flag to identify informational entries
+            }));
+
             setAllDers(ders);
 
-            const enrollments = enrollmentsResponse?.data || enrollmentsResponse || [];
-            setMyEnrollments(enrollments);
+            // Still fetch enrollments if we need them for other parts (though schedule is now info-only)
+            if (user) {
+                const enrollmentsResponse = await dataService.getMyEnrollments();
+                const enrollments = enrollmentsResponse?.data || enrollmentsResponse || [];
+                setMyEnrollments(enrollments);
+            }
         } catch (error) {
             console.error('Failed to fetch data:', error);
         } finally {
@@ -298,23 +309,25 @@ const Ders = () => {
                                                                     </span>
                                                                 </div>
 
-                                                                <div className="w-full">
-                                                                    {isEnrolled(ders.id) ? (
-                                                                        <Button variant="outline" className="w-full gap-2 text-green-600 border-green-200 bg-green-50 dark:bg-green-950/20" disabled>
-                                                                            <FiCheckCircle className="w-4 h-4" />
-                                                                            {t('education.alreadyEnrolled')}
-                                                                        </Button>
-                                                                    ) : (
-                                                                        <Button
-                                                                            variant="primary"
-                                                                            className="w-full shadow-lg shadow-primary/20"
-                                                                            onClick={() => handleEnroll(ders.id)}
-                                                                            disabled={enrolling === ders.id}
-                                                                        >
-                                                                            {enrolling === ders.id ? t('education.enrolling') : t('education.enrollNow')}
-                                                                        </Button>
-                                                                    )}
-                                                                </div>
+                                                                {!ders.is_timetable && (
+                                                                    <div className="w-full">
+                                                                        {isEnrolled(ders.id) ? (
+                                                                            <Button variant="outline" className="w-full gap-2 text-green-600 border-green-200 bg-green-50 dark:md:bg-green-950/20" disabled>
+                                                                                <FiCheckCircle className="w-4 h-4" />
+                                                                                {t('education.alreadyEnrolled')}
+                                                                            </Button>
+                                                                        ) : (
+                                                                            <Button
+                                                                                variant="primary"
+                                                                                className="w-full shadow-lg shadow-primary/20"
+                                                                                onClick={() => handleEnroll(ders.id)}
+                                                                                disabled={enrolling === ders.id}
+                                                                            >
+                                                                                {enrolling === ders.id ? t('education.enrolling') : t('education.enrollNow')}
+                                                                            </Button>
+                                                                        )}
+                                                                    </div>
+                                                                )}
                                                             </div>
                                                         </div>
                                                     </CardContent>

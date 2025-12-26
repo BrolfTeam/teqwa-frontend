@@ -509,6 +509,11 @@ class ApiService {
     return this.request('/education/my-bookings/');
   }
 
+  async getTimetable(params = {}) {
+    const query = new URLSearchParams(params).toString();
+    return this.request(`/education/timetable/${query ? `?${query}` : ''}`);
+  }
+
   // Futsal Booking
   async getFutsalSlots(params = {}) {
     const query = new URLSearchParams(params).toString();

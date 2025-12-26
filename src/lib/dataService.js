@@ -203,6 +203,10 @@ class DataService {
     return this.apiCall(() => apiService.getMyEnrollments(), {}, { useCache: false });
   }
 
+  async getTimetable(params = {}) {
+    return this.apiCall(() => apiService.getTimetable(params), params);
+  }
+
   async getAllEducationEnrollments(params = {}, options = {}) {
     return this.apiCall(() => apiService.getAllEducationEnrollments(params), params, { useCache: false, showError: options.showError !== false });
   }
