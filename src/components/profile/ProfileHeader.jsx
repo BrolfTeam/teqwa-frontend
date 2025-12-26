@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { FiUser, FiCamera } from 'react-icons/fi';
-import { IslamicPattern } from '@/components/ui/IslamicPattern';
+import IslamicPattern from '@/components/ui/IslamicPattern';
 
 export const ProfileHeader = ({ user }) => {
     const { t } = useTranslation();
