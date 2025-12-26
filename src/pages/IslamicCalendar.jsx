@@ -25,41 +25,11 @@ const IslamicCalendar = memo(() => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [calendarMonth, setCalendarMonth] = useState(new Date());
   const [hijriAdjustment, setHijriAdjustment] = useState(0);
-  const [apiData, setApiData] = useState({});
-  const [isSyncing, setIsSyncing] = useState(false);
+  // Removed API state in favor of pure calculation to prevent connection timeouts
+  // const [apiData, setApiData] = useState({});
+  // const [isSyncing, setIsSyncing] = useState(false);
 
-  // Fetch Hijri monthly data from Aladhan API with adjustment
-  useEffect(() => {
-    const fetchHijriMonth = async () => {
-      setIsSyncing(true);
-      try {
-        const month = calendarMonth.getMonth() + 1;
-        const year = calendarMonth.getFullYear();
-        // Use adjustment parameter directly in API for month-spanning accuracy
-        const response = await fetch(`https://api.aladhan.com/v1/gregorianCalendar/${month}/${year}?adjustment=${hijriAdjustment}`);
-        const data = await response.json();
-
-        if (data.code === 200) {
-          const mappedData = {};
-          data.data.forEach(item => {
-            const day = parseInt(item.gregorian.day, 10);
-            mappedData[day] = {
-              day: parseInt(item.hijri.day, 10),
-              month: item.hijri.month.number - 1, // 0-indexed
-              year: parseInt(item.hijri.year, 10)
-            };
-          });
-          setApiData(mappedData);
-        }
-      } catch (error) {
-        console.error('Failed to fetch Hijri data:', error);
-      } finally {
-        setIsSyncing(false);
-      }
-    };
-
-    fetchHijriMonth();
-  }, [calendarMonth, hijriAdjustment]);
+  // Fetch effect removed - using robust calculation below
 
   // Robust mathematical Hijri conversion (Tabular/Kuwaiti algorithm) for fallback/pre-sync
   const calculateHijri = useCallback((date) => {
@@ -131,26 +101,13 @@ const IslamicCalendar = memo(() => {
 
   // Accurate Hijri conversion with Aladhan API priority and adjustment
   const gregorianToHijri = useCallback((date) => {
-    const dayOfMonth = date.getDate();
-    const isSameMonthAsCalendar = isSameMonth(date, calendarMonth);
-
-    // Try API data first if it's the right month and we have data
-    if (isSameMonthAsCalendar && apiData[dayOfMonth]) {
-      const baseHijri = apiData[dayOfMonth];
-      return {
-        ...baseHijri,
-        day: baseHijri.day + hijriAdjustment, // Basic adjustment
-        isVerified: true
-      };
-    }
-
-    // Fallback to mathematical calculation
+    // Only use local mathematical calculation to ensure offline capability and speed
     const calculated = calculateHijri(date);
     return {
       ...calculated,
-      isVerified: false
+      isVerified: false // Always calculated now
     };
-  }, [apiData, calendarMonth, calculateHijri]);
+  }, [calendarMonth, calculateHijri]);
 
   const hijriMonths = t('calendar.months.hijri', { returnObjects: true });
 
@@ -285,12 +242,7 @@ const IslamicCalendar = memo(() => {
                       {t('calendar.gregorianCalendar')}
                     </CardTitle>
                     <div className="flex items-center gap-4">
-                      {isSyncing && (
-                        <div className="flex items-center gap-2 text-xs font-bold text-primary animate-pulse">
-                          <div className="w-1.5 h-1.5 bg-primary rounded-full" />
-                          {t('calendar.syncing')}
-                        </div>
-                      )}
+                      {/* Syncing indicator removed */}
                       <div className="flex items-center bg-white dark:bg-slate-900 rounded-full shadow-inner p-1">
                         <Button
                           variant="ghost"

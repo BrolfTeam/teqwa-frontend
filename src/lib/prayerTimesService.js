@@ -298,50 +298,9 @@ class PrayerTimesService {
     };
   }
 
-  // Get formatted prayer times with cache-first strategy
-  // Returns cached data immediately, fetches fresh data in background
+  // Get formatted prayer times (Pure Local Calculation)
   async getFormattedPrayerTimes(date = new Date(), options = {}) {
-    const { skipCache = false, backgroundRefresh = true } = options;
-
-    // If skipCache is false, return cached data instantly (Promise that resolves immediately)
-    if (!skipCache) {
-      const cached = this.getCachedFormattedPrayerTimes(date);
-
-      // If we have cached data, return it immediately and refresh in background
-      if (cached && backgroundRefresh) {
-        // Trigger background refresh (don't await - fire and forget)
-        this.fetchAladhanTimings(date).then((freshData) => {
-          if (freshData) {
-            // Fresh data will be cached automatically by fetchAladhanTimings
-            // Emit event for components to update silently
-            try {
-              window.dispatchEvent(new CustomEvent('prayer-times-updated', {
-                detail: {
-                  date: date.toISOString(),
-                  data: this.formatAladhanResponse(freshData, date)
-                }
-              }));
-            } catch (e) {
-              // Ignore event dispatch errors
-            }
-          }
-        }).catch(() => {
-          // Silently fail - we already have cached data
-        });
-      }
-
-      // Return cached data immediately as resolved Promise
-      return Promise.resolve(cached);
-    }
-
-    // If skipCache is true, fetch fresh data (for manual refresh)
-    const aladhanData = await this.fetchAladhanTimings(date);
-    if (aladhanData) {
-      return this.formatAladhanResponse(aladhanData, date);
-    }
-
-    // Fallback to local calculation
-    console.warn('Using local calculation fallback');
+    // Pure local calculation using Adhan library - Instant & Offline-capable
     const times = this.getPrayerTimesLocal(date);
     const formatted = {};
 
@@ -506,10 +465,8 @@ class PrayerTimesService {
     }
   }
 
-  // Get monthly prayer times (optimized with cache)
+  // Get monthly prayer times (Local Calculation)
   async getMonthlyPrayerTimes(year = new Date().getFullYear(), month = new Date().getMonth(), options = {}) {
-    const { enableNetwork = false } = options;
-
     // Check cache first
     const cacheKey = `monthly_${year}_${month}_${this.coordinates.latitude.toFixed(4)}_${this.coordinates.longitude.toFixed(4)}`;
     try {
@@ -526,58 +483,16 @@ class PrayerTimesService {
       // Ignore cache errors
     }
 
-    // Aladhan API supports monthly calendar - use this for better performance
-    // Only fetch if network is enabled or we have no fallback (actually fallback is always available via calculation)
-    if (enableNetwork) {
-      try {
-        const url = `https://api.aladhan.com/v1/calendar/${year}/${month + 1}?latitude=${this.coordinates.latitude}&longitude=${this.coordinates.longitude}&method=3&school=0`;
-        const response = await fetch(url);
-
-        if (response.ok) {
-          const data = await response.json();
-          const monthlyData = data.data.map(dayData => {
-            // Parse date from DD-MM-YYYY
-            const [d, m, y] = dayData.date.gregorian.date.split('-');
-            const date = new Date(y, m - 1, d);
-
-            return {
-              date: date,
-              day: date.getDate(),
-              dayName: format(date, 'EEE'),
-              isToday: format(date, 'yyyy-MM-dd') === format(new Date(), 'yyyy-MM-dd'),
-              prayers: this.formatAladhanResponse({ timings: dayData.timings, date: dayData.date }, date).prayers,
-              hijriDate: `${dayData.date.hijri.day} ${dayData.date.hijri.month.en} ${dayData.date.hijri.year}`,
-              gregorianDate: format(date, 'MMM d')
-            };
-          });
-
-          // Cache the monthly data
-          try {
-            localStorage.setItem(`monthly_${cacheKey}`, JSON.stringify({
-              data: monthlyData,
-              timestamp: Date.now()
-            }));
-          } catch (e) {
-            // Ignore storage errors
-          }
-
-          return monthlyData;
-        }
-      } catch (error) {
-        console.error('Error fetching monthly calendar:', error);
-      }
-    }
-
-    // Fallback: use cached daily data where available or local calculation
+    // Perform Local Calculation for the month
     const monthlyTimes = [];
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     const today = new Date();
 
-    // Process in batches to avoid blocking
+    // Process all days
     for (let day = 1; day <= daysInMonth; day++) {
       const date = new Date(year, month, day);
-      // Use cached formatted times, avoid network trigger here loops
-      const times = await this.getFormattedPrayerTimes(date, { skipCache: false, backgroundRefresh: false });
+      // Use our local calculation method (which is now synchronous/fast)
+      const times = await this.getFormattedPrayerTimes(date);
 
       monthlyTimes.push({
         date,
@@ -588,6 +503,16 @@ class PrayerTimesService {
         hijriDate: times.hijriDate,
         gregorianDate: format(date, 'MMM d')
       });
+    }
+
+    // Cache the calculated monthly data
+    try {
+      localStorage.setItem(`monthly_${cacheKey}`, JSON.stringify({
+        data: monthlyTimes,
+        timestamp: Date.now()
+      }));
+    } catch (e) {
+      // Ignore storage errors
     }
 
     return monthlyTimes;
@@ -650,31 +575,8 @@ class PrayerTimesService {
       // Ignore cache errors
     }
 
-    // Try Aladhan API first
-    try {
-      const url = `https://api.aladhan.com/v1/qibla/${this.coordinates.latitude}/${this.coordinates.longitude}`;
-      const response = await fetch(url);
-      if (response.ok) {
-        const data = await response.json();
-        const direction = Math.round(data.data.direction);
-
-        // Cache the result
-        try {
-          localStorage.setItem(cacheKey, JSON.stringify({
-            direction,
-            timestamp: Date.now()
-          }));
-        } catch (e) {
-          // Ignore storage errors
-        }
-
-        return direction;
-      }
-    } catch (error) {
-      console.warn('Qibla API failed:', error);
-    }
-
-    // Fallback to local calculation (always works, no API needed)
+    // Qibla direction calculation (Pure Local)
+    // No need for API as Great Circle calculation is mathematically precise
     const meccaLat = 21.4225; // Kaaba latitude
     const meccaLng = 39.8262; // Kaaba longitude
 
@@ -690,7 +592,7 @@ class PrayerTimesService {
 
     const direction = Math.round(bearing);
 
-    // Cache the calculated result too
+    // Cache the calculated result
     try {
       localStorage.setItem(cacheKey, JSON.stringify({
         direction,
