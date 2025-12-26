@@ -188,6 +188,14 @@ const Ders = () => {
         }
     };
 
+    const getFullMediaUrl = (url) => {
+        if (!url) return '';
+        if (url.startsWith('http')) return url;
+        // If it's a relative path, point it to the API domain
+        const baseUrl = 'https://api.mujemaateqwa.org';
+        return `${baseUrl}${url.startsWith('/') ? '' : '/'}${url}`;
+    };
+
     const handlePlay = (lecture) => {
         setSelectedLecture(lecture);
     };
@@ -512,7 +520,7 @@ const Ders = () => {
                             ) : selectedLecture.video_file ? (
                                 /* Local Video */
                                 <video controls autoPlay crossOrigin="anonymous" className="w-full h-full object-contain">
-                                    <source src={selectedLecture.video_file} type="video/mp4" />
+                                    <source src={getFullMediaUrl(selectedLecture.video_file)} type="video/mp4" />
                                     Your browser does not support the video tag.
                                 </video>
                             ) : selectedLecture.audio_file ? (
@@ -521,7 +529,7 @@ const Ders = () => {
                                     {selectedLecture.thumbnail && (
                                         <div className="absolute inset-0 z-0">
                                             <img
-                                                src={selectedLecture.thumbnail}
+                                                src={getFullMediaUrl(selectedLecture.thumbnail)}
                                                 alt={selectedLecture.title}
                                                 crossOrigin="anonymous"
                                                 className="w-full h-full object-cover opacity-30 blur-xl scale-110"
@@ -533,7 +541,7 @@ const Ders = () => {
                                             <div className="relative mb-8">
                                                 <div className="absolute -inset-4 bg-primary/20 rounded-3xl blur-2xl animate-pulse"></div>
                                                 <img
-                                                    src={selectedLecture.thumbnail}
+                                                    src={getFullMediaUrl(selectedLecture.thumbnail)}
                                                     alt={selectedLecture.title}
                                                     crossOrigin="anonymous"
                                                     className="w-56 h-56 object-cover rounded-2xl shadow-2xl relative z-10 border-2 border-white/10"
@@ -543,7 +551,7 @@ const Ders = () => {
                                         <h2 className="text-white text-2xl font-black mb-6 text-center tracking-tight">{selectedLecture.title}</h2>
                                         <div className="w-full md:w-[400px]">
                                             <audio controls autoPlay crossOrigin="anonymous" className="w-full custom-audio-player">
-                                                <source src={selectedLecture.audio_file} />
+                                                <source src={getFullMediaUrl(selectedLecture.audio_file)} />
                                                 Your browser does not support the audio element.
                                             </audio>
                                         </div>
