@@ -1,19 +1,19 @@
 import { memo, useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { 
-  FiUsers, 
-  FiCalendar, 
-  FiBook, 
-  FiAward, 
-  FiClock, 
-  FiMail, 
-  FiBell,
-  FiTrendingUp,
-  FiUser,
-  FiActivity,
-  FiHeart,
-  FiMapPin
+import {
+    FiUsers,
+    FiCalendar,
+    FiBook,
+    FiAward,
+    FiClock,
+    FiMail,
+    FiBell,
+    FiTrendingUp,
+    FiUser,
+    FiActivity,
+    FiHeart,
+    FiMapPin
 } from 'react-icons/fi';
 import { Button } from '@/components/ui/Button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
@@ -93,31 +93,31 @@ const ParentDashboard = memo(() => {
     const greeting = t('dashboard.greeting');
 
     const quickStats = [
-        { 
-            label: t('dashboard.parent.myChildren'), 
-            value: children.length || '0', 
-            icon: <FiUsers className="h-6 w-6" />, 
+        {
+            label: t('dashboard.parent.myChildren'),
+            value: children.length || '0',
+            icon: <FiUsers className="h-6 w-6" />,
             color: 'primary',
             description: t('dashboard.parent.registeredStudents')
         },
-        { 
-            label: t('dashboard.parent.upcomingEvents'), 
-            value: dashboardStats?.counts?.upcoming_events || '0', 
-            icon: <FiCalendar className="h-6 w-6" />, 
+        {
+            label: t('dashboard.parent.upcomingEvents'),
+            value: dashboardStats?.counts?.upcoming_events || '0',
+            icon: <FiCalendar className="h-6 w-6" />,
             color: 'primary',
             description: t('dashboard.parent.communityEvents')
         },
-        { 
-            label: t('dashboard.parent.totalDonations'), 
-            value: `${(dashboardStats?.donation_stats?.total_amount || 0).toLocaleString()} ETB`, 
-            icon: <FiHeart className="h-6 w-6" />, 
+        {
+            label: t('dashboard.parent.totalDonations'),
+            value: `${(dashboardStats?.donation_stats?.total_amount || 0).toLocaleString()} ETB`,
+            icon: <FiHeart className="h-6 w-6" />,
             color: 'accent',
             description: t('dashboard.parent.yourContributions')
         },
-        { 
-            label: t('dashboard.parent.messages'), 
-            value: dashboardStats?.unread_messages || '0', 
-            icon: <FiMail className="h-6 w-6" />, 
+        {
+            label: t('dashboard.parent.messages'),
+            value: dashboardStats?.unread_messages || '0',
+            icon: <FiMail className="h-6 w-6" />,
             color: 'secondary',
             description: t('dashboard.parent.unreadNotifications')
         },
@@ -152,7 +152,7 @@ const ParentDashboard = memo(() => {
             variants={containerVariants}
             initial="hidden"
             animate="visible"
-            className="max-w-6xl mx-auto space-y-8"
+            className="max-w-6xl mx-auto space-y-8 px-4"
         >
             {/* Welcome Header */}
             <motion.div variants={itemVariants} className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-purple-600 to-purple-800 text-white p-8 shadow-lg">
@@ -180,9 +180,9 @@ const ParentDashboard = memo(() => {
             </motion.div>
 
             {/* Quick Stats & Prayer Time */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
                 {/* Prayer Time Widget */}
-                <motion.div variants={itemVariants} className="md:col-span-1">
+                <motion.div variants={itemVariants} className="lg:col-span-1">
                     <Card className="h-full border-primary/20 shadow-lg bg-card/80 backdrop-blur-sm relative overflow-hidden group hover:border-primary/40 transition-colors">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-wider flex items-center gap-2">
@@ -200,7 +200,7 @@ const ParentDashboard = memo(() => {
                 </motion.div>
 
                 {/* Quick Stats Cards */}
-                <div className="md:col-span-3 grid grid-cols-1 sm:grid-cols-3 gap-6">
+                <div className="lg:col-span-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     {quickStats.map((stat, index) => (
                         <motion.div key={index} variants={itemVariants}>
                             <Card className="h-full border-border/50 shadow-md hover:shadow-lg transition-all bg-card/60 backdrop-blur-sm hover:bg-card/80">

@@ -1,26 +1,26 @@
 import { memo, useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  FiBookOpen, 
-  FiUsers, 
-  FiFileText, 
-  FiAward, 
-  FiCalendar, 
-  FiClock,
-  FiCheckCircle,
-  FiAlertCircle,
-  FiEdit,
-  FiPlus,
-  FiArrowRight,
-  FiTrendingUp,
-  FiActivity,
-  FiMessageSquare,
-  FiSun,
-  FiX,
-  FiDollarSign,
-  FiBarChart2,
-  FiMail,
-  FiPhone
+import {
+    FiBookOpen,
+    FiUsers,
+    FiFileText,
+    FiAward,
+    FiCalendar,
+    FiClock,
+    FiCheckCircle,
+    FiAlertCircle,
+    FiEdit,
+    FiPlus,
+    FiArrowRight,
+    FiTrendingUp,
+    FiActivity,
+    FiMessageSquare,
+    FiSun,
+    FiX,
+    FiDollarSign,
+    FiBarChart2,
+    FiMail,
+    FiPhone
 } from 'react-icons/fi';
 import { Button } from '@/components/ui/Button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
@@ -52,7 +52,7 @@ const TeacherDashboard = memo(() => {
     const [nextPrayer, setNextPrayer] = useState(null);
     const [timeRemaining, setTimeRemaining] = useState('');
     const [dailyVerse, setDailyVerse] = useState(verses[0]);
-    
+
     // Modal states
     const [showCourseModal, setShowCourseModal] = useState(false);
     const [showStudentsModal, setShowStudentsModal] = useState(false);
@@ -90,17 +90,17 @@ const TeacherDashboard = memo(() => {
                 dataService.getEducationServices({ active: true }).catch(() => ({ data: [] })),
                 dataService.getCourses({ active: true }).catch(() => ({ data: [] }))
             ]);
-            
+
             const allServices = Array.isArray(servicesResponse) ? servicesResponse : (servicesResponse?.data || []);
             const allCourses = Array.isArray(coursesResponse) ? coursesResponse : (coursesResponse?.data || []);
-            
+
             // Helper function to check if user is instructor
             const isInstructor = (item) => {
                 if (!item || !user?.id) return false;
                 const instructorId = item.instructor?.id || item.instructor;
                 return instructorId === user.id;
             };
-            
+
             // Filter services and courses where user is instructor
             const myInstructorServices = allServices.filter(isInstructor);
             const myInstructorCourses = allCourses.filter(course => {
@@ -108,13 +108,13 @@ const TeacherDashboard = memo(() => {
                 if (isInstructor(course)) return true;
                 // Check if course's service instructor matches
                 if (course.service) {
-                    const service = typeof course.service === 'object' ? course.service : 
-                                   allServices.find(s => s.id === course.service);
+                    const service = typeof course.service === 'object' ? course.service :
+                        allServices.find(s => s.id === course.service);
                     return isInstructor(service);
                 }
                 return false;
             });
-            
+
             // Combine services and courses, prioritizing courses
             const combinedCourses = [...myInstructorCourses, ...myInstructorServices.map(s => ({ ...s, isService: true }))];
             setMyCourses(combinedCourses);
@@ -124,22 +124,22 @@ const TeacherDashboard = memo(() => {
             const myCourseIds = myInstructorCourses.map(c => c.id);
             const allMyIds = [...myServiceIds, ...myCourseIds];
             let myEnrollments = [];
-            
+
             // Try to fetch enrollments for teacher's courses
             try {
                 const enrollmentsResponse = await dataService.getAllEducationEnrollments({}, { showError: false }).catch(() => ({ data: [] }));
-                
-                const allEnrollments = Array.isArray(enrollmentsResponse) 
-                    ? enrollmentsResponse 
+
+                const allEnrollments = Array.isArray(enrollmentsResponse)
+                    ? enrollmentsResponse
                     : (enrollmentsResponse?.data || []);
-                
+
                 // Filter enrollments for courses/services where this teacher is the instructor
                 myEnrollments = allEnrollments.filter(e => {
                     const serviceId = e.service?.id || e.service || e.service_id;
                     const courseId = e.course?.id || e.course || e.course_id;
                     return allMyIds.includes(serviceId) || allMyIds.includes(courseId);
                 });
-                
+
                 setStudentEnrollments(myEnrollments);
             } catch (error) {
                 // Silent fail - teachers may not have permission to view all enrollments
@@ -153,12 +153,12 @@ const TeacherDashboard = memo(() => {
             setPendingSubmissions([]);
 
             // Calculate stats
-            const uniqueStudents = myEnrollments.length > 0 
-                ? new Set(myEnrollments.map(e => e.user || e.user_id || e.user?.id)).size 
+            const uniqueStudents = myEnrollments.length > 0
+                ? new Set(myEnrollments.map(e => e.user || e.user_id || e.user?.id)).size
                 : 0;
             const totalCourses = combinedCourses.length;
             const totalEnrollments = myEnrollments.length;
-            const pendingGrading = myEnrollments.filter(e => 
+            const pendingGrading = myEnrollments.filter(e =>
                 e.status === 'pending' || e.status === 'confirmed'
             ).length;
 
@@ -321,32 +321,32 @@ const TeacherDashboard = memo(() => {
     }
 
     const dashboardStats = [
-        { 
-            label: t('dashboard.teacher.myCourses'), 
-            value: stats.totalCourses, 
-            icon: <FiBookOpen className="h-6 w-6" />, 
-            color: 'text-blue-500', 
+        {
+            label: t('dashboard.teacher.myCourses'),
+            value: stats.totalCourses,
+            icon: <FiBookOpen className="h-6 w-6" />,
+            color: 'text-blue-500',
             bg: 'bg-blue-500/10'
         },
-        { 
-            label: t('dashboard.teacher.totalStudents'), 
-            value: stats.totalStudents, 
-            icon: <FiUsers className="h-6 w-6" />, 
-            color: 'text-green-500', 
-            bg: 'bg-green-500/10' 
+        {
+            label: t('dashboard.teacher.totalStudents'),
+            value: stats.totalStudents,
+            icon: <FiUsers className="h-6 w-6" />,
+            color: 'text-green-500',
+            bg: 'bg-green-500/10'
         },
-        { 
-            label: t('dashboard.teacher.totalEnrollments'), 
-            value: studentEnrollments.length, 
-            icon: <FiUsers className="h-6 w-6" />, 
-            color: 'text-orange-500', 
+        {
+            label: t('dashboard.teacher.totalEnrollments'),
+            value: studentEnrollments.length,
+            icon: <FiUsers className="h-6 w-6" />,
+            color: 'text-orange-500',
             bg: 'bg-orange-500/10'
         },
-        { 
-            label: t('dashboard.teacher.pendingGrading'), 
-            value: stats.pendingGrading, 
-            icon: <FiFileText className="h-6 w-6" />, 
-            color: 'text-purple-500', 
+        {
+            label: t('dashboard.teacher.pendingGrading'),
+            value: stats.pendingGrading,
+            icon: <FiFileText className="h-6 w-6" />,
+            color: 'text-purple-500',
             bg: 'bg-purple-500/10'
         },
     ];
@@ -356,7 +356,7 @@ const TeacherDashboard = memo(() => {
             variants={containerVariants}
             initial="hidden"
             animate="visible"
-            className="max-w-7xl mx-auto space-y-8"
+            className="max-w-7xl mx-auto space-y-8 px-4"
         >
             {/* Welcome Header */}
             <motion.div variants={itemVariants} className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 text-white p-8 shadow-lg">
@@ -384,7 +384,7 @@ const TeacherDashboard = memo(() => {
             </motion.div>
 
             {/* Stats Grid */}
-            <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <motion.div variants={itemVariants} className="grid grid-cols-2 lg:grid-cols-4 gap-6">
                 {dashboardStats.map((stat, i) => {
                     const content = (
                         <Card key={i} className="border-border/50 bg-card/60 backdrop-blur-sm hover:bg-card/80 transition-all hover:shadow-lg">
@@ -423,7 +423,7 @@ const TeacherDashboard = memo(() => {
                                 {myCourses.length > 0 ? (
                                     <div className="space-y-3">
                                         {myCourses.slice(0, 5).map((course) => {
-                                            const enrollmentsCount = studentEnrollments.filter(e => 
+                                            const enrollmentsCount = studentEnrollments.filter(e =>
                                                 (e.service === course.id || e.service?.id === course.id) ||
                                                 (e.course === course.id || e.course?.id === course.id)
                                             ).length;
@@ -437,10 +437,9 @@ const TeacherDashboard = memo(() => {
                                                             {courseType} • {enrollmentsCount} {t('dashboard.teacher.students')}
                                                         </div>
                                                         <div className="flex items-center gap-2 mt-2">
-                                                            <span className={`text-[10px] px-2 py-0.5 rounded-full uppercase ${
-                                                                course.status === 'active' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' :
+                                                            <span className={`text-[10px] px-2 py-0.5 rounded-full uppercase ${course.status === 'active' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' :
                                                                 'bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400'
-                                                            }`}>
+                                                                }`}>
                                                                 {course.status || 'active'}
                                                             </span>
                                                             {course.schedule && (
@@ -453,7 +452,7 @@ const TeacherDashboard = memo(() => {
                                                             <FiEdit />
                                                         </Button>
                                                         <Button size="xs" variant="ghost" onClick={() => {
-                                                            const courseEnrollments = studentEnrollments.filter(e => 
+                                                            const courseEnrollments = studentEnrollments.filter(e =>
                                                                 (e.service === course.id || e.service?.id === course.id) ||
                                                                 (e.course === course.id || e.course?.id === course.id)
                                                             );
@@ -508,11 +507,10 @@ const TeacherDashboard = memo(() => {
                                                             {course?.title || 'Course'} • {new Date(enrollment.enrollment_date || enrollment.created_at).toLocaleDateString()}
                                                         </div>
                                                         <div className="flex items-center gap-2 mt-2">
-                                                            <span className={`text-[10px] px-2 py-0.5 rounded-full uppercase ${
-                                                                enrollment.status === 'confirmed' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' :
+                                                            <span className={`text-[10px] px-2 py-0.5 rounded-full uppercase ${enrollment.status === 'confirmed' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' :
                                                                 enrollment.status === 'pending' ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400' :
-                                                                'bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400'
-                                                            }`}>
+                                                                    'bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400'
+                                                                }`}>
                                                                 {enrollment.status}
                                                             </span>
                                                         </div>
@@ -615,12 +613,12 @@ const TeacherDashboard = memo(() => {
             </div>
 
             {/* Course Management Modal */}
-            <Modal 
-                open={showCourseModal} 
+            <Modal
+                open={showCourseModal}
                 onClose={() => {
                     setShowCourseModal(false);
                     setEditingCourse(null);
-                }} 
+                }}
                 title={editingCourse ? t('dashboard.teacher.editCourse') : t('dashboard.teacher.createCourse')}
                 size="lg"
             >
@@ -820,9 +818,9 @@ const TeacherDashboard = memo(() => {
             </Modal>
 
             {/* Students View Modal */}
-            <Modal 
-                open={showStudentsModal} 
-                onClose={() => setShowStudentsModal(false)} 
+            <Modal
+                open={showStudentsModal}
+                onClose={() => setShowStudentsModal(false)}
                 title={t('dashboard.teacher.viewStudents')}
                 size="lg"
             >
@@ -836,16 +834,16 @@ const TeacherDashboard = memo(() => {
                             </div>
                             <div className="max-h-[60vh] overflow-y-auto space-y-2">
                                 {studentEnrollments.map((enrollment) => {
-                                    const course = myCourses.find(c => 
+                                    const course = myCourses.find(c =>
                                         c.id === enrollment.service || c.id === enrollment.service?.id ||
                                         c.id === enrollment.course || c.id === enrollment.course?.id
                                     );
-                                    const studentName = enrollment.user_name || enrollment.user?.get_full_name || 
-                                                        (enrollment.user?.first_name && enrollment.user?.last_name 
-                                                            ? `${enrollment.user.first_name} ${enrollment.user.last_name}`
-                                                            : enrollment.user?.username) || 'Student';
+                                    const studentName = enrollment.user_name || enrollment.user?.get_full_name ||
+                                        (enrollment.user?.first_name && enrollment.user?.last_name
+                                            ? `${enrollment.user.first_name} ${enrollment.user.last_name}`
+                                            : enrollment.user?.username) || 'Student';
                                     const enrollmentDate = enrollment.enrollment_date || enrollment.created_at || enrollment.enrolled_at;
-                                    
+
                                     return (
                                         <div key={enrollment.id} className="p-4 rounded-lg bg-secondary/30 border border-border/50 hover:bg-secondary/50 transition-colors">
                                             <div className="flex items-start justify-between">
@@ -858,11 +856,10 @@ const TeacherDashboard = memo(() => {
                                                         <select
                                                             value={enrollment.status || 'pending'}
                                                             onChange={(e) => handleEnrollmentStatusUpdate(enrollment.id, e.target.value)}
-                                                            className={`text-xs px-2 py-1 rounded border-0 cursor-pointer ${
-                                                                enrollment.status === 'confirmed' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' :
+                                                            className={`text-xs px-2 py-1 rounded border-0 cursor-pointer ${enrollment.status === 'confirmed' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' :
                                                                 enrollment.status === 'pending' ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400' :
-                                                                'bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400'
-                                                            }`}
+                                                                    'bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400'
+                                                                }`}
                                                         >
                                                             <option value="pending">{t('dashboard.teacher.pending')}</option>
                                                             <option value="confirmed">{t('dashboard.teacher.confirmed')}</option>
@@ -903,9 +900,9 @@ const TeacherDashboard = memo(() => {
             </Modal>
 
             {/* Reports Modal */}
-            <Modal 
-                open={showReportsModal} 
-                onClose={() => setShowReportsModal(false)} 
+            <Modal
+                open={showReportsModal}
+                onClose={() => setShowReportsModal(false)}
                 title={t('dashboard.teacher.viewReports')}
                 size="lg"
             >
@@ -935,11 +932,11 @@ const TeacherDashboard = memo(() => {
                         <h4 className="font-semibold mb-3">{t('dashboard.teacher.courseBreakdown')}</h4>
                         <div className="space-y-2">
                             {myCourses.map(course => {
-                                const courseEnrollments = studentEnrollments.filter(e => 
+                                const courseEnrollments = studentEnrollments.filter(e =>
                                     (e.service === course.id || e.service?.id === course.id) ||
                                     (e.course === course.id || e.course?.id === course.id)
                                 );
-                                const enrollmentRate = course.capacity > 0 
+                                const enrollmentRate = course.capacity > 0
                                     ? ((courseEnrollments.length / course.capacity) * 100).toFixed(0)
                                     : 0;
                                 return (
@@ -957,7 +954,7 @@ const TeacherDashboard = memo(() => {
                                             </div>
                                         </div>
                                         <div className="mt-2 h-2 bg-secondary rounded-full overflow-hidden">
-                                            <div 
+                                            <div
                                                 className="h-full bg-primary transition-all"
                                                 style={{ width: `${Math.min(enrollmentRate, 100)}%` }}
                                             />

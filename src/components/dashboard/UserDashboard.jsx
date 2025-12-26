@@ -126,7 +126,7 @@ const UserDashboard = memo(() => {
             variants={containerVariants}
             initial="hidden"
             animate="visible"
-            className="max-w-6xl mx-auto space-y-8"
+            className="max-w-6xl mx-auto space-y-8 px-4"
         >
             {/* Welcome Header */}
             <motion.div variants={itemVariants} className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-primary/90 to-primary/80 text-primary-foreground p-8 shadow-lg">
@@ -151,9 +151,9 @@ const UserDashboard = memo(() => {
             </motion.div>
 
             {/* Quick Stats & Prayer Time */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
                 {/* Prayer Time Widget */}
-                <motion.div variants={itemVariants} className="md:col-span-1">
+                <motion.div variants={itemVariants} className="lg:col-span-1">
                     <Card className="h-full border-primary/20 shadow-lg bg-card/80 backdrop-blur-sm relative overflow-hidden group hover:border-primary/40 transition-colors">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-wider flex items-center gap-2">
@@ -183,7 +183,7 @@ const UserDashboard = memo(() => {
                 </motion.div>
 
                 {/* Quick Stats Cards */}
-                <div className="md:col-span-3 grid grid-cols-1 sm:grid-cols-3 gap-6">
+                <div className="lg:col-span-3 grid grid-cols-1 sm:grid-cols-3 gap-6">
                     {quickStats.map((stat, index) => (
                         <motion.div key={index} variants={itemVariants}>
                             <Card className="h-full border-border/50 shadow-md hover:shadow-lg transition-all bg-card/60 backdrop-blur-sm hover:bg-card/80">
@@ -221,10 +221,10 @@ const UserDashboard = memo(() => {
                             {dashboardStats?.upcoming_events && dashboardStats.upcoming_events.length > 0 ? (
                                 dashboardStats.upcoming_events.map((event) => {
                                     const eventDate = event.date ? new Date(event.date) : null;
-                                    const eventLink = event.type === 'event' && event.id?.startsWith('event-') 
-                                        ? `/events/${event.id.replace('event-', '')}` 
+                                    const eventLink = event.type === 'event' && event.id?.startsWith('event-')
+                                        ? `/events/${event.id.replace('event-', '')}`
                                         : null;
-                                    
+
                                     const EventContent = (
                                         <div className="group p-4 border border-border/50 rounded-xl hover:bg-accent/5 hover:border-accent/40 transition-all cursor-pointer">
                                             <div className="flex justify-between items-start mb-2">
@@ -249,7 +249,7 @@ const UserDashboard = memo(() => {
                                             </div>
                                         </div>
                                     );
-                                    
+
                                     return eventLink ? (
                                         <Link key={event.id} to={eventLink}>
                                             {EventContent}

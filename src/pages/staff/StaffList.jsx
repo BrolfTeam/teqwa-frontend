@@ -1,9 +1,15 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, memo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
+import { FiMail, FiPhone, FiUsers, FiClock } from 'react-icons/fi';
 import { dataService } from '@/lib/dataService';
 import Pagination from '@/components/ui/Pagination';
 import { toast } from 'sonner';
+import { Card, CardContent } from '@/components/ui/Card';
+import { AdminModuleHeader } from '@/components/admin/AdminModuleHeader';
 
-export default function StaffList() {
+const StaffList = memo(() => {
+    const { t } = useTranslation();
     const [staff, setStaff] = useState([]);
     const [loading, setLoading] = useState(true);
     const [page, setPage] = useState(1);
@@ -16,49 +22,113 @@ export default function StaffList() {
                 setStaff(data);
             } catch (error) {
                 console.error('Failed to fetch staff:', error);
-                toast.error('Failed to load staff list');
+                toast.error(t('staff.failedToLoadList') || 'Failed to load staff list');
             } finally {
                 setLoading(false);
             }
         };
         fetchStaff();
-    }, []);
+    }, [t]);
 
     const total = staff.length;
     const start = (page - 1) * pageSize;
     const paged = staff.slice(start, start + pageSize);
 
-    if (loading) return <div className="text-center py-8">Loading...</div>;
+    if (loading) {
+        return (
+            <div className="flex justify-center items-center min-h-[60vh]">
+                <div className="relative">
+                    <div className="w-16 h-16 border-4 border-emerald-500/20 border-t-emerald-500 rounded-full animate-spin"></div>
+                    <div className="mt-4 text-emerald-600 font-bold animate-pulse">{t('common.loading')}</div>
+                </div>
+            </div>
+        );
+    }
 
     return (
-        <div className="container mx-auto py-8">
-            <h2 className="text-2xl font-semibold mb-4">Staff Directory</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                {paged.map(s => (
-                    <div key={s.id} className="p-5 bg-white rounded-xl shadow-sm border border-border/50 transition-all hover:shadow-md">
-                        <div className="flex justify-between items-start">
-                            <div>
-                                <div className="font-medium text-lg">{s.name}</div>
-                                <div className="text-sm text-muted-foreground">{s.role}</div>
-                            </div>
-                            <span className={`px-2.5 py-0.5 text-xs font-medium rounded-full ${s.active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}`}>
-                                {s.active ? 'Active' : 'Inactive'}
-                            </span>
+        <div className="min-h-screen bg-gray-50/50 pb-20">
+            <div className="container px-4 py-8 max-w-7xl mx-auto">
+                <AdminModuleHeader
+                    title={t('dashboard.admin.staffManagement')}
+                    subtitle={t('staff.manageStaffSubtitle') || "View and manage the staff directory and roles."}
+                />
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+                    <AnimatePresence mode="popLayout">
+                        {paged.map((s, index) => (
+                            <motion.div
+                                key={s.id}
+                                layout
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0, scale: 0.9 }}
+                                transition={{ delay: index * 0.05 }}
+                            >
+                                <Card className="h-full hover:shadow-2xl transition-all duration-500 border-white/20 bg-white/40 backdrop-blur-xl group overflow-hidden relative">
+                                    <div className="absolute top-0 right-0 p-4">
+                                        <div className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-tighter border shadow-sm ${s.active ? 'bg-emerald-500/10 text-emerald-600 border-emerald-200' : 'bg-gray-500/10 text-gray-600 border-gray-200'}`}>
+                                            {s.active ? t('common.active') : t('common.inactive')}
+                                        </div>
+                                    </div>
+
+                                    <CardContent className="p-6 pt-8">
+                                        <div className="flex items-center space-x-4 mb-6">
+                                            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-teal-500 to-emerald-600 flex items-center justify-center shadow-lg transform group-hover:rotate-6 transition-transform">
+                                                <span className="text-2xl font-black text-white">
+                                                    {(s.name?.[0] || '?').toUpperCase()}
+                                                </span>
+                                            </div>
+                                            <div>
+                                                <h3 className="font-black text-xl text-gray-800 leading-tight">
+                                                    {s.name}
+                                                </h3>
+                                                <p className="text-sm text-emerald-600 font-bold">{s.role}</p>
+                                            </div>
+                                        </div>
+
+                                        <div className="space-y-3 mb-4">
+                                            <div className="flex items-center text-sm text-gray-500 font-medium truncate italic">
+                                                <FiMail className="w-4 h-4 mr-3 text-emerald-500" />
+                                                {s.email}
+                                            </div>
+                                            <div className="flex items-center text-sm text-gray-500 font-medium">
+                                                <FiPhone className="w-4 h-4 mr-3 text-emerald-500" />
+                                                {s.phone}
+                                            </div>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            </motion.div>
+                        ))}
+                    </AnimatePresence>
+                </div>
+
+                {staff.length === 0 ? (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        className="py-20 text-center"
+                    >
+                        <div className="inline-flex items-center justify-center w-24 h-24 rounded-full bg-gray-100 mb-6">
+                            <FiUsers className="h-10 w-10 text-gray-300" />
                         </div>
-                        <div className="mt-3 text-sm text-muted-foreground space-y-1">
-                            <div className="flex items-center gap-2">
-                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
-                                {s.email}
-                            </div>
-                            <div className="flex items-center gap-2">
-                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
-                                {s.phone}
-                            </div>
-                        </div>
+                        <h3 className="text-xl font-black text-gray-400">{t('staff.noStaffFound')}</h3>
+                    </motion.div>
+                ) : (
+                    <div className="bg-white/40 backdrop-blur-xl p-4 rounded-[2rem] border border-white/20 shadow-xl">
+                        <Pagination
+                            total={total}
+                            page={page}
+                            pageSize={pageSize}
+                            onPageChange={setPage}
+                            onPageSizeChange={(sz) => { setPageSize(sz); setPage(1); }}
+                        />
                     </div>
-                ))}
+                )}
             </div>
-            <Pagination total={total} page={page} pageSize={pageSize} onPageChange={setPage} onPageSizeChange={(sz) => { setPageSize(sz); setPage(1); }} />
         </div>
     );
-}
+});
+
+StaffList.displayName = 'StaffList';
+export default StaffList;

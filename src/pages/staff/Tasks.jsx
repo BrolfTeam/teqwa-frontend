@@ -1,86 +1,66 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, memo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/context/AuthContext';
 import staffService from '@/services/staffService';
 import AdminTaskBoard from '@/components/staff/AdminTaskBoard';
 import StaffTaskBoard from '@/components/staff/StaffTaskBoard';
-import { LoadingSpinner } from '@/components/ui';
+import { AdminModuleHeader } from '@/components/admin/AdminModuleHeader';
 import { toast } from 'sonner';
 
-export default function Tasks() {
+const Tasks = memo(() => {
+    const { t } = useTranslation();
     const { user } = useAuth();
     const [tasks, setTasks] = useState([]);
-    const [staffs, setStaffs] = useState([]); // For admin to assign
     const [loading, setLoading] = useState(true);
+    const isAdmin = user?.role === 'admin';
 
-    const fetchData = async () => {
+    const fetchTasks = async () => {
         try {
-            // Fetch tasks
-            const tasksData = await staffService.getTasks();
-            setTasks(tasksData.data || []);
-
-            // If Admin, fetch staff list for assignment dropdown
-            if (user?.role === 'admin') {
-                try {
-                    const staffData = await staffService.getStaff({ active: 'true' });
-                    setStaffs(staffData.data || []);
-                    if (!staffData.data || staffData.data.length === 0) {
-                        // Fallback: try fetching all staff if active filter returns nothing
-                        const allStaffData = await staffService.getStaff();
-                        setStaffs(allStaffData.data || []);
-                    }
-                } catch (error) {
-                    console.error("Failed to fetch staff:", error);
-                    // Try fetching all staff as fallback
-                    try {
-                        const allStaffData = await staffService.getStaff();
-                        setStaffs(allStaffData.data || []);
-                    } catch (fallbackError) {
-                        console.error("Failed to fetch staff (fallback):", fallbackError);
-                        setStaffs([]);
-                    }
-                }
-            }
+            setLoading(true);
+            const response = await staffService.getTasks();
+            setTasks(response.data || []);
         } catch (error) {
-            console.error("Failed to fetch task data", error);
-            toast.error("Failed to load tasks");
+            console.error('Failed to load tasks:', error);
+            toast.error(t('staff.tasks.failedToLoad'));
         } finally {
             setLoading(false);
         }
     };
 
     useEffect(() => {
-        fetchData();
-    }, [user]);
+        fetchTasks();
+    }, []);
 
     if (loading) {
         return (
-            <div className="flex h-[50vh] items-center justify-center">
-                <LoadingSpinner size="lg" />
+            <div className="flex justify-center items-center min-h-[60vh]">
+                <div className="relative">
+                    <div className="w-16 h-16 border-4 border-emerald-500/20 border-t-emerald-500 rounded-full animate-spin"></div>
+                    <div className="mt-4 text-emerald-600 font-bold animate-pulse">{t('staff.tasks.loadingTasks')}</div>
+                </div>
             </div>
         );
     }
 
     return (
-        <div className="container mx-auto py-8 px-4">
-            <h1 className="text-3xl font-bold mb-2">Task Management</h1>
-            <p className="text-muted-foreground mb-8">
-                {user?.role === 'admin'
-                    ? 'Manage, assign, and review staff tasks.'
-                    : 'View and update your assigned tasks.'}
-            </p>
+        <div className="min-h-screen bg-gray-50/50 pb-20">
+            <div className="container px-4 py-8 max-w-7xl mx-auto">
+                <AdminModuleHeader
+                    title={t('staff.tasks.title')}
+                    subtitle={isAdmin ? t('staff.tasks.manageAssignReview') : t('staff.tasks.viewUpdateTasks')}
+                />
 
-            {user?.role === 'admin' ? (
-                <AdminTaskBoard
-                    tasks={tasks}
-                    staffs={staffs}
-                    onUpdate={fetchData}
-                />
-            ) : (
-                <StaffTaskBoard
-                    tasks={tasks}
-                    onTaskUpdate={fetchData}
-                />
-            )}
+                <div className="bg-white/40 backdrop-blur-xl p-8 rounded-[2.5rem] border border-white/20 shadow-2xl">
+                    {isAdmin ? (
+                        <AdminTaskBoard tasks={tasks} onUpdate={fetchTasks} />
+                    ) : (
+                        <StaffTaskBoard tasks={tasks} onTaskUpdate={fetchTasks} />
+                    )}
+                </div>
+            </div>
         </div>
     );
-}
+});
+
+Tasks.displayName = 'Tasks';
+export default Tasks;

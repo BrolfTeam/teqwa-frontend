@@ -96,7 +96,7 @@ const AdminStats = ({ stats, staffReports, itemVariants }) => {
             </motion.div>
 
             {/* General System Stats */}
-            <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <motion.div variants={itemVariants} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {adminStats.map((stat, i) => (
                     <motion.div key={i} whileHover={{ y: -5 }}>
                         <Card className="border-white/5 bg-white/50 dark:bg-zinc-900/50 backdrop-blur-xl shadow-xl rounded-3xl hover:shadow-emerald-500/5 transition-all overflow-hidden border-b-4 border-b-transparent hover:border-b-emerald-500">

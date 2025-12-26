@@ -43,7 +43,7 @@ const TaskCard = ({ task, onUpdate }) => {
             if (onUpdate) onUpdate();
         } catch (error) {
             // Error handling, especially for the constraint "No Check-in"
-            const msg = error.response?.data?.error || error.message || "Action failed";
+            const msg = error.data?.error || error.message || "Action failed";
             toast.error(msg);
         } finally {
             setLoading(false);
@@ -72,8 +72,8 @@ const TaskCard = ({ task, onUpdate }) => {
                                 {task.status.replace('_', ' ')}
                             </span>
                             <span className={`text-xs px-2 py-0.5 rounded-full border ${task.priority === 'urgent' ? 'bg-red-100 text-red-700 border-red-200' :
-                                    task.priority === 'high' ? 'bg-orange-100 text-orange-700 border-orange-200' :
-                                        'bg-slate-100 text-slate-600 border-slate-200'
+                                task.priority === 'high' ? 'bg-orange-100 text-orange-700 border-orange-200' :
+                                    'bg-slate-100 text-slate-600 border-slate-200'
                                 }`}>
                                 {task.priority} Priority
                             </span>

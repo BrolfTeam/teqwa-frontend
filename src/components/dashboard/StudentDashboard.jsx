@@ -27,7 +27,7 @@ const StudentDashboard = memo(() => {
     const [grades, setGrades] = useState(null);
     const [messages, setMessages] = useState([]);
     const [announcements, setAnnouncements] = useState([]);
-    
+
     // Modal states
     const [showSubmissionModal, setShowSubmissionModal] = useState(false);
     const [showMessageModal, setShowMessageModal] = useState(false);
@@ -35,6 +35,22 @@ const StudentDashboard = memo(() => {
     const [submissionContent, setSubmissionContent] = useState('');
     const [submissionFiles, setSubmissionFiles] = useState([]);
     const [messageData, setMessageData] = useState({ recipient_id: '', subject: '', message: '', course_id: '' });
+    const [teachers, setTeachers] = useState([]);
+
+    useEffect(() => {
+        if (timetable.length > 0) {
+            // Extract unique teachers from timetable
+            const extracted = timetable.reduce((acc, item) => {
+                if (item.instructor_name && item.instructor_id) {
+                    if (!acc.find(teacher => teacher.id === item.instructor_id)) {
+                        acc.push({ id: item.instructor_id, name: item.instructor_name });
+                    }
+                }
+                return acc;
+            }, []);
+            setTeachers(extracted);
+        }
+    }, [timetable]);
 
     const fetchDashboardData = useCallback(async () => {
         try {
@@ -160,22 +176,30 @@ const StudentDashboard = memo(() => {
             variants={containerVariants}
             initial="hidden"
             animate="visible"
-            className="max-w-7xl mx-auto space-y-8"
+            className="max-w-7xl mx-auto space-y-8 px-4"
         >
             {/* Welcome Header */}
             <motion.div variants={itemVariants} className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-blue-600 to-purple-600 text-white p-8 shadow-lg">
                 <IslamicPattern color="white" className="mix-blend-overlay" opacity={0.05} />
                 <div className="relative z-10">
-                    <div className="flex items-center gap-3 mb-2">
-                        <FiBookOpen className="h-8 w-8" />
-                        <h1 className="text-3xl font-bold">{t('dashboard.student.studentDashboard')}</h1>
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div className="flex items-center gap-3">
+                            <FiBookOpen className="h-8 w-8" />
+                            <h1 className="text-3xl font-bold">{t('dashboard.student.studentDashboard')}</h1>
+                        </div>
+                        <Button asChild variant="secondary" className="bg-white/10 hover:bg-white/20 text-white border-white/20 backdrop-blur-sm">
+                            <Link to="/profile">
+                                <FiUser className="mr-2 h-4 w-4" />
+                                {t('profile.title') || 'View Profile'}
+                            </Link>
+                        </Button>
                     </div>
-                    <p className="text-blue-100">{t('dashboard.student.welcomeBack')}, {user?.first_name || user?.username}! {t('dashboard.student.studentDashboard')}</p>
+                    <p className="text-blue-100 mt-2">{t('dashboard.student.welcomeBack')}, {user?.first_name || user?.username}! {t('dashboard.student.studentDashboard')}</p>
                 </div>
             </motion.div>
 
             {/* Stats Grid */}
-            <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <motion.div variants={itemVariants} className="grid grid-cols-2 lg:grid-cols-4 gap-6">
                 {dashboardStats.map((stat, i) => (
                     <Card key={i} className="border-border/50 bg-card/50 backdrop-blur-sm">
                         <CardContent className="p-6 flex items-center justify-between">
@@ -356,9 +380,9 @@ const StudentDashboard = memo(() => {
                     <motion.div variants={itemVariants}>
                         <Card className="shadow-md border-border/50">
                             <CardHeader className="border-b border-border/40 pb-4">
-                                    <CardTitle className="flex items-center gap-2">
-                                        <FiActivity className="text-indigo-500" /> {t('dashboard.quickActions')}
-                                    </CardTitle>
+                                <CardTitle className="flex items-center gap-2">
+                                    <FiActivity className="text-indigo-500" /> {t('dashboard.quickActions')}
+                                </CardTitle>
                             </CardHeader>
                             <CardContent className="pt-6 space-y-2">
                                 <Button variant="outline" className="w-full justify-start" onClick={() => setShowMessageModal(true)}>
@@ -400,11 +424,10 @@ const StudentDashboard = memo(() => {
                                             <div className="flex-1">
                                                 <div className="flex items-center gap-2 mb-1">
                                                     <h4 className="font-semibold">{announcement.title}</h4>
-                                                    <span className={`px-2 py-0.5 rounded text-xs font-medium ${
-                                                        announcement.priority === 'urgent' ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' :
+                                                    <span className={`px-2 py-0.5 rounded text-xs font-medium ${announcement.priority === 'urgent' ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' :
                                                         announcement.priority === 'high' ? 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400' :
-                                                        'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'
-                                                    }`}>
+                                                            'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'
+                                                        }`}>
                                                         {announcement.priority}
                                                     </span>
                                                 </div>
@@ -463,14 +486,20 @@ const StudentDashboard = memo(() => {
             {/* Message Modal */}
             <Modal open={showMessageModal} onClose={() => setShowMessageModal(false)} title="Message Teacher">
                 <div className="space-y-4">
-                    <FormField label="Recipient (Teacher ID)" required>
-                        <input
-                            type="number"
+                    <FormField label="Recipient (Teacher)" required>
+                        <select
                             value={messageData.recipient_id}
                             onChange={(e) => setMessageData({ ...messageData, recipient_id: e.target.value })}
-                            className="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
-                            placeholder="Enter teacher user ID"
-                        />
+                            className="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary bg-background"
+                        >
+                            <option value="">Select a teacher</option>
+                            {teachers.map(teacher => (
+                                <option key={teacher.id} value={teacher.id}>
+                                    {teacher.name}
+                                </option>
+                            ))}
+                            {teachers.length === 0 && <option disabled>No teachers found in your timetable</option>}
+                        </select>
                     </FormField>
                     <FormField label="Subject" required>
                         <input

@@ -95,7 +95,7 @@ const Navbar = memo(() => {
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden xl:flex items-center space-x-1">
+        <nav className="hidden lg:flex items-center space-x-1">
           {navItems.map((item) => (
             <div
               key={item.key}
@@ -204,11 +204,11 @@ const Navbar = memo(() => {
 
           <ThemeToggle />
 
-          {/* Mobile Menu Button - Show on screens smaller than XL */}
+          {/* Mobile Menu Button - Show on screens smaller than LG */}
           <Button
             variant="ghost"
             size="icon"
-            className="xl:hidden text-emerald-800 dark:text-emerald-400"
+            className="lg:hidden text-emerald-800 dark:text-emerald-400"
             onClick={toggleMenu}
           >
             {isMenuOpen ? <FiX className="h-6 w-6" /> : <FiMenu className="h-6 w-6" />}
@@ -223,9 +223,9 @@ const Navbar = memo(() => {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="xl:hidden border-t border-emerald-100 dark:border-emerald-900 bg-white dark:bg-slate-900 shadow-lg overflow-hidden"
+            className="lg:hidden border-t border-emerald-100 dark:border-emerald-900 bg-white dark:bg-slate-900 shadow-lg overflow-hidden"
           >
-            <div className="px-4 py-4 space-y-1 max-h-[80vh] overflow-y-auto">
+            <div className="px-4 py-4 space-y-1 max-h-[80vh] overflow-y-auto lg:hidden">
               {navItems.map((item) => (
                 <div key={item.name}>
                   {item.dropdown ? (

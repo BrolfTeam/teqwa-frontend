@@ -15,10 +15,10 @@ import { hasPermission, getAccessLevel, getAccessibleFeatures } from '@/lib/perm
 import { useTranslation } from 'react-i18next';
 
 const StaffDashboard = memo(() => {
+    const { t } = useTranslation();
     const { user } = useAuth();
     const accessLevel = getAccessLevel(user);
     const accessibleFeatures = getAccessibleFeatures(user);
-    // ... existing states ...
     const [currentPrayer, setCurrentPrayer] = useState(null);
     const [nextPrayer, setNextPrayer] = useState(null);
     const [timeRemaining, setTimeRemaining] = useState('');
@@ -54,13 +54,13 @@ const StaffDashboard = memo(() => {
                         staffService.getTasks({ status: 'pending' }),
                         staffService.getTasks({ status: 'in_progress' })
                     ]);
-                    
+
                     // Combine and filter for today's tasks or high priority
                     const allActiveTasks = [
                         ...(pendingTasks.data || []),
                         ...(inProgressTasks.data || [])
                     ];
-                    
+
                     // Sort by priority and due date, show most urgent first
                     const sortedTasks = allActiveTasks.sort((a, b) => {
                         if (a.priority === 'urgent' && b.priority !== 'urgent') return -1;
@@ -70,7 +70,7 @@ const StaffDashboard = memo(() => {
                         }
                         return 0;
                     });
-                    
+
                     setTodaysTasks(sortedTasks);
                 } catch (error) {
                     console.error("Failed to fetch tasks:", error);
@@ -124,7 +124,7 @@ const StaffDashboard = memo(() => {
             variants={containerVariants}
             initial="hidden"
             animate="visible"
-            className="max-w-6xl mx-auto space-y-8"
+            className="max-w-6xl mx-auto space-y-8 px-4"
         >
             {/* Staff Welcome */}
             <motion.div variants={itemVariants} className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-900 via-emerald-800 to-emerald-900 text-white p-8 shadow-lg">
@@ -151,11 +151,11 @@ const StaffDashboard = memo(() => {
                 </div>
             </motion.div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Attendance Widget - REPLACES Quick Actions partially */}
                 <motion.div variants={itemVariants} className="md:col-span-1 h-full">
-                    <AttendanceWidget 
-                        staffId={user?.staff_profile?.id} 
+                    <AttendanceWidget
+                        staffId={user?.staff_profile?.id}
                         onAttendanceChange={async () => {
                             // Refresh dashboard data after attendance change
                             try {
@@ -168,13 +168,13 @@ const StaffDashboard = memo(() => {
                             } catch (error) {
                                 console.error("Failed to refresh dashboard:", error);
                             }
-                        }} 
+                        }}
                     />
                 </motion.div>
 
                 {/* Today's Tasks & Next Prayer */}
                 <motion.div variants={itemVariants} className="md:col-span-2 flex flex-col gap-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 h-full">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 h-full">
                         {/* Next Prayer */}
                         <Card className="h-full border-primary/20 shadow-lg relative overflow-hidden flex flex-col justify-center">
                             <CardHeader className="pb-2">
@@ -279,7 +279,7 @@ const StaffDashboard = memo(() => {
                                         </Card>
                                     </Link>
                                 )}
-                                
+
                                 {hasPermission(user, 'view_all_tasks') && (
                                     <Link to="/staff/tasks">
                                         <Card className="hover:shadow-lg transition-all border-l-4 border-l-purple-500 cursor-pointer">

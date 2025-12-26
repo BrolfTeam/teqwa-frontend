@@ -1,20 +1,21 @@
-import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { FiSettings, FiSave, FiRefreshCw, FiDatabase, FiMail, FiGlobe, FiShield, FiBell, FiUser } from 'react-icons/fi';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
+import { useState, useEffect, memo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { FiSave, FiGlobe, FiMail, FiShield, FiBell, FiUser, FiSettings } from 'react-icons/fi';
+import { Card, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { toast } from 'sonner';
-import { LoadingSpinner } from '@/components/ui';
+import { useTranslation } from 'react-i18next';
+import { AdminModuleHeader } from '@/components/admin/AdminModuleHeader';
 
-export default function Settings() {
-    const [loading, setLoading] = useState(false);
+const Settings = memo(() => {
+    const { t } = useTranslation();
     const [saving, setSaving] = useState(false);
     const [settings, setSettings] = useState({
         // General Settings
         siteName: 'Teqwa Mosque',
         siteDescription: 'Community Mosque Management System',
         siteUrl: window.location.origin,
-        
+
         // Email Settings
         emailBackend: 'console',
         emailHost: 'smtp.gmail.com',
@@ -22,30 +23,30 @@ export default function Settings() {
         emailUseTLS: true,
         emailUser: '',
         emailFrom: 'noreply@teqwa.org',
-        
+
         // System Settings
         timezone: 'UTC',
         language: 'en',
         dateFormat: 'YYYY-MM-DD',
         timeFormat: '24h',
-        
+
         // Security Settings
         sessionTimeout: 30,
         passwordMinLength: 8,
         requireEmailVerification: false,
         allowRegistration: true,
-        
+
         // Notification Settings
         enableEmailNotifications: true,
         enableSMSNotifications: false,
         notifyOnNewUser: true,
         notifyOnNewDonation: true,
-        
+
         // Jumuah Settings
         jumuahKhatibName: '',
         jumuahKhatibTitle: '',
         jumuahKhatibPhoto: '',
-        
+
         // Daily Imam Settings
         dailyImamFajr: '',
         dailyImamDhuhr: '',
@@ -54,7 +55,6 @@ export default function Settings() {
         dailyImamIsha: '',
     });
 
-    // Load settings on mount
     useEffect(() => {
         try {
             const storedKhatib = localStorage.getItem('jumuah_khatib');
@@ -67,8 +67,7 @@ export default function Settings() {
                     jumuahKhatibPhoto: khatib.photo || ''
                 }));
             }
-            
-            // Load daily imams
+
             const storedImams = localStorage.getItem('daily_imams');
             if (storedImams) {
                 const imams = JSON.parse(storedImams);
@@ -89,7 +88,6 @@ export default function Settings() {
     const handleSave = async () => {
         setSaving(true);
         try {
-            // Save Jumuah khatib info to localStorage
             if (settings.jumuahKhatibName) {
                 const khatibInfo = {
                     name: settings.jumuahKhatibName,
@@ -100,8 +98,7 @@ export default function Settings() {
             } else {
                 localStorage.removeItem('jumuah_khatib');
             }
-            
-            // Save daily imams to localStorage
+
             const imams = {
                 fajr: settings.dailyImamFajr || '',
                 dhuhr: settings.dailyImamDhuhr || '',
@@ -109,371 +106,153 @@ export default function Settings() {
                 maghrib: settings.dailyImamMaghrib || '',
                 isha: settings.dailyImamIsha || ''
             };
-            // Only save if at least one imam is set
             const hasImams = Object.values(imams).some(v => v.trim() !== '');
             if (hasImams) {
                 localStorage.setItem('daily_imams', JSON.stringify(imams));
             } else {
                 localStorage.removeItem('daily_imams');
             }
-            
-            // Save settings to backend
-            // await apiService.put('/admin/settings/', settings);
-            toast.success('Settings saved successfully');
-            // Dispatch event to refresh dashboard and homepage
+
+            toast.success(t('settings.settingsSaved') || 'Settings saved successfully');
             window.dispatchEvent(new CustomEvent('custom:data-change', { detail: { type: 'settings:updated' } }));
             window.dispatchEvent(new CustomEvent('jumuah-khatib-updated'));
             window.dispatchEvent(new CustomEvent('daily-imams-updated'));
         } catch (error) {
             console.error('Failed to save settings:', error);
-            toast.error('Failed to save settings');
+            toast.error(t('settings.failedToSave') || 'Failed to save settings');
         } finally {
             setSaving(false);
         }
     };
 
+    const sections = [
+        {
+            id: 'general',
+            title: t('settings.generalSettings'),
+            icon: FiGlobe,
+            color: 'text-blue-500 bg-blue-50',
+            fields: [
+                { key: 'siteName', label: t('settings.siteName'), type: 'text' },
+                { key: 'siteDescription', label: t('settings.siteDescription'), type: 'textarea' },
+                { key: 'siteUrl', label: t('settings.siteUrl'), type: 'url' },
+            ]
+        },
+        {
+            id: 'email',
+            title: t('settings.emailSettings'),
+            icon: FiMail,
+            color: 'text-emerald-500 bg-emerald-50',
+            fields: [
+                { key: 'emailBackend', label: t('settings.emailBackend'), type: 'select', options: [{ v: 'console', l: 'Console (Dev)' }, { v: 'smtp', l: 'SMTP' }] },
+                { key: 'emailFrom', label: t('settings.emailFrom'), type: 'email' },
+            ]
+        },
+        {
+            id: 'security',
+            title: t('settings.securitySettings'),
+            icon: FiShield,
+            color: 'text-red-500 bg-red-50',
+            fields: [
+                { key: 'sessionTimeout', label: 'Session Timeout (min)', type: 'number' },
+                { key: 'allowRegistration', label: 'Allow Registration', type: 'checkbox' },
+                { key: 'requireEmailVerification', label: 'Require Verification', type: 'checkbox' },
+            ]
+        },
+        {
+            id: 'jumuah',
+            title: 'Jumu\'ah & Daily Imam',
+            icon: FiUser,
+            color: 'text-teal-500 bg-teal-50',
+            fields: [
+                { key: 'jumuahKhatibName', label: 'Jumu\'ah Khatib', type: 'text' },
+                { key: 'dailyImamFajr', label: 'Fajr Imam', type: 'text' },
+                { key: 'dailyImamIsha', label: 'Isha Imam', type: 'text' },
+            ]
+        }
+    ];
+
     return (
-        <div className="container mx-auto py-8 px-4">
-            <div className="flex justify-between items-center mb-6">
-                <div>
-                    <h1 className="text-3xl font-bold mb-2">System Settings</h1>
-                    <p className="text-muted-foreground">Configure system-wide settings</p>
+        <div className="min-h-screen bg-gray-50/50 pb-20">
+            <div className="container px-4 py-8 max-w-7xl mx-auto">
+                <AdminModuleHeader
+                    title={t('settings.systemSettings')}
+                    subtitle={t('settings.configureSubtitle') || "Adjust system-wide configurations, security, and mosque-specific parameters."}
+                />
+
+                <div className="flex justify-end mb-10">
+                    <Button
+                        onClick={handleSave}
+                        disabled={saving}
+                        className="h-16 px-10 rounded-3xl bg-emerald-600 hover:bg-emerald-700 shadow-xl shadow-emerald-500/20 text-lg font-black transition-all"
+                    >
+                        <FiSave className={`mr-3 ${saving ? 'animate-spin' : ''}`} />
+                        {saving ? t('settings.saving') : t('settings.saveAll')}
+                    </Button>
                 </div>
-                <Button onClick={handleSave} disabled={saving}>
-                    <FiSave className="mr-2" />
-                    {saving ? 'Saving...' : 'Save All Settings'}
-                </Button>
-            </div>
 
-            <div className="grid gap-6">
-                {/* General Settings */}
-                <Card>
-                    <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
-                            <FiGlobe className="text-blue-500" />
-                            General Settings
-                        </CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                        <div>
-                            <label className="block text-sm font-medium mb-1">Site Name</label>
-                            <input
-                                type="text"
-                                value={settings.siteName}
-                                onChange={(e) => setSettings({ ...settings, siteName: e.target.value })}
-                                className="w-full px-3 py-2 border rounded-lg bg-background"
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium mb-1">Site Description</label>
-                            <textarea
-                                value={settings.siteDescription}
-                                onChange={(e) => setSettings({ ...settings, siteDescription: e.target.value })}
-                                className="w-full px-3 py-2 border rounded-lg bg-background"
-                                rows="3"
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium mb-1">Site URL</label>
-                            <input
-                                type="url"
-                                value={settings.siteUrl}
-                                onChange={(e) => setSettings({ ...settings, siteUrl: e.target.value })}
-                                className="w-full px-3 py-2 border rounded-lg bg-background"
-                            />
-                        </div>
-                    </CardContent>
-                </Card>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    {sections.map((section, idx) => (
+                        <motion.div
+                            key={section.id}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: idx * 0.1 }}
+                        >
+                            <Card className="h-full border-white/20 bg-white/40 backdrop-blur-xl shadow-xl rounded-[2.5rem] overflow-hidden group">
+                                <CardContent className="p-8">
+                                    <div className="flex items-center gap-4 mb-8">
+                                        <div className={`p-4 rounded-2xl ${section.color} shadow-sm group-hover:scale-110 transition-transform`}>
+                                            <section.icon className="w-6 h-6" />
+                                        </div>
+                                        <h3 className="text-2xl font-black text-gray-800 tracking-tight">{section.title}</h3>
+                                    </div>
 
-                {/* Email Settings */}
-                <Card>
-                    <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
-                            <FiMail className="text-green-500" />
-                            Email Settings
-                        </CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                        <div>
-                            <label className="block text-sm font-medium mb-1">Email Backend</label>
-                            <select
-                                value={settings.emailBackend}
-                                onChange={(e) => setSettings({ ...settings, emailBackend: e.target.value })}
-                                className="w-full px-3 py-2 border rounded-lg bg-background"
-                            >
-                                <option value="console">Console (Development)</option>
-                                <option value="smtp">SMTP</option>
-                            </select>
-                        </div>
-                        {settings.emailBackend === 'smtp' && (
-                            <>
-                                <div>
-                                    <label className="block text-sm font-medium mb-1">SMTP Host</label>
-                                    <input
-                                        type="text"
-                                        value={settings.emailHost}
-                                        onChange={(e) => setSettings({ ...settings, emailHost: e.target.value })}
-                                        className="w-full px-3 py-2 border rounded-lg bg-background"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-medium mb-1">SMTP Port</label>
-                                    <input
-                                        type="number"
-                                        value={settings.emailPort}
-                                        onChange={(e) => setSettings({ ...settings, emailPort: parseInt(e.target.value) })}
-                                        className="w-full px-3 py-2 border rounded-lg bg-background"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-medium mb-1">Email User</label>
-                                    <input
-                                        type="email"
-                                        value={settings.emailUser}
-                                        onChange={(e) => setSettings({ ...settings, emailUser: e.target.value })}
-                                        className="w-full px-3 py-2 border rounded-lg bg-background"
-                                    />
-                                </div>
-                            </>
-                        )}
-                        <div>
-                            <label className="block text-sm font-medium mb-1">From Email</label>
-                            <input
-                                type="email"
-                                value={settings.emailFrom}
-                                onChange={(e) => setSettings({ ...settings, emailFrom: e.target.value })}
-                                className="w-full px-3 py-2 border rounded-lg bg-background"
-                            />
-                        </div>
-                    </CardContent>
-                </Card>
-
-                {/* Security Settings */}
-                <Card>
-                    <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
-                            <FiShield className="text-red-500" />
-                            Security Settings
-                        </CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                        <div>
-                            <label className="block text-sm font-medium mb-1">Session Timeout (minutes)</label>
-                            <input
-                                type="number"
-                                value={settings.sessionTimeout}
-                                onChange={(e) => setSettings({ ...settings, sessionTimeout: parseInt(e.target.value) })}
-                                className="w-full px-3 py-2 border rounded-lg bg-background"
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium mb-1">Minimum Password Length</label>
-                            <input
-                                type="number"
-                                value={settings.passwordMinLength}
-                                onChange={(e) => setSettings({ ...settings, passwordMinLength: parseInt(e.target.value) })}
-                                className="w-full px-3 py-2 border rounded-lg bg-background"
-                            />
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <input
-                                type="checkbox"
-                                id="requireEmailVerification"
-                                checked={settings.requireEmailVerification}
-                                onChange={(e) => setSettings({ ...settings, requireEmailVerification: e.target.checked })}
-                                className="w-4 h-4"
-                            />
-                            <label htmlFor="requireEmailVerification" className="text-sm font-medium">
-                                Require Email Verification
-                            </label>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <input
-                                type="checkbox"
-                                id="allowRegistration"
-                                checked={settings.allowRegistration}
-                                onChange={(e) => setSettings({ ...settings, allowRegistration: e.target.checked })}
-                                className="w-4 h-4"
-                            />
-                            <label htmlFor="allowRegistration" className="text-sm font-medium">
-                                Allow User Registration
-                            </label>
-                        </div>
-                    </CardContent>
-                </Card>
-
-                {/* Notification Settings */}
-                <Card>
-                    <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
-                            <FiBell className="text-purple-500" />
-                            Notification Settings
-                        </CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                        <div className="flex items-center gap-2">
-                            <input
-                                type="checkbox"
-                                id="enableEmailNotifications"
-                                checked={settings.enableEmailNotifications}
-                                onChange={(e) => setSettings({ ...settings, enableEmailNotifications: e.target.checked })}
-                                className="w-4 h-4"
-                            />
-                            <label htmlFor="enableEmailNotifications" className="text-sm font-medium">
-                                Enable Email Notifications
-                            </label>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <input
-                                type="checkbox"
-                                id="notifyOnNewUser"
-                                checked={settings.notifyOnNewUser}
-                                onChange={(e) => setSettings({ ...settings, notifyOnNewUser: e.target.checked })}
-                                className="w-4 h-4"
-                            />
-                            <label htmlFor="notifyOnNewUser" className="text-sm font-medium">
-                                Notify on New User Registration
-                            </label>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <input
-                                type="checkbox"
-                                id="notifyOnNewDonation"
-                                checked={settings.notifyOnNewDonation}
-                                onChange={(e) => setSettings({ ...settings, notifyOnNewDonation: e.target.checked })}
-                                className="w-4 h-4"
-                            />
-                            <label htmlFor="notifyOnNewDonation" className="text-sm font-medium">
-                                Notify on New Donation
-                            </label>
-                        </div>
-                    </CardContent>
-                </Card>
-
-                {/* Jumuah Settings */}
-                <Card>
-                    <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
-                            <FiUser className="text-teal-500" />
-                            Jumu'ah Settings
-                        </CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                        <div>
-                            <label className="block text-sm font-medium mb-1">Khatib/Imam Name *</label>
-                            <input
-                                type="text"
-                                value={settings.jumuahKhatibName}
-                                onChange={(e) => setSettings({ ...settings, jumuahKhatibName: e.target.value })}
-                                placeholder="e.g., Sheikh Ahmad Ali"
-                                className="w-full px-3 py-2 border rounded-lg bg-background"
-                            />
-                            <p className="text-xs text-muted-foreground mt-1">This will be displayed on the homepage during Jumu'ah</p>
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium mb-1">Khatib/Imam Title (Optional)</label>
-                            <input
-                                type="text"
-                                value={settings.jumuahKhatibTitle}
-                                onChange={(e) => setSettings({ ...settings, jumuahKhatibTitle: e.target.value })}
-                                placeholder="e.g., Resident Imam, Guest Speaker"
-                                className="w-full px-3 py-2 border rounded-lg bg-background"
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium mb-1">Profile Photo URL (Optional)</label>
-                            <input
-                                type="url"
-                                value={settings.jumuahKhatibPhoto}
-                                onChange={(e) => setSettings({ ...settings, jumuahKhatibPhoto: e.target.value })}
-                                placeholder="https://example.com/photo.jpg or data:image/..."
-                                className="w-full px-3 py-2 border rounded-lg bg-background"
-                            />
-                            <p className="text-xs text-muted-foreground mt-1">Enter image URL or base64 data URI. Leave empty to use default icon.</p>
-                            {settings.jumuahKhatibPhoto && (
-                                <div className="mt-2">
-                                    <img 
-                                        src={settings.jumuahKhatibPhoto} 
-                                        alt="Khatib preview" 
-                                        className="w-20 h-20 rounded-full object-cover border-2 border-teal-500"
-                                        onError={(e) => {
-                                            e.target.style.display = 'none';
-                                        }}
-                                    />
-                                </div>
-                            )}
-                        </div>
-                    </CardContent>
-                </Card>
-
-                {/* Daily Imam Settings */}
-                <Card>
-                    <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
-                            <FiUser className="text-blue-500" />
-                            Daily Prayer Imam Settings
-                        </CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                        <p className="text-sm text-muted-foreground mb-4">
-                            Assign imams for each daily prayer. These will be displayed in the prayer times widget on the homepage.
-                        </p>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label className="block text-sm font-medium mb-1">Fajr Imam</label>
-                                <input
-                                    type="text"
-                                    value={settings.dailyImamFajr}
-                                    onChange={(e) => setSettings({ ...settings, dailyImamFajr: e.target.value })}
-                                    placeholder="e.g., Sheikh Ahmad"
-                                    className="w-full px-3 py-2 border rounded-lg bg-background"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium mb-1">Dhuhr Imam</label>
-                                <input
-                                    type="text"
-                                    value={settings.dailyImamDhuhr}
-                                    onChange={(e) => setSettings({ ...settings, dailyImamDhuhr: e.target.value })}
-                                    placeholder="e.g., Sheikh Ahmad"
-                                    className="w-full px-3 py-2 border rounded-lg bg-background"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium mb-1">Asr Imam</label>
-                                <input
-                                    type="text"
-                                    value={settings.dailyImamAsr}
-                                    onChange={(e) => setSettings({ ...settings, dailyImamAsr: e.target.value })}
-                                    placeholder="e.g., Sheikh Ahmad"
-                                    className="w-full px-3 py-2 border rounded-lg bg-background"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium mb-1">Maghrib Imam</label>
-                                <input
-                                    type="text"
-                                    value={settings.dailyImamMaghrib}
-                                    onChange={(e) => setSettings({ ...settings, dailyImamMaghrib: e.target.value })}
-                                    placeholder="e.g., Sheikh Ahmad"
-                                    className="w-full px-3 py-2 border rounded-lg bg-background"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium mb-1">Isha Imam</label>
-                                <input
-                                    type="text"
-                                    value={settings.dailyImamIsha}
-                                    onChange={(e) => setSettings({ ...settings, dailyImamIsha: e.target.value })}
-                                    placeholder="e.g., Sheikh Ahmad"
-                                    className="w-full px-3 py-2 border rounded-lg bg-background"
-                                />
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
+                                    <div className="space-y-6">
+                                        {section.fields.map(field => (
+                                            <div key={field.key} className="space-y-2">
+                                                <label className="block text-xs font-black text-gray-400 uppercase tracking-widest ml-1">{field.label}</label>
+                                                {field.type === 'textarea' ? (
+                                                    <textarea
+                                                        value={settings[field.key]}
+                                                        onChange={(e) => setSettings({ ...settings, [field.key]: e.target.value })}
+                                                        className="w-full px-5 py-4 bg-white/60 border-2 border-transparent focus:border-emerald-500/30 focus:bg-white rounded-2xl transition-all outline-none font-bold text-gray-700 min-h-[100px]"
+                                                    />
+                                                ) : field.type === 'select' ? (
+                                                    <select
+                                                        value={settings[field.key]}
+                                                        onChange={(e) => setSettings({ ...settings, [field.key]: e.target.value })}
+                                                        className="w-full px-5 py-4 bg-white/60 border-2 border-transparent focus:border-emerald-500/30 focus:bg-white rounded-2xl transition-all outline-none font-bold text-gray-700 cursor-pointer"
+                                                    >
+                                                        {field.options.map(o => <option key={o.v} value={o.v}>{o.l}</option>)}
+                                                    </select>
+                                                ) : field.type === 'checkbox' ? (
+                                                    <div className="flex items-center gap-3 bg-white/60 p-4 rounded-2xl cursor-pointer hover:bg-white/80 transition-colors"
+                                                        onClick={() => setSettings({ ...settings, [field.key]: !settings[field.key] })}>
+                                                        <div className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all ${settings[field.key] ? 'bg-emerald-500 border-emerald-500' : 'border-gray-300'}`}>
+                                                            {settings[field.key] && <div className="w-2 h-2 bg-white rounded-full" />}
+                                                        </div>
+                                                        <span className="font-bold text-gray-600">Enabled</span>
+                                                    </div>
+                                                ) : (
+                                                    <input
+                                                        type={field.type}
+                                                        value={settings[field.key]}
+                                                        onChange={(e) => setSettings({ ...settings, [field.key]: e.target.value })}
+                                                        className="w-full px-5 py-4 bg-white/60 border-2 border-transparent focus:border-emerald-500/30 focus:bg-white rounded-2xl transition-all outline-none font-bold text-gray-700"
+                                                    />
+                                                )}
+                                            </div>
+                                        ))}
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </motion.div>
+                    ))}
+                </div>
             </div>
         </div>
     );
-}
+});
 
+Settings.displayName = 'Settings';
+export default Settings;

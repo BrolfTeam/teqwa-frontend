@@ -20,7 +20,7 @@ const AdminTaskBoard = ({ tasks, staffs, onUpdate }) => {
             window.dispatchEvent(new CustomEvent('custom:data-change', { detail: { type: 'staff:task:updated' } }));
             if (onUpdate) onUpdate();
         } catch (error) {
-            toast.error("Failed to approve task");
+            toast.error(error.message || "Failed to approve task");
         }
     };
 
@@ -32,7 +32,7 @@ const AdminTaskBoard = ({ tasks, staffs, onUpdate }) => {
             window.dispatchEvent(new CustomEvent('custom:data-change', { detail: { type: 'staff:task:updated' } }));
             if (onUpdate) onUpdate();
         } catch (error) {
-            toast.error("Failed to reject task");
+            toast.error(error.message || "Failed to reject task");
         }
     };
 
@@ -40,38 +40,40 @@ const AdminTaskBoard = ({ tasks, staffs, onUpdate }) => {
 
     return (
         <div className="space-y-6">
-            <div className="flex justify-between items-center">
-                <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div className="flex flex-wrap gap-2">
                     {['all', 'pending', 'submitted', 'in_progress'].map(status => (
                         <button
                             key={status}
                             onClick={() => setFilterStatus(status)}
-                            className={`px-3 py-1 rounded-full text-sm capitalize transition-colors ${filterStatus === status ? 'bg-primary text-primary-foreground' : 'bg-secondary text-muted-foreground hover:bg-secondary/80'
+                            className={`px-4 py-2 rounded-xl text-sm capitalize transition-all border ${filterStatus === status
+                                ? 'bg-emerald-500 text-white border-emerald-500 shadow-lg shadow-emerald-500/20'
+                                : 'bg-white/50 dark:bg-zinc-800/50 text-zinc-600 dark:text-zinc-400 border-zinc-200 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800'
                                 }`}
                         >
                             {status.replace('_', ' ')}
                         </button>
                     ))}
                 </div>
-                <Button onClick={() => setIsCreateOpen(true)}>
-                    <FiPlus className="mr-2" /> New Task
+                <Button onClick={() => setIsCreateOpen(true)} className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl shadow-lg shadow-emerald-600/20 py-4">
+                    <FiPlus className="mr-2 h-5 w-5" /> New Task
                 </Button>
             </div>
 
             {/* Create Task Modal */}
-            <Modal 
-                open={isCreateOpen} 
+            <Modal
+                open={isCreateOpen}
                 onClose={() => {
                     setIsCreateOpen(false);
-                }} 
+                }}
                 title="Assign New Task"
             >
-                <CreateTaskForm 
-                    staffs={staffs} 
-                    onSuccess={() => { 
+                <CreateTaskForm
+                    staffs={staffs}
+                    onSuccess={() => {
                         setIsCreateOpen(false);
                         if (onUpdate) onUpdate();
-                    }} 
+                    }}
                 />
             </Modal>
 
@@ -121,7 +123,7 @@ const CreateTaskForm = ({ staffs: propsStaffs, onSuccess }) => {
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({});
     const [staffs, setStaffs] = useState(propsStaffs || []);
-    
+
     const resetForm = () => {
         setFormData({
             task: '',
@@ -159,7 +161,7 @@ const CreateTaskForm = ({ staffs: propsStaffs, onSuccess }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setErrors({});
-        
+
         // Validate form
         const newErrors = {};
         if (!formData.task || !formData.task.trim()) {
@@ -171,13 +173,13 @@ const CreateTaskForm = ({ staffs: propsStaffs, onSuccess }) => {
         if (!formData.due_date) {
             newErrors.due_date = "Due date is required";
         }
-        
+
         if (Object.keys(newErrors).length > 0) {
             setErrors(newErrors);
             toast.error("Please fill in all required fields");
             return;
         }
-        
+
         // Validate due date is not in the past
         const today = new Date();
         today.setHours(0, 0, 0, 0);
@@ -187,7 +189,7 @@ const CreateTaskForm = ({ staffs: propsStaffs, onSuccess }) => {
             toast.error("Due date cannot be in the past");
             return;
         }
-        
+
         setLoading(true);
         try {
             // Ensure assigned_to is a number (StaffMember ID)
@@ -198,39 +200,38 @@ const CreateTaskForm = ({ staffs: propsStaffs, onSuccess }) => {
                 setLoading(false);
                 return;
             }
-            
+
             const taskData = {
                 task: formData.task.trim(),
                 assigned_to: assignedToId,
                 priority: formData.priority,
                 due_date: formData.due_date
             };
-            
+
             console.log('Creating task with data:', taskData);
             const response = await staffService.createTask(taskData);
             console.log('Task created successfully:', response);
-            
+
             toast.success("Task assigned successfully");
-            
+
             // Reset form
             resetForm();
-            
+
             // Dispatch event to refresh dashboard
             window.dispatchEvent(new CustomEvent('custom:data-change', { detail: { type: 'staff:task:created' } }));
-            
+
             // Call onSuccess to close modal and refresh
             if (onSuccess) {
                 onSuccess();
             }
         } catch (error) {
             console.error('Task creation error:', error);
-            console.error('Error response:', error.response);
-            
+
             // Handle validation errors from backend
-            if (error.response?.data) {
-                const backendErrors = error.response.data;
+            if (error.data) {
+                const backendErrors = error.data;
                 const fieldErrors = {};
-                
+
                 // Map backend field errors
                 Object.keys(backendErrors).forEach(key => {
                     if (Array.isArray(backendErrors[key])) {
@@ -239,16 +240,16 @@ const CreateTaskForm = ({ staffs: propsStaffs, onSuccess }) => {
                         fieldErrors[key] = backendErrors[key];
                     }
                 });
-                
+
                 if (Object.keys(fieldErrors).length > 0) {
                     setErrors(fieldErrors);
                 }
-                
-                const errorMessage = backendErrors.error || 
-                                    backendErrors.message || 
-                                    backendErrors.non_field_errors?.[0] ||
-                                    Object.values(fieldErrors)[0] ||
-                                    "Failed to create task";
+
+                const errorMessage = backendErrors.error ||
+                    backendErrors.message ||
+                    backendErrors.non_field_errors?.[0] ||
+                    Object.values(fieldErrors)[0] ||
+                    "Failed to create task";
                 toast.error(errorMessage);
             } else {
                 toast.error(error.message || "Failed to create task. Please try again.");
@@ -265,9 +266,8 @@ const CreateTaskForm = ({ staffs: propsStaffs, onSuccess }) => {
                     Task Description <span className="text-red-500">*</span>
                 </label>
                 <textarea
-                    className={`w-full p-2 rounded-md border bg-background ${
-                        errors.task ? 'border-red-500' : 'border-border'
-                    }`}
+                    className={`w-full p-2 rounded-md border bg-background ${errors.task ? 'border-red-500' : 'border-border'
+                        }`}
                     rows="3"
                     required
                     value={formData.task}
@@ -286,9 +286,8 @@ const CreateTaskForm = ({ staffs: propsStaffs, onSuccess }) => {
                         Assign To <span className="text-red-500">*</span>
                     </label>
                     <select
-                        className={`w-full p-2 rounded-md border bg-background ${
-                            errors.assigned_to ? 'border-red-500' : 'border-border'
-                        }`}
+                        className={`w-full p-2 rounded-md border bg-background ${errors.assigned_to ? 'border-red-500' : 'border-border'
+                            }`}
                         required
                         value={formData.assigned_to}
                         onChange={e => {
@@ -321,9 +320,8 @@ const CreateTaskForm = ({ staffs: propsStaffs, onSuccess }) => {
                     </label>
                     <input
                         type="date"
-                        className={`w-full p-2 rounded-md border bg-background ${
-                            errors.due_date ? 'border-red-500' : 'border-border'
-                        }`}
+                        className={`w-full p-2 rounded-md border bg-background ${errors.due_date ? 'border-red-500' : 'border-border'
+                            }`}
                         required
                         min={new Date().toISOString().split('T')[0]}
                         value={formData.due_date}
@@ -355,9 +353,9 @@ const CreateTaskForm = ({ staffs: propsStaffs, onSuccess }) => {
             </div>
 
             <div className="flex gap-3 pt-2">
-                <Button 
-                    type="submit" 
-                    className="flex-1" 
+                <Button
+                    type="submit"
+                    className="flex-1"
                     disabled={loading || !formData.task || !formData.assigned_to || !formData.due_date}
                 >
                     {loading ? (

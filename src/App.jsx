@@ -57,6 +57,10 @@ const StaffReports = lazy(() => import('@/pages/staff/Reports'));
 const UserManagement = lazy(() => import('@/pages/admin/UserManagement'));
 const AdminSettings = lazy(() => import('@/pages/admin/Settings'));
 
+// Student pages
+const StudentTimetable = lazy(() => import('@/pages/student/StudentTimetable'));
+const StudentSubmissions = lazy(() => import('@/pages/student/StudentSubmissions'));
+
 const LoadingFallback = memo(() => (
   <div className="min-h-[60vh] flex items-center justify-center bg-background">
     <LoadingSpinner size="lg" text="Loading..." />
@@ -192,6 +196,18 @@ const AppContent = memo(() => {
           <Route path="/admin/settings" element={
             <ProtectedRoute>
               <MainLayout><AdminSettings /></MainLayout>
+            </ProtectedRoute>
+          } />
+
+          {/* Student Routes */}
+          <Route path="/student/timetable" element={
+            <ProtectedRoute>
+              <MainLayout><StudentTimetable /></MainLayout>
+            </ProtectedRoute>
+          } />
+          <Route path="/student/submissions" element={
+            <ProtectedRoute>
+              <MainLayout><StudentSubmissions /></MainLayout>
             </ProtectedRoute>
           } />
 
