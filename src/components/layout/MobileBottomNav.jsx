@@ -12,10 +12,8 @@ const MobileBottomNav = memo(() => {
 
     const navLinks = [
         { to: '/', icon: FiHome, label: t('nav.home') },
-        { to: '/prayer-times', icon: FiClock, label: t('nav.prayerTimes') },
         { to: '/dashboard', icon: FiGrid, label: t('common.dashboard') },
         { to: '/donate', icon: FiHeart, label: t('nav.donate') },
-        { to: '/profile', icon: FiUser, label: t('common.profile') },
     ];
 
     return (

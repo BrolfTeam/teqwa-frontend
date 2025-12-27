@@ -10,8 +10,7 @@ import {
   FiTwitter,
   FiYoutube,
   FiHeart,
-  FiClock,
-  FiArrowUp
+  FiClock
 } from 'react-icons/fi';
 import { FiMessageCircle } from 'react-icons/fi';
 import logo from '@/assets/logo.png';
@@ -23,9 +22,6 @@ const Footer = memo(() => {
   const { t, translate } = useTranslation();
   const currentYear = new Date().getFullYear();
 
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
 
   const socialLinks = [
     {
@@ -271,17 +267,6 @@ const Footer = memo(() => {
               </p>
             </div>
 
-            {/* Back to Top Button */}
-            <motion.button
-              onClick={scrollToTop}
-              whileHover={{ scale: 1.1, y: -2 }}
-              whileTap={{ scale: 0.95 }}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-muted border border-border/50 text-sm text-muted-foreground hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all duration-200"
-              aria-label="Scroll to top"
-            >
-              <span>{translate('footer.backToTop', 'Back to Top')}</span>
-              <FiArrowUp className="w-4 h-4" />
-            </motion.button>
           </div>
 
           {/* Additional Info */}

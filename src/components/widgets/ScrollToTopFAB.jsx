@@ -30,7 +30,7 @@ const ScrollToTopFAB = memo(() => {
     return (
         <AnimatePresence>
             {isVisible && (
-                <div className={`fixed bottom-24 ${isRTL() ? 'left-6' : 'right-6'} z-50 pointer-events-none md:pointer-events-auto`}>
+                <div className={`fixed bottom-44 md:bottom-24 ${isRTL() ? 'left-6' : 'right-6'} z-50 pointer-events-none md:pointer-events-auto`}>
                     <motion.button
                         initial={{ opacity: 0, scale: 0.5, y: 20 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
