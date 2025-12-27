@@ -33,6 +33,7 @@ export const AdminModuleHeader = ({ title, subtitle }) => {
                     </Button>
 
                     <div className="space-y-1">
+                        <span className="font-arabic text-xl mb-1 block text-emerald-50/90">{t('dashboard.greeting')}</span>
                         <h1 className="text-3xl md:text-4xl font-black text-white tracking-tight">
                             {title}
                         </h1>

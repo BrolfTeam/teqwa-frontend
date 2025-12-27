@@ -135,6 +135,21 @@ const Settings = memo(() => {
                 { key: 'siteName', label: t('settings.siteName'), type: 'text' },
                 { key: 'siteDescription', label: t('settings.siteDescription'), type: 'textarea' },
                 { key: 'siteUrl', label: t('settings.siteUrl'), type: 'url' },
+                { key: 'timezone', label: t('settings.timezone'), type: 'text' },
+                {
+                    key: 'language', label: t('settings.language'), type: 'select', options: [
+                        { v: 'en', l: 'English' },
+                        { v: 'am', l: 'አማርኛ (Amharic)' },
+                        { v: 'ar', l: 'العربية (Arabic)' }
+                    ]
+                },
+                { key: 'dateFormat', label: t('settings.dateFormat'), type: 'text' },
+                {
+                    key: 'timeFormat', label: t('settings.timeFormat'), type: 'select', options: [
+                        { v: '12h', l: '12-hour' },
+                        { v: '24h', l: '24-hour' }
+                    ]
+                },
             ]
         },
         {
@@ -143,7 +158,16 @@ const Settings = memo(() => {
             icon: FiMail,
             color: 'text-emerald-500 bg-emerald-50',
             fields: [
-                { key: 'emailBackend', label: t('settings.emailBackend'), type: 'select', options: [{ v: 'console', l: 'Console (Dev)' }, { v: 'smtp', l: 'SMTP' }] },
+                {
+                    key: 'emailBackend', label: t('settings.emailBackend'), type: 'select', options: [
+                        { v: 'console', l: 'Console (Dev)' },
+                        { v: 'smtp', l: 'SMTP' }
+                    ]
+                },
+                { key: 'emailHost', label: t('settings.emailHost'), type: 'text' },
+                { key: 'emailPort', label: t('settings.emailPort'), type: 'number' },
+                { key: 'emailUseTLS', label: t('settings.emailUseTLS'), type: 'checkbox' },
+                { key: 'emailUser', label: t('settings.emailUser'), type: 'text' },
                 { key: 'emailFrom', label: t('settings.emailFrom'), type: 'email' },
             ]
         },
@@ -153,20 +177,46 @@ const Settings = memo(() => {
             icon: FiShield,
             color: 'text-red-500 bg-red-50',
             fields: [
-                { key: 'sessionTimeout', label: 'Session Timeout (min)', type: 'number' },
-                { key: 'allowRegistration', label: 'Allow Registration', type: 'checkbox' },
-                { key: 'requireEmailVerification', label: 'Require Verification', type: 'checkbox' },
+                { key: 'sessionTimeout', label: t('settings.sessionTimeout'), type: 'number' },
+                { key: 'passwordMinLength', label: t('settings.passwordMinLength'), type: 'number' },
+                { key: 'requireEmailVerification', label: t('settings.requireEmailVerification'), type: 'checkbox' },
+                { key: 'allowRegistration', label: t('settings.allowRegistration'), type: 'checkbox' },
+            ]
+        },
+        {
+            id: 'notifications',
+            title: t('settings.notificationSettings'),
+            icon: FiBell,
+            color: 'text-purple-500 bg-purple-50',
+            fields: [
+                { key: 'enableEmailNotifications', label: t('settings.enableEmailNotifications'), type: 'checkbox' },
+                { key: 'enableSMSNotifications', label: t('settings.enableSMSNotifications'), type: 'checkbox' },
+                { key: 'notifyOnNewUser', label: t('settings.notifyOnNewUser'), type: 'checkbox' },
+                { key: 'notifyOnNewDonation', label: t('settings.notifyOnNewDonation'), type: 'checkbox' },
             ]
         },
         {
             id: 'jumuah',
-            title: 'Jumu\'ah & Daily Imam',
+            title: t('settings.jumuahSettings'),
             icon: FiUser,
             color: 'text-teal-500 bg-teal-50',
             fields: [
-                { key: 'jumuahKhatibName', label: 'Jumu\'ah Khatib', type: 'text' },
-                { key: 'dailyImamFajr', label: 'Fajr Imam', type: 'text' },
-                { key: 'dailyImamIsha', label: 'Isha Imam', type: 'text' },
+                { key: 'jumuahKhatibName', label: t('settings.jumuahKhatibName'), type: 'text' },
+                { key: 'jumuahKhatibTitle', label: t('settings.jumuahKhatibTitle'), type: 'text' },
+                { key: 'jumuahKhatibPhoto', label: t('settings.jumuahKhatibPhoto'), type: 'url' },
+            ]
+        },
+        {
+            id: 'dailyImam',
+            title: t('settings.dailyImamSettings'),
+            icon: FiUser,
+            color: 'text-indigo-500 bg-indigo-50',
+            fields: [
+                { key: 'dailyImamFajr', label: t('settings.dailyImamFajr'), type: 'text' },
+                { key: 'dailyImamDhuhr', label: t('settings.dailyImamDhuhr'), type: 'text' },
+                { key: 'dailyImamAsr', label: t('settings.dailyImamAsr'), type: 'text' },
+                { key: 'dailyImamMaghrib', label: t('settings.dailyImamMaghrib'), type: 'text' },
+                { key: 'dailyImamIsha', label: t('settings.dailyImamIsha'), type: 'text' },
             ]
         }
     ];

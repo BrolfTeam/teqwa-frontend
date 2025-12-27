@@ -137,7 +137,7 @@ const UserManagement = memo(() => {
                                     <FiSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 group-focus-within:text-emerald-500 transition-colors" />
                                     <input
                                         type="text"
-                                        placeholder={t('userManagement.searchPlaceholder') || "Search by name, email, or username..."}
+                                        placeholder={t('userManagement.searchPlaceholder')}
                                         value={searchTerm}
                                         onChange={(e) => setSearchTerm(e.target.value)}
                                         className="w-full pl-12 pr-4 py-3 bg-white/50 border-2 border-transparent focus:border-emerald-500/30 focus:bg-white rounded-2xl transition-all outline-none text-gray-700 font-medium"
@@ -149,9 +149,9 @@ const UserManagement = memo(() => {
                                         onChange={(e) => setRoleFilter(e.target.value)}
                                         className="px-6 py-3 bg-white/50 border-2 border-transparent focus:border-emerald-500/30 focus:bg-white rounded-2xl transition-all outline-none text-gray-700 font-bold cursor-pointer"
                                     >
-                                        <option value="all">{t('userManagement.allRoles') || "All Roles"}</option>
+                                        <option value="all">{t('userManagement.allRoles')}</option>
                                         {ROLE_OPTIONS.map(role => (
-                                            <option key={role.value} value={role.value}>{t(`common.${role.value}`) || role.label}</option>
+                                            <option key={role.value} value={role.value}>{t(`common.${role.value}`)}</option>
                                         ))}
                                     </select>
                                     <Button
@@ -289,7 +289,7 @@ const UserManagement = memo(() => {
                                 <div className="space-y-4">
                                     <div className="grid grid-cols-2 gap-4">
                                         <div>
-                                            <label className="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2 pl-2">{t('userManagement.name')}</label>
+                                            <label className="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2 pl-2">{t('userManagement.firstName')}</label>
                                             <input
                                                 type="text"
                                                 value={editingUser.first_name || ''}
@@ -298,7 +298,7 @@ const UserManagement = memo(() => {
                                             />
                                         </div>
                                         <div>
-                                            <label className="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2 pl-2">Last Name</label>
+                                            <label className="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2 pl-2">{t('userManagement.lastName')}</label>
                                             <input
                                                 type="text"
                                                 value={editingUser.last_name || ''}
@@ -341,7 +341,7 @@ const UserManagement = memo(() => {
 
                                 <div className="flex gap-4 mt-10">
                                     <Button onClick={handleSaveUser} className="flex-1 h-14 rounded-2xl font-black text-lg bg-emerald-600 hover:bg-emerald-700 shadow-xl shadow-emerald-500/20 transition-all">
-                                        {t('common.saveChanges') || "Save Changes"}
+                                        {t('common.saveChanges')}
                                     </Button>
                                     <Button variant="outline" onClick={() => setShowEditModal(false)} className="flex-1 h-14 rounded-2xl font-black text-lg border-2 hover:bg-gray-50">
                                         {t('common.cancel')}

@@ -17,6 +17,7 @@ const AdminHeader = ({ refreshing, onRefresh, itemVariants }) => {
 
             <div className="relative z-10 flex flex-col md:flex-row justify-between items-center gap-8">
                 <div className="text-center md:text-left">
+                    <span className="font-arabic text-xl mb-2 block text-emerald-400 opacity-90">{t('dashboard.greeting')}</span>
                     <div className="flex items-center justify-center md:justify-start gap-4 mb-3">
                         <div className="p-3 bg-red-500/10 rounded-2xl border border-red-500/20">
                             <FiShield className="h-8 w-8 text-red-500" />

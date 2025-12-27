@@ -60,19 +60,15 @@ export default function LanguageToggle() {
               <button
                 key={option.value}
                 onClick={() => handleSelect(option.value)}
-                className={`w-full px-4 py-2.5 text-sm text-left transition-colors flex items-center gap-3 ${
-                  lang === option.value
+                className={`w-full px-4 py-2.5 text-sm text-left transition-colors flex items-center gap-3 ${lang === option.value
                     ? 'bg-emerald-50 text-emerald-700 font-medium dark:bg-emerald-900/30 dark:text-emerald-400'
                     : 'text-gray-600 hover:bg-emerald-50/50 hover:text-emerald-700 dark:text-gray-300 dark:hover:bg-emerald-900/20 dark:hover:text-emerald-400'
-                }`}
+                  }`}
                 aria-label={`Set language to ${option.native}`}
               >
                 <span className="text-lg">{option.flag}</span>
                 <div className="flex flex-col">
-                  <span>{option.label}</span>
-                  {option.value !== 'en' && (
-                    <span className="text-xs text-gray-500 dark:text-gray-400">{option.native}</span>
-                  )}
+                  <span>{option.native}</span>
                 </div>
                 {lang === option.value && (
                   <span className="ml-auto text-emerald-600 dark:text-emerald-400">✓</span>
