@@ -11,7 +11,7 @@ const ManagementGrid = ({ itemVariants }) => {
         {
             to: "/admin/users",
             label: t('dashboard.admin.userManagement'),
-            sub: t('admin.userManagement.manageUsers'),
+            sub: t('userManagement.manageUsersSubtitle'),
             icon: <FiUsers />,
             color: 'text-blue-500',
             bg: 'bg-blue-500/10',
@@ -47,7 +47,7 @@ const ManagementGrid = ({ itemVariants }) => {
         {
             to: "/admin/settings",
             label: t('dashboard.admin.systemSettings'),
-            sub: t('admin.settings.title'),
+            sub: t('settings.configureSubtitle'),
             icon: <FiSettings />,
             color: 'text-red-500',
             bg: 'bg-red-500/10',

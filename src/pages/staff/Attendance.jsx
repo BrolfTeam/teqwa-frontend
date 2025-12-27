@@ -19,17 +19,43 @@ const Attendance = memo(() => {
     const fetchData = async () => {
         try {
             setRefreshing(true);
-            const response = await staffService.getAttendance(date);
-            const data = response.data || [];
-            setStaff(data);
+            // Fetch staff list with attendance data for the date
+            const response = await staffService.getAttendance({ date });
+            const attendanceData = response.data || [];
 
-            // Calculate stats
-            const s = data.reduce((acc, curr) => {
-                acc[curr.status || 'absent']++;
-                acc.total++;
-                return acc;
-            }, { present: 0, absent: 0, late: 0, total: 0 });
-            setStats(s);
+            // If no attendance data, fetch staff list and mark all as absent by default
+            if (attendanceData.length === 0) {
+                const staffResponse = await staffService.getStaff({ active: 'true' });
+                const staffList = staffResponse.data || [];
+                const staffWithStatus = staffList.map(s => ({
+                    ...s,
+                    name: s.name || s.user?.get_full_name || `${s.user?.first_name || ''} ${s.user?.last_name || ''}`.trim() || `Staff #${s.id}`,
+                    role: s.role || 'staff',
+                    status: 'absent'
+                }));
+                setStaff(staffWithStatus);
+
+                // Calculate stats
+                const s = { present: 0, absent: staffWithStatus.length, late: 0, total: staffWithStatus.length };
+                setStats(s);
+            } else {
+                // Process attendance data
+                const processedData = attendanceData.map(item => ({
+                    ...item,
+                    name: item.staff_name || item.staff?.name || item.name || `Staff #${item.staff_id || item.id}`,
+                    role: item.staff_role || item.staff?.role || item.role || 'staff',
+                    id: item.staff_id || item.staff?.id || item.id
+                }));
+                setStaff(processedData);
+
+                // Calculate stats
+                const s = processedData.reduce((acc, curr) => {
+                    acc[curr.status || 'absent']++;
+                    acc.total++;
+                    return acc;
+                }, { present: 0, absent: 0, late: 0, total: 0 });
+                setStats(s);
+            }
         } catch (error) {
             console.error('Failed to load attendance:', error);
             toast.error(t('staff.attendance.failedToLoad'));
@@ -45,10 +71,13 @@ const Attendance = memo(() => {
 
     const handleUpdateAttendance = async (staffId, status) => {
         try {
-            await staffService.updateAttendance(staffId, date, status);
+            await staffService.toggleAttendance({ staff_id: staffId, date, status });
             toast.success(t('staff.attendance.attendanceUpdated'));
             fetchData();
+            // Dispatch event to refresh dashboard
+            window.dispatchEvent(new CustomEvent('custom:data-change', { detail: { type: 'staff:attendance:changed' } }));
         } catch (error) {
+            console.error('Failed to update attendance:', error);
             toast.error(t('staff.attendance.failedToUpdate'));
         }
     };
@@ -181,8 +210,8 @@ const Attendance = memo(() => {
                                                                 onClick={() => handleUpdateAttendance(s.id, action.value)}
                                                                 title={action.label}
                                                                 className={`p-3 rounded-2xl border-2 transition-all flex items-center gap-2 font-bold text-sm ${s.status === action.value
-                                                                        ? action.color.replace('text-', 'bg-').replace('hover:', '').replace('/100', '/10') + ' ring-4 ring-current/10 scale-105 shadow-sm'
-                                                                        : 'bg-white/50 border-transparent text-gray-400 hover:border-emerald-200'
+                                                                    ? action.color.replace('text-', 'bg-').replace('hover:', '').replace('/100', '/10') + ' ring-4 ring-current/10 scale-105 shadow-sm'
+                                                                    : 'bg-white/50 border-transparent text-gray-400 hover:border-emerald-200'
                                                                     } ${action.color}`}
                                                             >
                                                                 <action.icon className="w-5 h-5" />

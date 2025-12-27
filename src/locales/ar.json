@@ -1371,7 +1371,9 @@
       "quickActions": "إجراءات سريعة",
       "messageTeacher": "رسالة للمعلم",
       "viewFullTimetable": "عرض الجدول الكامل",
+      "weeklySchedule": "جدولك الدراسي الأسبوعي",
       "mySubmissions": "تقديماتي",
+      "noClasses": "لا توجد فصول",
       "announcements": "الإعلانات",
       "noAnnouncements": "لا توجد إعلانات متاحة"
     },

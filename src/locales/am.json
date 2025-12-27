@@ -1365,9 +1365,11 @@
       "quickActions": "ፈጣን ድርጊቶች",
       "messageTeacher": "ለአስተማሪ መልእክት ላክ",
       "viewFullTimetable": "ሙሉ የጊዜ ሰንጠረዥ እይ",
+      "weeklySchedule": "የእርስዎ ሳምንታዊ የትምህርት መርሃግብር",
       "mySubmissions": "የእኔ ስርጭቶች",
+      "noClasses": "ምንም ክፍሎች የሉም",
       "announcements": "ማስታወቂያዎች",
-      "noAnnouncements": "ምንም ማስታወቂያዎች አይገኙም"
+      "noAnnouncements": "ጥንም ማስታወቂያዎች አይገኙም"
     },
     "parent": {
       "parentDashboard": "የወላጅ ዳሽቦርድ",

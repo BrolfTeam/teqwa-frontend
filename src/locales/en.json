@@ -1353,7 +1353,9 @@
       "quickActions": "Quick Actions",
       "messageTeacher": "Message Teacher",
       "viewFullTimetable": "View Full Timetable",
+      "weeklySchedule": "Your weekly academic schedule",
       "mySubmissions": "My Submissions",
+      "noClasses": "No classes",
       "announcements": "Announcements",
       "noAnnouncements": "No announcements available"
     },

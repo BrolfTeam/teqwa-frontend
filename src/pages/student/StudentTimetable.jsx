@@ -64,7 +64,7 @@ const StudentTimetable = memo(() => {
                 </Button>
                 <div>
                     <h1 className="text-3xl font-bold">{t('dashboard.student.viewFullTimetable')}</h1>
-                    <p className="text-muted-foreground">Your weekly academic schedule</p>
+                    <p className="text-muted-foreground">{t('dashboard.student.weeklySchedule')}</p>
                 </div>
             </div>
 
@@ -110,7 +110,7 @@ const StudentTimetable = memo(() => {
                                 ))
                             ) : (
                                 <div className="p-8 text-center text-sm text-muted-foreground bg-secondary/20 rounded-xl border border-dashed">
-                                    No classes
+                                    {t('dashboard.student.noClasses')}
                                 </div>
                             )}
                         </div>
