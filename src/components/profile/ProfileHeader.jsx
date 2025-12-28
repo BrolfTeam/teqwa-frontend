@@ -1,3 +1,4 @@
+import { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { FiUser, FiCamera } from 'react-icons/fi';
@@ -5,6 +6,39 @@ import IslamicPattern from '@/components/ui/IslamicPattern';
 
 export const ProfileHeader = ({ user }) => {
     const { t } = useTranslation();
+
+
+    const [isUploading, setIsUploading] = useState(false);
+    const [previewUrl, setPreviewUrl] = useState(null);
+    const [uploadProgress, setUploadProgress] = useState(0);
+    const fileInputRef = useRef(null);
+
+    const handleFileSelect = (event) => {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        // Create local preview
+        const objectUrl = URL.createObjectURL(file);
+        setPreviewUrl(objectUrl);
+        setIsUploading(true);
+        setUploadProgress(0);
+
+        // Simulate upload progress
+        const interval = setInterval(() => {
+            setUploadProgress((prev) => {
+                if (prev >= 100) {
+                    clearInterval(interval);
+                    setIsUploading(false);
+                    return 100;
+                }
+                return prev + 10;
+            });
+        }, 200);
+    };
+
+    const triggerFileInput = () => {
+        fileInputRef.current?.click();
+    };
 
     return (
         <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-600 to-teal-800 p-8 md:p-12 mb-8 shadow-xl">
@@ -15,27 +49,49 @@ export const ProfileHeader = ({ user }) => {
             <div className="absolute -right-20 -top-20 w-64 h-64 bg-emerald-400/20 rounded-full blur-3xl" />
             <div className="absolute -left-20 -bottom-20 w-64 h-64 bg-teal-400/20 rounded-full blur-3xl" />
 
+            {/* Hidden File Input */}
+            <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleFileSelect}
+                accept="image/*"
+                className="hidden"
+            />
+
             <div className="relative z-10 flex flex-col md:flex-row items-center gap-8 md:gap-10">
                 {/* Avatar Section */}
                 <motion.div
                     initial={{ scale: 0.8, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
-                    className="relative group"
+                    className="relative group cursor-pointer"
+                    onClick={triggerFileInput}
                 >
-                    <div className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-white/30 p-1 bg-white/10 backdrop-blur-md overflow-hidden flex items-center justify-center">
-                        {user?.profile?.avatar ? (
+                    <div className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-white/30 p-1 bg-white/10 backdrop-blur-md overflow-hidden flex items-center justify-center relative">
+                        {previewUrl || user?.profile?.avatar ? (
                             <img
-                                src={user.profile.avatar}
+                                src={previewUrl || user.profile.avatar}
                                 alt={user.first_name || 'User'}
-                                className="w-full h-full object-cover rounded-full shadow-inner"
+                                className={`w-full h-full object-cover rounded-full shadow-inner ${isUploading ? 'opacity-50 grayscale' : ''}`}
                             />
                         ) : (
                             <FiUser className="w-16 h-16 md:w-20 md:h-20 text-white/80" />
                         )}
 
-                        {/* Hover Edit Overlay (Placeholder for future upload feature) */}
-                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer rounded-full">
-                            <FiCamera className="text-white w-6 h-6" />
+                        {/* Loading Overlay */}
+                        {isUploading && (
+                            <div className="absolute inset-0 flex items-center justify-center">
+                                <div className="absolute inset-0 bg-black/40 rounded-full" />
+                                <div className="z-10 text-white font-bold text-lg">{uploadProgress}%</div>
+                                <svg className="animate-spin absolute h-12 w-12 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                            </div>
+                        )}
+
+                        {/* Hover Edit Overlay */}
+                        <div className={`absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-full ${isUploading ? 'hidden' : ''}`}>
+                            <FiCamera className="text-white w-8 h-8" />
                         </div>
                     </div>
 

@@ -25,7 +25,7 @@ const RecentActivity = ({ activities, itemVariants }) => {
                                     </div>
                                     <div className="min-w-0">
                                         <p className="font-bold text-sm text-zinc-800 dark:text-zinc-200 truncate">{activity.description}</p>
-                                        <p className="text-[10px] text-zinc-400 font-bold uppercase mt-1">
+                                        <p className="text-xs text-zinc-400 font-bold uppercase mt-1">
                                             {new Date(activity.timestamp || activity.created_at).toLocaleString()}
                                         </p>
                                     </div>

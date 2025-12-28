@@ -80,10 +80,10 @@ const Footer = memo(() => {
       </div>
 
       {/* Main Footer Content */}
-      <div className="relative container mx-auto px-4 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-12 mb-12">
+      <div className="relative container mx-auto px-4 py-8 md:py-12 lg:py-16">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-5 gap-x-6 gap-y-8 lg:gap-12 mb-8 lg:mb-12">
           {/* Brand Section */}
-          <div className="lg:col-span-2 space-y-4">
+          <div className="col-span-2 lg:col-span-2 space-y-4">
             <Link to="/" className="flex items-center gap-3 group">
               <div className="relative">
                 <img
@@ -140,7 +140,7 @@ const Footer = memo(() => {
                 <li key={link.href}>
                   <Link
                     to={link.href}
-                    className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200 inline-flex items-center gap-2 group"
+                    className="text-base text-muted-foreground hover:text-primary transition-colors duration-200 inline-flex items-center gap-2 group"
                   >
                     <span className="w-1.5 h-1.5 rounded-full bg-primary/0 group-hover:bg-primary transition-all duration-200" />
                     {link.name}
@@ -169,16 +169,16 @@ const Footer = memo(() => {
           </div>
 
           {/* Contact Info */}
-          <div className="space-y-4">
+          <div className="col-span-2 lg:col-span-1 space-y-4">
             <h4 className="text-base font-bold text-foreground mb-4">{t('footer.contactUs')}</h4>
-            <div className="space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4">
               {/* Address */}
               <div className="flex items-start gap-3 group">
                 <div className="mt-0.5 p-2 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
                   <FiMapPin className="h-4 w-4 text-primary flex-shrink-0" />
                 </div>
                 <div className="flex-1">
-                  <p className="text-sm font-medium text-foreground">{siteConfig.name}</p>
+                  <p className="text-base font-medium text-foreground">{siteConfig.name}</p>
                   <p className="text-xs text-muted-foreground mt-1">
                     {siteConfig.contact?.address || 'Addis Ababa, Ethiopia'}
                   </p>
@@ -242,7 +242,7 @@ const Footer = memo(() => {
                     <Link
                       key={resource.href}
                       to={resource.href}
-                      className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200"
+                      className="text-base text-muted-foreground hover:text-primary transition-colors duration-200"
                     >
                       {resource.name}
                     </Link>
@@ -254,7 +254,7 @@ const Footer = memo(() => {
         )}
 
         {/* Bottom Bar */}
-        <div className="pt-8 border-t border-border/50">
+        <div className="pt-6 md:pt-8 border-t border-border/50">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             {/* Copyright */}
             <div className="flex flex-col md:flex-row items-center gap-2 md:gap-4 text-sm text-muted-foreground">

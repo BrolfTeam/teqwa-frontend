@@ -14,13 +14,13 @@ const getTranslation = (t, key, fallback) => {
   try {
     // Use defaultValue option which react-i18next supports
     const translation = t(key, { defaultValue: fallback });
-    
+
     // If the result is exactly the same as the key (and it's a namespaced key),
     // it means the translation wasn't found
     if (translation === key && key.includes('.')) {
       return fallback;
     }
-    
+
     // Return the translation (or fallback if empty)
     return translation || fallback;
   } catch (error) {
@@ -41,7 +41,7 @@ const getTranslation = (t, key, fallback) => {
  * - Responsive design
  * - Accessible
  */
-const QiblaCompass = memo(({ 
+const QiblaCompass = memo(({
   variant = 'default', // 'default' | 'compact' | 'embedded'
   showHeader = true,
   showLocation = true,
@@ -169,11 +169,11 @@ const QiblaCompass = memo(({
   // 2. Qibla arrow shows Qibla direction relative to the rotating ring
   // 3. Qibla is calculated from TRUE north, but ring shows MAGNETIC north
   // 4. So: Qibla relative to magnetic = Qibla (true) - declination
-  
+
   // Compass ring rotation (negative because we rotate the background)
   // When device points to magnetic north, ring's N should be at top
   const compassRingRotation = isCompassAvailable ? -compassHeading : 0;
-  
+
   // Qibla arrow rotation relative to the ring (which is aligned to magnetic north)
   // Qibla direction is from TRUE north, so adjust for magnetic declination
   // If declination is +3°, magnetic north is 3° east of true north
@@ -186,7 +186,7 @@ const QiblaCompass = memo(({
   return (
     <Card className={`overflow-hidden border border-border/50 shadow-xl relative bg-gradient-to-br from-card via-card to-muted/20 ${className}`}>
       <IslamicPattern className="opacity-[0.02]" />
-      
+
       {showHeader && (
         <CardHeader className="text-center pb-4 sm:pb-5 relative z-10 border-b border-border/30">
           <CardTitle className={`flex items-center justify-center gap-2.5 ${isCompact ? 'text-lg sm:text-xl' : 'text-xl sm:text-2xl md:text-3xl'}`}>
@@ -202,9 +202,9 @@ const QiblaCompass = memo(({
           <div className={`relative aspect-square ${isCompact ? 'max-w-[200px]' : 'max-w-[240px] sm:max-w-[280px] md:max-w-[320px]'} mx-auto`}>
             {/* Outer Ring - Fixed */}
             <div className="absolute inset-0 rounded-full border-2 border-border/40 bg-gradient-to-br from-background/80 to-muted/40 shadow-lg"></div>
-            
+
             {/* Compass Base Ring - Rotates with device (magnetic north) */}
-            <div 
+            <div
               className="absolute inset-2 rounded-full border-[3px] border-primary/40 bg-gradient-to-br from-muted/60 via-muted/40 to-muted/60 shadow-inner transition-transform duration-100 ease-out"
               style={{ transform: `rotate(${compassRingRotation}deg)` }}
             >
@@ -212,7 +212,7 @@ const QiblaCompass = memo(({
               <div className="absolute inset-3 rounded-full opacity-[0.03]">
                 <IslamicPattern className="rounded-full" color="currentColor" />
               </div>
-              
+
               {/* Cardinal directions - rotate with ring */}
               <div className={`absolute top-1.5 sm:top-2 left-1/2 transform -translate-x-1/2 text-destructive font-extrabold ${isCompact ? 'text-xs' : 'text-sm sm:text-base'} drop-shadow-sm`}>
                 N
@@ -231,7 +231,7 @@ const QiblaCompass = memo(({
                 {/* Arrow head */}
                 <div className={`absolute top-0 w-0 h-0 ${isCompact ? 'border-l-[7px] border-r-[7px] border-b-[12px]' : 'border-l-[9px] sm:border-l-[11px] border-r-[9px] sm:border-r-[11px] border-b-[16px] sm:border-b-[18px]'} border-l-transparent border-r-transparent border-b-primary drop-shadow-md`}></div>
                 {/* Qibla label */}
-                <div className="absolute -top-6 sm:-top-7 text-[10px] sm:text-xs font-bold text-primary bg-background/90 px-1.5 py-0.5 rounded-full border border-primary/30">
+                <div className="absolute -top-6 sm:-top-7 text-[11px] sm:text-xs font-bold text-primary bg-background/90 px-1.5 py-0.5 rounded-full border border-primary/30">
                   Qibla
                 </div>
               </div>
@@ -259,7 +259,7 @@ const QiblaCompass = memo(({
             <span className="font-bold text-primary">{Math.round(qiblaDirection)}°</span>{' '}
             <span>{getTranslation(t, 'prayerTimes.fromNorth', getTranslation(t, 'qibla.fromNorth', 'from North'))}</span>
             {isCompassAvailable && (
-              <span className="block text-[10px] sm:text-xs mt-1.5 text-muted-foreground/70 italic">
+              <span className="block text-xs mt-1.5 text-muted-foreground/70 italic">
                 (True North, {MAGNETIC_DECLINATION > 0 ? '+' : ''}{MAGNETIC_DECLINATION}° declination corrected)
               </span>
             )}
@@ -290,8 +290,8 @@ const QiblaCompass = memo(({
               <p className={`${isCompact ? 'text-xs' : 'text-xs sm:text-sm'} text-muted-foreground text-center`}>
                 {getTranslation(t, 'prayerTimes.enableCompassDescription', getTranslation(t, 'qibla.enableCompassDescription', 'Enable device orientation for live compass tracking'))}
               </p>
-              <Button 
-                onClick={requestCompassPermission} 
+              <Button
+                onClick={requestCompassPermission}
                 size={isCompact ? 'sm' : 'sm'}
                 variant="outline"
                 className={`${isCompact ? 'w-full text-xs h-8' : 'w-full sm:w-auto text-xs sm:text-sm h-9 sm:h-10'} mx-auto`}

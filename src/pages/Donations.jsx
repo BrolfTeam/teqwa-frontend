@@ -824,7 +824,7 @@ const Donations = memo(() => {
                             <div className="flex justify-between items-center px-1">
                               <span className="text-xs font-medium text-muted-foreground">{t('donations.calculatedZakat')}</span>
                               <span className="text-lg font-bold text-primary">
-                                {(parseFloat(zakatEligibleAmount) * 0.025).toLocaleString()} <span className="text-[10px] text-muted-foreground font-normal">ETB</span>
+                                {(parseFloat(zakatEligibleAmount) * 0.025).toLocaleString()} <span className="text-xs text-muted-foreground font-normal">ETB</span>
                               </span>
                             </div>
                             <Button

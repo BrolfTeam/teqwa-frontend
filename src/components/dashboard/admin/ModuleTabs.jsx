@@ -58,13 +58,13 @@ const ModuleTabs = ({
                                 key={tab.id}
                                 onClick={() => setActiveTab(tab.id)}
                                 className={`flex items-center gap-3 px-6 py-3 rounded-2xl transition-all whitespace-nowrap font-bold text-sm ${activeTab === tab.id
-                                        ? 'bg-zinc-900 text-white shadow-xl scale-105'
-                                        : 'bg-zinc-100 dark:bg-zinc-800/50 text-zinc-500 hover:bg-zinc-200 dark:hover:bg-zinc-800'
+                                    ? 'bg-zinc-900 text-white shadow-xl scale-105'
+                                    : 'bg-zinc-100 dark:bg-zinc-800/50 text-zinc-500 hover:bg-zinc-200 dark:hover:bg-zinc-800'
                                     }`}
                             >
                                 <span className={activeTab === tab.id ? 'text-emerald-400' : tab.color}>{tab.icon}</span>
                                 {tab.label}
-                                <span className={`px-2 py-0.5 rounded-lg text-[10px] ${activeTab === tab.id ? 'bg-emerald-500 text-white' : 'bg-zinc-200 dark:bg-zinc-700 text-zinc-500'
+                                <span className={`px-2 py-0.5 rounded-lg text-xs ${activeTab === tab.id ? 'bg-emerald-500 text-white' : 'bg-zinc-200 dark:bg-zinc-700 text-zinc-500'
                                     }`}>
                                     {tab.count}
                                 </span>
@@ -95,9 +95,9 @@ const ModuleTabs = ({
                                                         </div>
                                                     </div>
                                                     <div className="flex items-center gap-3 shrink-0">
-                                                        <span className={`px-3 py-1 rounded-xl text-[10px] font-black uppercase tracking-widest ${booking.status === 'approved' ? 'bg-emerald-500/10 text-emerald-600' :
-                                                                booking.status === 'pending' ? 'bg-amber-500/10 text-amber-600' :
-                                                                    'bg-rose-500/10 text-rose-600'
+                                                        <span className={`px-3 py-1 rounded-xl text-xs font-black uppercase tracking-widest ${booking.status === 'approved' ? 'bg-emerald-500/10 text-emerald-600' :
+                                                            booking.status === 'pending' ? 'bg-amber-500/10 text-amber-600' :
+                                                                'bg-rose-500/10 text-rose-600'
                                                             }`}>
                                                             {booking.status || 'pending'}
                                                         </span>
@@ -161,7 +161,7 @@ const ModuleTabs = ({
                                                         <span className="text-lg font-black text-emerald-600 tabular-nums">
                                                             {donation.amount} {donation.currency || 'ETB'}
                                                         </span>
-                                                        <span className={`px-3 py-1 rounded-xl text-[10px] font-black uppercase tracking-widest ${donation.status === 'completed' ? 'bg-emerald-500/10 text-emerald-600' : 'bg-amber-500/10 text-amber-600'
+                                                        <span className={`px-3 py-1 rounded-xl text-xs font-black uppercase tracking-widest ${donation.status === 'completed' ? 'bg-emerald-500/10 text-emerald-600' : 'bg-amber-500/10 text-amber-600'
                                                             }`}>
                                                             {donation.status || 'pending'}
                                                         </span>
@@ -186,9 +186,9 @@ const ModuleTabs = ({
                                                         </div>
                                                     </div>
                                                     <div className="flex items-center gap-3 shrink-0">
-                                                        <span className={`px-3 py-1 rounded-xl text-[10px] font-black uppercase tracking-widest ${enrollment.status === 'approved' ? 'bg-emerald-500/10 text-emerald-600' :
-                                                                enrollment.status === 'pending' ? 'bg-amber-500/10 text-amber-600' :
-                                                                    'bg-rose-500/10 text-rose-600'
+                                                        <span className={`px-3 py-1 rounded-xl text-xs font-black uppercase tracking-widest ${enrollment.status === 'approved' ? 'bg-emerald-500/10 text-emerald-600' :
+                                                            enrollment.status === 'pending' ? 'bg-amber-500/10 text-amber-600' :
+                                                                'bg-rose-500/10 text-rose-600'
                                                             }`}>
                                                             {enrollment.status || 'pending'}
                                                         </span>

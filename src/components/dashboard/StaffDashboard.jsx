@@ -228,12 +228,12 @@ const StaffDashboard = memo(() => {
                                             <div>
                                                 <p className="font-medium text-sm line-clamp-1">{task.task}</p>
                                                 <div className="flex items-center gap-2 mt-1">
-                                                    <span className={`text-[10px] px-2 py-0.5 rounded-full uppercase border ${task.priority === 'urgent' ? 'border-red-200 text-red-600 bg-red-50' : task.priority === 'high' ? 'border-orange-200 text-orange-600 bg-orange-50' : 'border-slate-200 text-slate-500 bg-slate-50'
+                                                    <span className={`text-xs px-2 py-0.5 rounded-full uppercase border ${task.priority === 'urgent' ? 'border-red-200 text-red-600 bg-red-50' : task.priority === 'high' ? 'border-orange-200 text-orange-600 bg-orange-50' : 'border-slate-200 text-slate-500 bg-slate-50'
                                                         }`}>{task.priority || 'normal'}</span>
                                                     {task.due_date && (
                                                         <span className="text-xs text-muted-foreground">{t('dashboard.student.due')}: {new Date(task.due_date).toLocaleDateString()}</span>
                                                     )}
-                                                    <span className={`text-[10px] px-2 py-0.5 rounded-full uppercase ${task.status === 'in_progress' ? 'bg-blue-100 text-blue-600' : 'bg-yellow-100 text-yellow-600'}`}>
+                                                    <span className={`text-xs px-2 py-0.5 rounded-full uppercase ${task.status === 'in_progress' ? 'bg-blue-100 text-blue-600' : 'bg-yellow-100 text-yellow-600'}`}>
                                                         {task.status}
                                                     </span>
                                                 </div>

@@ -437,7 +437,7 @@ const TeacherDashboard = memo(() => {
                                                             {courseType} • {enrollmentsCount} {t('dashboard.teacher.students')}
                                                         </div>
                                                         <div className="flex items-center gap-2 mt-2">
-                                                            <span className={`text-[10px] px-2 py-0.5 rounded-full uppercase ${course.status === 'active' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' :
+                                                            <span className={`text-xs px-2 py-0.5 rounded-full uppercase ${course.status === 'active' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' :
                                                                 'bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400'
                                                                 }`}>
                                                                 {course.status || 'active'}
@@ -507,7 +507,7 @@ const TeacherDashboard = memo(() => {
                                                             {course?.title || 'Course'} • {new Date(enrollment.enrollment_date || enrollment.created_at).toLocaleDateString()}
                                                         </div>
                                                         <div className="flex items-center gap-2 mt-2">
-                                                            <span className={`text-[10px] px-2 py-0.5 rounded-full uppercase ${enrollment.status === 'confirmed' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' :
+                                                            <span className={`text-xs px-2 py-0.5 rounded-full uppercase ${enrollment.status === 'confirmed' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' :
                                                                 enrollment.status === 'pending' ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400' :
                                                                     'bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400'
                                                                 }`}>

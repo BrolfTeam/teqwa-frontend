@@ -107,7 +107,7 @@ export const ProfileInfo = ({
                                     <span className="font-medium">{formData.email || t('profile.notProvided')}</span>
                                 </div>
                                 {isEditing && (
-                                    <div className="mt-2 flex items-center text-[10px] text-gray-400 font-bold uppercase tracking-tighter">
+                                    <div className="mt-2 flex items-center text-xs text-gray-400 font-bold uppercase tracking-tighter">
                                         <FiInfo className="mr-1" />
                                         {t('profile.emailNotice')}
                                     </div>

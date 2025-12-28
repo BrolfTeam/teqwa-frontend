@@ -184,7 +184,7 @@ const UserManagement = memo(() => {
                                 >
                                     <Card className="h-full hover:shadow-2xl transition-all duration-500 border-white/20 bg-white/40 backdrop-blur-xl group overflow-hidden relative">
                                         <div className="absolute top-0 right-0 p-4">
-                                            <div className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-tighter border shadow-sm ${roleInfo.color}`}>
+                                            <div className={`px-3 py-1 rounded-full text-xs font-black uppercase tracking-tighter border shadow-sm ${roleInfo.color}`}>
                                                 {t(`common.${user.role}`) || roleInfo.label}
                                             </div>
                                         </div>

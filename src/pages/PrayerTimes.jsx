@@ -284,13 +284,13 @@ const PrayerTimes = memo(() => {
                       {/* Current Prayer */}
                       <div className="bg-primary rounded-xl sm:rounded-2xl p-3 sm:p-4 text-primary-foreground relative overflow-hidden">
                         <div className="relative z-10">
-                          <div className="text-[10px] sm:text-xs font-medium opacity-90 mb-1">{t('prayerTimes.nowTimeIs')}</div>
+                          <div className="text-xs sm:text-xs font-medium opacity-90 mb-1">{t('prayerTimes.nowTimeIs')}</div>
                           <div className="flex items-baseline gap-1.5 sm:gap-2 mb-1.5">
                             <div className="text-base sm:text-lg font-bold">
                               {currentNext.current?.name || t('prayer.noDataAvailable')}
                             </div>
                             {currentNext.current?.arabic && (
-                              <div className="text-[10px] sm:text-xs font-arabic opacity-80">
+                              <div className="text-xs sm:text-xs font-arabic opacity-80">
                                 {currentNext.current.arabic}
                               </div>
                             )}
@@ -298,7 +298,7 @@ const PrayerTimes = memo(() => {
                           <div className="text-xl sm:text-2xl font-bold mb-1">
                             {format(currentTime, 'h:mm a')}
                           </div>
-                          <div className="text-[10px] sm:text-xs opacity-90">
+                          <div className="text-xs sm:text-xs opacity-90">
                             {t('prayerTimes.endTime')} - {currentNext.next?.formatted || '--:--'}
                           </div>
                         </div>
@@ -308,13 +308,13 @@ const PrayerTimes = memo(() => {
                       {/* Next Prayer */}
                       <div className="bg-card rounded-xl sm:rounded-2xl p-3 sm:p-4 border-2 border-primary/20 relative overflow-hidden">
                         <div className="relative z-10">
-                          <div className="text-[10px] sm:text-xs text-muted-foreground mb-1">{t('prayerTimes.nextPrayerIs')}</div>
+                          <div className="text-xs sm:text-xs text-muted-foreground mb-1">{t('prayerTimes.nextPrayerIs')}</div>
                           <div className="flex items-baseline gap-1.5 sm:gap-2 mb-1.5">
                             <div className="text-base sm:text-lg font-bold text-foreground">
                               {currentNext.next?.name || t('prayer.noDataAvailable')}
                             </div>
                             {currentNext.next?.arabic && (
-                              <div className="text-[10px] sm:text-xs font-arabic text-muted-foreground">
+                              <div className="text-xs sm:text-xs font-arabic text-muted-foreground">
                                 {currentNext.next.arabic}
                               </div>
                             )}
@@ -323,11 +323,11 @@ const PrayerTimes = memo(() => {
                             {currentNext.next?.formatted || '--:--'}
                           </div>
                           {currentNext.timeToNext > 0 && (
-                            <div className="text-[10px] sm:text-xs text-primary font-semibold mb-1">
+                            <div className="text-xs sm:text-xs text-primary font-semibold mb-1">
                               {t('prayerTimes.in')} {prayerTimesService.formatTimeRemaining(currentNext.timeToNext)}
                             </div>
                           )}
-                          <div className="space-y-0 text-[10px] sm:text-xs text-muted-foreground">
+                          <div className="space-y-0 text-xs sm:text-xs text-muted-foreground">
                             <div>{t('prayerTimes.azan')} - {currentNext.next?.formatted || '--:--'}</div>
                             <div>{t('prayerTimes.jamaat')} - {currentNext.next?.formatted || '--:--'}</div>
                           </div>
@@ -341,19 +341,19 @@ const PrayerTimes = memo(() => {
                   <div className="bg-muted/50 rounded-xl p-2.5 sm:p-3 mb-4 sm:mb-5">
                     <div className="grid grid-cols-3 gap-1.5 sm:gap-3 text-center">
                       <div>
-                        <div className="text-[10px] sm:text-xs text-muted-foreground mb-1">{t('prayerTimes.sunrise')}</div>
+                        <div className="text-xs sm:text-xs text-muted-foreground mb-1">{t('prayerTimes.sunrise')}</div>
                         <div className="text-xs sm:text-sm font-bold text-foreground">
                           {todayData.prayers.sunrise?.formatted || '--:--'}
                         </div>
                       </div>
                       <div>
-                        <div className="text-[10px] sm:text-xs text-muted-foreground mb-1">{t('prayerTimes.midDay')}</div>
+                        <div className="text-xs sm:text-xs text-muted-foreground mb-1">{t('prayerTimes.midDay')}</div>
                         <div className="text-xs sm:text-sm font-bold text-foreground">
                           {todayData.prayers.dhuhr?.formatted || '--:--'}
                         </div>
                       </div>
                       <div>
-                        <div className="text-[10px] sm:text-xs text-muted-foreground mb-1">{t('prayerTimes.sunset')}</div>
+                        <div className="text-xs sm:text-xs text-muted-foreground mb-1">{t('prayerTimes.sunset')}</div>
                         <div className="text-xs sm:text-sm font-bold text-foreground">
                           {todayData.prayers.maghrib?.formatted || '--:--'}
                         </div>
@@ -367,7 +367,7 @@ const PrayerTimes = memo(() => {
                       <FiMapPin className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary flex-shrink-0" />
                       <div className="text-center min-w-0">
                         <div className="font-semibold text-xs sm:text-sm text-foreground truncate">{MOSQUE_LOCATION.name}</div>
-                        <div className="text-[10px] sm:text-xs text-muted-foreground truncate">{MOSQUE_LOCATION.address}</div>
+                        <div className="text-[11px] sm:text-xs text-muted-foreground truncate">{MOSQUE_LOCATION.address}</div>
                       </div>
                     </div>
                   </div>
@@ -421,7 +421,6 @@ const PrayerTimes = memo(() => {
             </div>
           </div>
         </section>
-      )}
 
       {/* Monthly Timetable - Mobile First */}
       <section className="py-6 sm:py-8 md:py-12 bg-muted/30">
@@ -478,13 +477,13 @@ const PrayerTimes = memo(() => {
                   <table className="w-full min-w-[640px]">
                     <thead className="bg-muted/80 backdrop-blur-sm sticky top-0 z-20">
                       <tr>
-                        <th className="px-3 sm:px-4 py-2.5 sm:py-3 text-left text-[10px] sm:text-xs font-semibold text-foreground">{t('prayerTimes.date')}</th>
-                        <th className="px-2 sm:px-3 py-2.5 sm:py-3 text-center text-[10px] sm:text-xs font-semibold text-foreground">{t('prayerTimes.fajr')}</th>
-                        <th className="px-2 sm:px-3 py-2.5 sm:py-3 text-center text-[10px] sm:text-xs font-semibold text-muted-foreground">{t('prayerTimes.sunrise')}</th>
-                        <th className="px-2 sm:px-3 py-2.5 sm:py-3 text-center text-[10px] sm:text-xs font-semibold text-foreground">{t('prayerTimes.dhuhr')}</th>
-                        <th className="px-2 sm:px-3 py-2.5 sm:py-3 text-center text-[10px] sm:text-xs font-semibold text-foreground">{t('prayerTimes.asr')}</th>
-                        <th className="px-2 sm:px-3 py-2.5 sm:py-3 text-center text-[10px] sm:text-xs font-semibold text-foreground">{t('prayerTimes.maghrib')}</th>
-                        <th className="px-2 sm:px-3 py-2.5 sm:py-3 text-center text-[10px] sm:text-xs font-semibold text-foreground">{t('prayerTimes.isha')}</th>
+                        <th className="px-3 sm:px-4 py-2.5 sm:py-3 text-left text-xs sm:text-xs font-semibold text-foreground">{t('prayerTimes.date')}</th>
+                        <th className="px-2 sm:px-3 py-2.5 sm:py-3 text-center text-xs sm:text-xs font-semibold text-foreground">{t('prayerTimes.fajr')}</th>
+                        <th className="px-2 sm:px-3 py-2.5 sm:py-3 text-center text-xs sm:text-xs font-semibold text-muted-foreground">{t('prayerTimes.sunrise')}</th>
+                        <th className="px-2 sm:px-3 py-2.5 sm:py-3 text-center text-xs sm:text-xs font-semibold text-foreground">{t('prayerTimes.dhuhr')}</th>
+                        <th className="px-2 sm:px-3 py-2.5 sm:py-3 text-center text-xs sm:text-xs font-semibold text-foreground">{t('prayerTimes.asr')}</th>
+                        <th className="px-2 sm:px-3 py-2.5 sm:py-3 text-center text-xs sm:text-xs font-semibold text-foreground">{t('prayerTimes.maghrib')}</th>
+                        <th className="px-2 sm:px-3 py-2.5 sm:py-3 text-center text-xs sm:text-xs font-semibold text-foreground">{t('prayerTimes.isha')}</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-border/50 bg-card">
@@ -503,41 +502,41 @@ const PrayerTimes = memo(() => {
                           <td className="px-3 sm:px-4 py-2.5 sm:py-3">
                             <div className="flex flex-col gap-1">
                               <div className="font-semibold text-xs sm:text-sm">{day.dayName}</div>
-                              <div className="text-[10px] sm:text-xs text-muted-foreground">{day.gregorianDate}</div>
+                              <div className="text-[11px] sm:text-xs text-muted-foreground">{day.gregorianDate}</div>
                               {day.isToday && (
-                                <span className="inline-block px-1.5 py-0.5 text-[9px] sm:text-[10px] bg-primary text-primary-foreground rounded-full font-medium w-fit mt-0.5">
+                                <span className="inline-block px-1.5 py-0.5 text-[10px] sm:text-[11px] bg-primary text-primary-foreground rounded-full font-medium w-fit mt-0.5">
                                   {t('prayerTimes.today')}
                                 </span>
                               )}
                             </div>
                           </td>
                           <td className="px-2 sm:px-3 py-2.5 sm:py-3 text-center">
-                            <span className="font-mono text-[10px] sm:text-xs font-semibold text-foreground">
+                            <span className="font-mono text-[11px] sm:text-xs font-semibold text-foreground">
                               {day.prayers.fajr.formatted}
                             </span>
                           </td>
                           <td className="px-2 sm:px-3 py-2.5 sm:py-3 text-center">
-                            <span className="font-mono text-[10px] sm:text-xs text-muted-foreground">
+                            <span className="font-mono text-[11px] sm:text-xs text-muted-foreground">
                               {day.prayers.sunrise.formatted}
                             </span>
                           </td>
                           <td className="px-2 sm:px-3 py-2.5 sm:py-3 text-center">
-                            <span className="font-mono text-[10px] sm:text-xs font-semibold text-foreground">
+                            <span className="font-mono text-[11px] sm:text-xs font-semibold text-foreground">
                               {day.prayers.dhuhr.formatted}
                             </span>
                           </td>
                           <td className="px-2 sm:px-3 py-2.5 sm:py-3 text-center">
-                            <span className="font-mono text-[10px] sm:text-xs font-semibold text-foreground">
+                            <span className="font-mono text-[11px] sm:text-xs font-semibold text-foreground">
                               {day.prayers.asr.formatted}
                             </span>
                           </td>
                           <td className="px-2 sm:px-3 py-2.5 sm:py-3 text-center">
-                            <span className="font-mono text-[10px] sm:text-xs font-semibold text-foreground">
+                            <span className="font-mono text-[11px] sm:text-xs font-semibold text-foreground">
                               {day.prayers.maghrib.formatted}
                             </span>
                           </td>
                           <td className="px-2 sm:px-3 py-2.5 sm:py-3 text-center">
-                            <span className="font-mono text-[10px] sm:text-xs font-semibold text-foreground">
+                            <span className="font-mono text-[11px] sm:text-xs font-semibold text-foreground">
                               {day.prayers.isha.formatted}
                             </span>
                           </td>
@@ -587,19 +586,19 @@ const PrayerTimes = memo(() => {
                     </h3>
                     <div className="space-y-3 sm:space-y-4">
                       <div className="p-2.5 sm:p-3 rounded-lg bg-muted/50 border border-border/50">
-                        <div className="text-[10px] sm:text-xs font-semibold text-muted-foreground mb-1">Mosque</div>
+                        <div className="text-xs sm:text-xs font-semibold text-muted-foreground mb-1">Mosque</div>
                         <div className="text-xs sm:text-sm font-semibold text-foreground">{MOSQUE_LOCATION.name}</div>
                       </div>
                       <div className="p-2.5 sm:p-3 rounded-lg bg-muted/50 border border-border/50">
-                        <div className="text-[10px] sm:text-xs font-semibold text-muted-foreground mb-1">Address</div>
+                        <div className="text-xs sm:text-xs font-semibold text-muted-foreground mb-1">Address</div>
                         <div className="text-xs sm:text-sm text-foreground break-words">{MOSQUE_LOCATION.address}</div>
                       </div>
                       <div className="p-2.5 sm:p-3 rounded-lg bg-muted/50 border border-border/50">
-                        <div className="text-[10px] sm:text-xs font-semibold text-muted-foreground mb-1">Calculation Method</div>
+                        <div className="text-xs sm:text-xs font-semibold text-muted-foreground mb-1">Calculation Method</div>
                         <div className="text-xs sm:text-sm text-foreground">Muslim World League</div>
                       </div>
                       <div className="p-2.5 sm:p-3 rounded-lg bg-muted/50 border border-border/50">
-                        <div className="text-[10px] sm:text-xs font-semibold text-muted-foreground mb-1">Madhab</div>
+                        <div className="text-xs sm:text-xs font-semibold text-muted-foreground mb-1">Madhab</div>
                         <div className="text-xs sm:text-sm text-foreground">Shafi</div>
                       </div>
                     </div>

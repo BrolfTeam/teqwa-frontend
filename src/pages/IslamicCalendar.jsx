@@ -317,7 +317,7 @@ const IslamicCalendar = memo(() => {
                         >
                           <span className="text-base">{format(day, 'd')}</span>
                           {inMonth && (
-                            <span className={`text-[10px] font-medium ${isSelectedDate ? 'text-primary-foreground/80' : 'text-muted-foreground/60'}`}>
+                            <span className={`text-[11px] font-medium ${isSelectedDate ? 'text-primary-foreground/80' : 'text-muted-foreground/60'}`}>
                               {hijriDate.day}
                             </span>
                           )}
@@ -350,13 +350,13 @@ const IslamicCalendar = memo(() => {
                 </CardHeader>
                 <CardContent className="relative space-y-6">
                   <div className="space-y-1">
-                    <div className="text-[10px] font-black uppercase tracking-tighter opacity-60">{t('calendar.gregorian')}</div>
+                    <div className="text-xs font-black uppercase tracking-tighter opacity-60">{t('calendar.gregorian')}</div>
                     <div className="text-xl font-bold">
                       {format(selectedDate, 'EEEE, MMMM d, yyyy')}
                     </div>
                   </div>
                   <div className="pt-6 border-t border-white/10 space-y-1">
-                    <div className="text-[10px] font-black uppercase tracking-tighter opacity-60">{t('calendar.hijriApprox')}</div>
+                    <div className="text-xs font-black uppercase tracking-tighter opacity-60">{t('calendar.hijriApprox')}</div>
                     <div className="text-3xl font-black">
                       {selectedHijri.day} {hijriMonths[selectedHijri.month]}
                     </div>
@@ -395,7 +395,7 @@ const IslamicCalendar = memo(() => {
                     </Button>
                     <div className="text-center">
                       <div className="text-lg font-black text-primary">{hijriAdjustment > 0 ? `+${hijriAdjustment}` : hijriAdjustment}</div>
-                      <div className="text-[10px] font-bold text-muted-foreground uppercase">{t('common.days')}</div>
+                      <div className="text-xs font-bold text-muted-foreground uppercase">{t('common.days')}</div>
                     </div>
                     <Button
                       variant="ghost"
@@ -406,7 +406,7 @@ const IslamicCalendar = memo(() => {
                       +
                     </Button>
                   </div>
-                  <div className="flex items-center gap-2 text-[10px] text-muted-foreground bg-primary/5 p-2 rounded-lg">
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground bg-primary/5 p-2 rounded-lg">
                     <FiInfo className="w-3 h-3 text-primary" />
                     {t('calendar.adjustmentNote')}
                   </div>
@@ -426,8 +426,8 @@ const IslamicCalendar = memo(() => {
                     {t('calendar.aboutDescription')}
                   </p>
                   <div className="flex items-start gap-4 p-4 bg-primary/5 rounded-2xl border border-primary/10">
-                    <Badge variant="primary" className="mt-0.5 rounded-lg h-6 px-2 font-black text-[10px] uppercase">{t('calendar.note')}</Badge>
-                    <p className="text-[11px] font-bold text-muted-foreground uppercase leading-tight tracking-wider">
+                    <Badge variant="primary" className="mt-0.5 rounded-lg h-6 px-2 font-black text-[11px] uppercase">{t('calendar.note')}</Badge>
+                    <p className="text-[11px] sm:text-xs font-bold text-muted-foreground uppercase leading-tight tracking-wider">
                       {t('calendar.accuracyNote')}
                     </p>
                   </div>
@@ -448,7 +448,7 @@ const IslamicCalendar = memo(() => {
                     ].map((m) => (
                       <div key={m.name} className="flex justify-between items-center p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors group">
                         <span className="font-bold text-sm text-foreground group-hover:text-primary transition-colors">{m.name}</span>
-                        <Badge className={`${m.color} text-white border-0 text-[10px] font-black tracking-widest uppercase`}>{m.tag}</Badge>
+                        <Badge className={`${m.color} text-white border-0 text-[11px] font-black tracking-widest uppercase`}>{m.tag}</Badge>
                       </div>
                     ))}
                   </div>

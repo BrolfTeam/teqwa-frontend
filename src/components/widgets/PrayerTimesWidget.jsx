@@ -558,7 +558,7 @@ const PrayerTimesWidget = memo(({ className = '', showNavigation = true, compact
                 <div className="bg-primary/5 rounded-xl p-3 mb-2 flex flex-wrap gap-y-2 items-center justify-between flex-shrink-0 border border-primary/10 relative overflow-hidden group">
                   <div className="relative z-10">
                     <div className="flex items-center gap-2 mb-1">
-                      <span className="text-[11px] uppercase tracking-wider font-extrabold text-primary bg-primary/10 px-2 py-0.5 rounded-md">
+                      <span className="text-xs uppercase font-extrabold text-primary bg-primary/10 px-2 py-0.5 rounded-md">
                         {t('prayer.next')} {currentNext.next?.name === 'Fajr' && new Date().getHours() > 12 ? `(${t('prayer.tomorrow')})` : ''}
                       </span>
                       <span className="text-2xl font-black text-foreground">{getPrayerTranslation(currentNext.next?.name, t)}</span>
@@ -647,14 +647,14 @@ const PrayerTimesWidget = memo(({ className = '', showNavigation = true, compact
                 <div className="flex items-center justify-center gap-2 border-r border-border/50">
                   <FiSun className="h-4 w-4 text-orange-400" />
                   <div className="flex flex-col">
-                    <span className="text-[10px] uppercase font-bold opacity-60 line-height-none mb-0.5">{t('prayer.sunrise')}</span>
+                    <span className="text-[11px] uppercase font-bold opacity-60 line-height-none mb-0.5">{t('prayer.sunrise')}</span>
                     <span className="font-bold text-foreground text-sm leading-none">{sunrise?.formatted || '--'}</span>
                   </div>
                 </div>
                 <div className="flex items-center justify-center gap-2">
                   <FiMoon className="h-4 w-4 text-indigo-400" />
                   <div className="flex flex-col">
-                    <span className="text-[10px] uppercase font-bold opacity-60 line-height-none mb-0.5">{t('prayer.maghrib')}</span>
+                    <span className="text-[11px] uppercase font-bold opacity-60 line-height-none mb-0.5">{t('prayer.maghrib')}</span>
                     <span className="font-bold text-foreground text-sm leading-none">{sunset?.formatted || '--'}</span>
                   </div>
                 </div>

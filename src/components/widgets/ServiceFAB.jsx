@@ -114,7 +114,7 @@ const ServiceFAB = () => {
                             className="flex flex-col items-center"
                         >
                             <FiGrid className="w-7 h-7" />
-                            <span className="text-[10px] font-bold mt-1 tracking-tighter uppercase">{t('common.services')}</span>
+                            <span className="text-[11px] font-bold mt-1 tracking-tighter uppercase">{t('common.services')}</span>
                         </motion.div>
                     )}
                 </AnimatePresence>

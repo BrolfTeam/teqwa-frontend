@@ -518,25 +518,22 @@ class PrayerTimesService {
     return monthlyTimes;
   }
 
-  // Simple Hijri date calculation (approximation for fallback)
+  // Get Hijri date using Intl.DateTimeFormat (Accurate)
   getHijriDate(date) {
-    // This is a simplified calculation. For accurate Hijri dates, 
-    // you might want to use a dedicated library like hijri-date
-    const gregorianYear = date.getFullYear();
-    const gregorianMonth = date.getMonth() + 1;
-    const gregorianDay = date.getDate();
-
-    // Approximate conversion (not astronomically accurate)
-    const hijriYear = Math.floor((gregorianYear - 622) * 1.030684);
-    const hijriMonths = [
-      'Muharram', 'Safar', 'Rabi al-Awwal', 'Rabi al-Thani',
-      'Jumada al-Awwal', 'Jumada al-Thani', 'Rajab', 'Shaban',
-      'Ramadan', 'Shawwal', 'Dhu al-Qidah', 'Dhu al-Hijjah'
-    ];
-
-    const hijriMonth = hijriMonths[gregorianMonth % 12];
-
-    return `${gregorianDay} ${hijriMonth} ${hijriYear} AH`;
+    try {
+      return new Intl.DateTimeFormat('en-TN-u-ca-islamic-umalqura', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+      }).format(date);
+    } catch (e) {
+      // Fallback to standard islamic if umalqura requires nicer environment support
+      return new Intl.DateTimeFormat('en-TN-u-ca-islamic', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+      }).format(date);
+    }
   }
 
   // Format time remaining until next prayer
