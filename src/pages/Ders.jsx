@@ -30,7 +30,7 @@ const Ders = () => {
     const [allDers, setAllDers] = useState([]);
     const [myEnrollments, setMyEnrollments] = useState([]);
     const [enrolling, setEnrolling] = useState(null);
-    const [selectedDay, setSelectedDay] = useState(new Date().getDay() || 7); // 1-7 (Mon-Sun)
+
 
     // Archive states
     const [lectures, setLectures] = useState([]);
@@ -147,22 +147,7 @@ const Ders = () => {
         return myEnrollments.some(e => e.service?.id === serviceId || e.service === serviceId);
     };
 
-    // Filter ders for selected day
-    const filteredDers = allDers.filter(ders => {
-        if (ders.day_of_week === selectedDay || ders.day === selectedDay) return true;
 
-        const dayName = dayKeys.find(d => d.id === selectedDay)?.key;
-        const localizedDay = t(`education.days.${dayName}`).toLowerCase();
-
-        if (dayName && ders.schedule && ders.schedule.toLowerCase().includes(localizedDay)) {
-            return true;
-        }
-        // Fallback for English even if in other language
-        if (dayName && ders.schedule && ders.schedule.toLowerCase().includes(dayName)) {
-            return true;
-        }
-        return false;
-    });
 
     const getEmbedUrl = (url) => {
         if (!url) return '';
@@ -248,105 +233,109 @@ const Ders = () => {
                             exit={{ opacity: 0, x: 20 }}
                             transition={{ duration: 0.3 }}
                         >
-                            {/* Day selector */}
-                            <div className="flex overflow-x-auto pb-6 mb-8 gap-3 scrollbar-hide no-scrollbar">
-                                {dayKeys.map((day) => (
-                                    <button
-                                        key={day.id}
-                                        onClick={() => setSelectedDay(day.id)}
-                                        className={`flex-shrink-0 px-8 py-3 rounded-full text-sm font-bold transition-all duration-300 shadow-sm ${selectedDay === day.id
-                                            ? 'bg-primary text-white shadow-primary/20 scale-105'
-                                            : 'bg-white dark:bg-card text-muted-foreground hover:bg-primary/10 hover:text-primary border border-border'
-                                            }`}
-                                    >
-                                        {t(`education.days.${day.key}`)}
-                                    </button>
-                                ))}
-                            </div>
-
                             {loading ? (
                                 <div className="flex flex-col items-center justify-center py-24">
                                     <LoadingSpinner size="lg" />
                                     <p className="mt-4 text-muted-foreground animate-pulse">{t('common.loading')}</p>
                                 </div>
                             ) : (
-                                <div className="max-w-4xl mx-auto">
-                                    <div className="space-y-6">
-                                        {filteredDers.length > 0 ? (
-                                            filteredDers.map((ders) => (
-                                                <Card key={ders.id} className="overflow-hidden border-l-4 border-l-primary card-hover group bg-white/80 dark:bg-card/80 backdrop-blur-sm" hoverable>
-                                                    <CardContent className="p-6">
-                                                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                                                            <div className="flex-1">
-                                                                <div className="flex items-center gap-3 mb-3">
-                                                                    <div className="p-2.5 rounded-xl bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300 shadow-inner">
-                                                                        <FiBookOpen className="w-5 h-5" />
-                                                                    </div>
-                                                                    <h3 className="text-2xl font-bold group-hover:text-primary transition-colors tracking-tight">
-                                                                        {ders.title || ders.name}
-                                                                    </h3>
-                                                                </div>
-                                                                <p className="text-muted-foreground mb-6 leading-relaxed">
-                                                                    {ders.description || t('education.dersProgramDesc')}
-                                                                </p>
-                                                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-8 text-sm">
-                                                                    <div className="flex items-center gap-3 text-foreground/80">
-                                                                        <div className="p-1.5 rounded-full bg-primary/5">
-                                                                            <FiUser className="text-primary w-4 h-4" />
-                                                                        </div>
-                                                                        <div>
-                                                                            <span className="font-semibold block text-xs text-muted-foreground uppercase">{t('education.schedule.instructor')}</span>
-                                                                            <span className="font-medium text-base">{ders.instructor_name || ders.instructor || 'Qualified Scholar'}</span>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div className="flex items-center gap-3 text-foreground/80">
-                                                                        <div className="p-1.5 rounded-full bg-primary/5">
-                                                                            <FiMapPin className="text-primary w-4 h-4" />
-                                                                        </div>
-                                                                        <div>
-                                                                            <span className="font-semibold block text-xs text-muted-foreground uppercase">{t('education.schedule.location')}</span>
-                                                                            <span className="font-medium text-base">{ders.location || 'Main Prayer Hall'}</span>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
+                                <div className="max-w-6xl mx-auto">
+                                    <div className="space-y-12">
+                                        {/* Group by Day Logic */}
+                                        {dayKeys.map((day) => {
+                                            const dayDers = allDers.filter(d =>
+                                                d.day_of_week === day.id ||
+                                                d.day === day.id ||
+                                                (d.schedule && d.schedule.toLowerCase().includes(t(`education.days.${day.key}`).toLowerCase())) ||
+                                                (d.schedule && d.schedule.toLowerCase().includes(day.key))
+                                            );
 
-                                                            <div className="flex flex-col items-center justify-between gap-4 md:border-l dark:md:border-border/50 md:pl-8">
-                                                                <div className="flex flex-col items-center justify-center p-5 bg-primary/5 dark:bg-primary/10 rounded-3xl min-w-[150px] border border-primary/10">
-                                                                    <FiClock className="w-7 h-7 text-primary mb-2" />
-                                                                    <span className="text-xl font-black text-primary">
-                                                                        {ders.time || (ders.schedule && ders.schedule.split(',').pop().trim()) || 'After Isha'}
-                                                                    </span>
-                                                                    <span className="text-xs text-muted-foreground uppercase tracking-widest font-bold mt-1">
-                                                                        {t('education.schedule.time')}
-                                                                    </span>
-                                                                </div>
+                                            if (dayDers.length === 0) return null;
 
-                                                                {!ders.is_timetable && (
-                                                                    <div className="w-full">
-                                                                        {isEnrolled(ders.id) ? (
-                                                                            <Button variant="outline" className="w-full gap-2 text-green-600 border-green-200 bg-green-50 dark:md:bg-green-950/20" disabled>
-                                                                                <FiCheckCircle className="w-4 h-4" />
-                                                                                {t('education.alreadyEnrolled')}
-                                                                            </Button>
-                                                                        ) : (
-                                                                            <Button
-                                                                                variant="primary"
-                                                                                className="w-full shadow-lg shadow-primary/20"
-                                                                                onClick={() => handleEnroll(ders.id)}
-                                                                                disabled={enrolling === ders.id}
-                                                                            >
-                                                                                {enrolling === ders.id ? t('education.enrolling') : t('education.enrollNow')}
-                                                                            </Button>
+                                            return (
+                                                <div key={day.id} className="relative">
+                                                    {/* Day Header */}
+                                                    <div className="flex items-center gap-4 mb-6 sticky top-4 z-10">
+                                                        <div className="h-px flex-1 bg-gradient-to-r from-transparent via-border to-transparent"></div>
+                                                        <div className="px-6 py-2 bg-white/90 dark:bg-card/90 backdrop-blur-md rounded-full shadow-sm border border-primary/10">
+                                                            <h2 className="text-xl md:text-2xl font-black text-primary uppercase tracking-widest">
+                                                                {t(`education.days.${day.key}`)}
+                                                            </h2>
+                                                        </div>
+                                                        <div className="h-px flex-1 bg-gradient-to-r from-transparent via-border to-transparent"></div>
+                                                    </div>
+
+                                                    {/* Grid of Classes */}
+                                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                                        {dayDers.map((ders) => (
+                                                            <Card key={ders.id} className="group relative overflow-hidden border-none shadow-sm hover:shadow-md transition-all duration-300 bg-white dark:bg-card">
+                                                                <div className="absolute top-0 left-0 w-1 h-full bg-primary/20 group-hover:bg-primary transition-colors"></div>
+
+                                                                <CardContent className="p-6 md:p-8">
+                                                                    <div className="flex flex-col h-full justify-between gap-6">
+                                                                        {/* Top Section */}
+                                                                        <div className="space-y-4">
+                                                                            <div className="flex justify-between items-start gap-4">
+                                                                                <h3 className="text-xl md:text-2xl font-bold leading-tight text-foreground group-hover:text-primary transition-colors">
+                                                                                    {ders.title || ders.name}
+                                                                                </h3>
+                                                                                <div className="flex-shrink-0 px-3 py-1 bg-primary/5 rounded-lg border border-primary/10">
+                                                                                    <span className="text-sm font-bold text-primary">
+                                                                                        {ders.time || (ders.schedule && ders.schedule.split(',').pop().trim()) || 'Evening'}
+                                                                                    </span>
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <p className="text-muted-foreground text-sm leading-relaxed line-clamp-2">
+                                                                                {ders.description || t('education.dersProgramDesc')}
+                                                                            </p>
+                                                                        </div>
+
+                                                                        {/* Bottom Info */}
+                                                                        <div className="flex items-center justify-between pt-4 border-t border-border/50">
+                                                                            <div className="flex items-center gap-2 text-sm text-foreground/70">
+                                                                                <FiUser className="w-4 h-4 text-primary/70" />
+                                                                                <span className="font-medium">{ders.instructor_name || ders.instructor || 'Scholar'}</span>
+                                                                            </div>
+
+                                                                            <div className="flex items-center gap-2 text-sm text-foreground/70">
+                                                                                <FiMapPin className="w-4 h-4 text-primary/70" />
+                                                                                <span>{ders.location || 'Prayer Hall'}</span>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        {/* Enrollment / Status Button */}
+                                                                        {!ders.is_timetable && (
+                                                                            <div className="pt-2">
+                                                                                {isEnrolled(ders.id) ? (
+                                                                                    <div className="w-full py-2.5 flex items-center justify-center gap-2 text-sm font-bold text-green-600 bg-green-50 dark:bg-green-900/20 rounded-xl border border-green-100 dark:border-green-800/30">
+                                                                                        <FiCheckCircle className="w-4 h-4" />
+                                                                                        {t('education.alreadyEnrolled')}
+                                                                                    </div>
+                                                                                ) : (
+                                                                                    <Button
+                                                                                        size="sm"
+                                                                                        variant="ghost"
+                                                                                        className="w-full bg-primary/5 hover:bg-primary hover:text-white text-primary font-bold rounded-xl transition-all duration-300"
+                                                                                        onClick={() => handleEnroll(ders.id)}
+                                                                                        disabled={enrolling === ders.id}
+                                                                                    >
+                                                                                        {enrolling === ders.id ? t('education.enrolling') : t('education.enrollNow')}
+                                                                                    </Button>
+                                                                                )}
+                                                                            </div>
                                                                         )}
                                                                     </div>
-                                                                )}
-                                                            </div>
-                                                        </div>
-                                                    </CardContent>
-                                                </Card>
-                                            ))
-                                        ) : (
+                                                                </CardContent>
+                                                            </Card>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
+
+                                        {/* No Results Fallback */}
+                                        {allDers.length === 0 && (
                                             <div className="text-center py-24 bg-white/50 dark:bg-card/50 backdrop-blur-md rounded-[3rem] border-2 border-dashed border-border/50 shadow-inner">
                                                 <div className="w-24 h-24 bg-muted/20 rounded-full flex items-center justify-center mx-auto mb-6">
                                                     <FiCalendar className="w-12 h-12 text-muted-foreground/30" />
