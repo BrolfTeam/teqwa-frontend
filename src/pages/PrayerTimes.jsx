@@ -421,6 +421,7 @@ const PrayerTimes = memo(() => {
             </div>
           </div>
         </section>
+      )}
 
       {/* Monthly Timetable - Mobile First */}
       <section className="py-6 sm:py-8 md:py-12 bg-muted/30">
