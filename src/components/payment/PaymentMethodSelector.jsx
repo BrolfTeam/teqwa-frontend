@@ -186,7 +186,7 @@ export const PaymentMethodSelector = ({
                                                     <span className="text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded-full font-bold">ACTIVE</span>
                                                 </div>
                                                 <span className="font-mono text-lg font-bold block mb-1">1000123456789</span>
-                                                <span className="block text-xs font-medium text-foreground/80">Mujemaa At-Tekwa Mosque</span>
+                                                <span className="block text-xs font-medium text-foreground/80">MUJEMA’ TEQWA MOSQUE</span>
                                             </div>
                                         ) : (
                                             <div className="bg-background p-4 rounded-xl border border-border shadow-sm">
@@ -195,7 +195,7 @@ export const PaymentMethodSelector = ({
                                                     <span className="text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded-full font-bold">ACTIVE</span>
                                                 </div>
                                                 <span className="font-mono text-lg font-bold block mb-1">0911223344</span>
-                                                <span className="block text-xs font-medium text-foreground/80">Mujemaa At-Tekwa Mosque</span>
+                                                <span className="block text-xs font-medium text-foreground/80">MUJEMA’ TEQWA MOSQUE</span>
                                             </div>
                                         )}
                                     </div>

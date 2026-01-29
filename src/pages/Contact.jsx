@@ -98,10 +98,10 @@ const Contact = () => {
   ];
 
   const socialLinks = [
-    { icon: <FaFacebook />, url: '#', label: 'Facebook' },
-    { icon: <FaTwitter />, url: '#', label: 'Twitter' },
-    { icon: <FaInstagram />, url: '#', label: 'Instagram' },
-    { icon: <FaLinkedin />, url: '#', label: 'LinkedIn' },
+    { icon: <FaFacebook />, url: siteConfig.links.facebook, label: 'Facebook' },
+    { icon: <FaTwitter />, url: siteConfig.links.twitter, label: 'Twitter' },
+    { icon: <FaInstagram />, url: siteConfig.links.instagram, label: 'Instagram' },
+    { icon: <FaLinkedin />, url: siteConfig.links.linkedin || '#', label: 'LinkedIn' },
   ];
 
   return (
@@ -257,8 +257,8 @@ const Contact = () => {
                     {/* Google Maps embed */}
                     <div className="w-full rounded-lg overflow-hidden shadow-sm border border-border/50 bg-card">
                       <iframe
-                        title="MuJemea At-Tekwa Map"
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3940.4707832745844!2d38.76304407501!3d9.019896891016!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x164b85f3e7a7a7a7%3A0x1234567890abcdef!2sMuJemea%20At-Tekwa!5e0!3m2!1sen!2set!4v1234567890123!5m2!1sen!2set"
+                        title="MUJEMA’ TEQWA MOSQUE Map"
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3940.4707832745844!2d38.76304407501!3d9.019896891016!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x164b85f3e7a7a7a7%3A0x1234567890abcdef!2sMUJEMA’%20TEQWA%20MOSQUE!5e0!3m2!1sen!2set!4v1234567890123!5m2!1sen!2set"
                         className="w-full h-64 md:h-80 border-0"
                         loading="lazy"
                         referrerPolicy="no-referrer-when-downgrade"

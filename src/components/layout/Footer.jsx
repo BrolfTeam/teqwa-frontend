@@ -187,7 +187,7 @@ const Footer = memo(() => {
 
               {/* Email */}
               <a
-                href={`mailto:${siteConfig.contact?.email || 'info@mujea-at-tekwa.org'}`}
+                href={`mailto:${siteConfig.contact?.email || 'info@mujemeateqwa.org'}`}
                 className="flex items-start gap-2.5 group"
               >
                 <div className="mt-0.5 p-1.5 rounded-md bg-primary/10 group-hover:bg-primary/20 transition-colors">
@@ -195,7 +195,7 @@ const Footer = memo(() => {
                 </div>
                 <div className="flex-1">
                   <p className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">
-                    {siteConfig.contact?.email || 'info@mujea-at-tekwa.org'}
+                    {siteConfig.contact?.email || 'info@mujemeateqwa.org'}
                   </p>
                   <p className="text-xs text-muted-foreground mt-0.5">{t('footer.generalInquiries')}</p>
                 </div>

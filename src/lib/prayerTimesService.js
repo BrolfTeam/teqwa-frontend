@@ -1,7 +1,7 @@
 import { PrayerTimes, CalculationMethod, Coordinates, Madhab } from 'adhan';
 import { format, addDays, differenceInSeconds, isAfter, isBefore, startOfDay, endOfDay } from 'date-fns';
 
-// Default coordinates for Addis Ababa, Ethiopia (MuJemea At-Tekwa area)
+// Default coordinates for Addis Ababa, Ethiopia (MUJEMA’ TEQWA MOSQUE area)
 const DEFAULT_COORDINATES = {
   latitude: 9.0108,
   longitude: 38.7613
@@ -9,8 +9,8 @@ const DEFAULT_COORDINATES = {
 
 // Mosque location
 export const MOSQUE_LOCATION = {
-  name: 'MuJemea At-Tekwa',
-  address: 'MuJemea At-Tekwa, Addis Ababa, Ethiopia',
+  name: 'MUJEMA’ TEQWA MOSQUE',
+  address: 'CITY: ADDIS ABABA, Sub City: Kolfe Keraniyo, WEREDA: 5',
   coordinates: DEFAULT_COORDINATES,
   timezone: 'Africa/Addis_Ababa'
 };

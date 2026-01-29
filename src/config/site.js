@@ -1,19 +1,19 @@
 export const siteConfig = {
-  name: 'MUJEMA’ TEQWA',
+  name: 'MUJEMA’ TEQWA MOSQUE',
   slogan: 'Serving faith, learning, and community',
-  description: 'A place of worship, learning, and community for Muslims in our area.',
-  url: 'https://mujemaateqwa.org',
+  description: 'A welcoming place of worship, learning, and community for Muslims in Addis Ababa.',
+  url: 'https://mujemeateqwa.org',
   ogImage: '/images/og-image.jpg',
   links: {
-    twitter: 'https://twitter.com/mujea_at_tekwa',
-    facebook: 'https://facebook.com/mujea.at.tekwa',
-    instagram: 'https://instagram.com/mujea_at_tekwa',
-    youtube: 'https://youtube.com/c/mujea_at_tekwa',
+    twitter: 'https://twitter.com/mujemeateqwa',
+    facebook: 'https://facebook.com/mujemeateqwa',
+    instagram: 'https://instagram.com/mujemeateqwa',
+    youtube: 'https://youtube.com/mujemeateqwa',
   },
   contact: {
-    email: 'info@mujemaateqwa.org',
-    phone: '+251 11 123 4567',
-    address: 'MuJemea At-Tekwa, Addis Ababa, Ethiopia',
+    email: 'info@mujemeateqwa.org',
+    phone: '0927701737',
+    address: 'CITY: ADDIS ABABA, Sub City: Kolfe Keraniyo, WEREDA: 5',
   },
   prayerTimes: {
     fajr: '5:30 AM',
@@ -27,7 +27,7 @@ export const siteConfig = {
   socialLinks: [
     {
       name: 'Facebook',
-      url: 'https://facebook.com/mujea.at.tekwa',
+      url: 'https://facebook.com/mujemeateqwa',
       icon: 'facebook',
     },
     {
@@ -37,12 +37,12 @@ export const siteConfig = {
     },
     {
       name: 'Instagram',
-      url: 'https://instagram.com/mujea_at_tekwa',
+      url: 'https://instagram.com/mujemeateqwa',
       icon: 'instagram',
     },
     {
       name: 'YouTube',
-      url: 'https://youtube.com/c/mujea_at_tekwa',
+      url: 'https://youtube.com/c/mujemeateqwa',
       icon: 'youtube',
     },
   ],

@@ -155,13 +155,13 @@
     }
   },
   "hero": {
-    "welcomeToTeqwa": "ወደ ሙጀማ አት-ተቅዋ እንኳን ደህና መጡ",
+    "welcomeToTeqwa": "ወደ ሙጀማ ተቅዋ መስጂድ እንኳን ደህና መጡ",
     "experienceBeauty": "የኢስላም ማህበረሰብ",
     "islamicCommunity": "ውበትን ይመልከቱ",
     "joinUsSubtitle": "እምነትዎን እና ከአሏህ ጋር ያለዎትን ግንኙነት ለማጠናከር በዕለታዊ የሶላት ወቅቶቻችን፣ የሙሃደራ ፕሮግራሞቻችን እና የማህበረሰብ ዝግጅቶቻችን ይቀላቀሉን።",
     "explorePrograms": "ፕሮግራሞችን ያስሱ",
     "aboutUs": "ስለእኛ",
-    "mujeaAtTekwa": "ሙጀማ አት-ተቅዋ",
+    "mujeaAtTekwa": "ሙጀማ ተቅዋ መስጂድ",
     "buildingStrong": "ጠንካራ",
     "faithCommunity": "የእምነት ማህበረሰብ",
     "togetherWeGrow": "አብረን በእምነት፣ በእውቀት እና በተግባር ለማህበረሰባችን እና ለሃገራችን እንሰራለን።",
@@ -197,7 +197,7 @@
     "builtWith": "በ",
     "backToTop": "ወደ ላይ ተመለስ",
     "forCommunity": "ለማህበረሰባችን",
-    "poweredBy": "በብሮልፍ ቴክ ቡድን የቀረበ",
+    "poweredBy": "በሙጀማ ተቅዋ አልሚዎች የቀረበ",
     "donations": "ለመለገስ",
     "futsalBooking": "ፉትሳል ለማስያዝ",
     "educationalServices": "የትምህርት አገልግሎቶች",
@@ -257,7 +257,7 @@
     "eventTime": "የዝግጅቱ ሰዓት",
     "location": "አካባቢ",
     "communityEvents": "የማህበረሰብ ዝግጅቶች",
-    "joinUsDescription": "በሙጀማ አት-ተቅዋ የመንፈሳዊ፣ የትምህርታዊ እና የማህበረሰብ ግንባታ ዝግጅቶችን ይቀላቀሉ።",
+    "joinUsDescription": "በሙጀማ ተቅዋ መስጂድ የመንፈሳዊ፣ የትምህርታዊ እና የማህበረሰብ ግንባታ ዝግጅቶችን ይቀላቀሉ።",
     "searchEvents": "ዝግጅቶችን ፈልግ...",
     "allCategories": "ሁሉም ምድቦች",
     "showPastEvents": "ያለፉ ዝግጅቶችን አሳይ",
@@ -737,7 +737,7 @@
       "pleaseWait": "እባክዎ ኢሜይልዎን እያረጋገጥን ይጠብቁ።.."
     },
     "roleSelection": {
-      "welcomeToTeqwa": "ወደ ተቃዋ እንኳን ደህና መጡ",
+      "welcomeToTeqwa": "ወደ ሙጀማ ተቅዋ መስጂድ እንኳን ደህና መጡ",
       "selectRole": "ለመቀጠል ሚናዎን ይምረጡ",
       "chooseBestDescribes": "ከማህበረሰባችን ጋር ያለዎትን ግንኙነት በተሻለ ሁኔታ የሚገልጽ አማራጭ ይምረጡ",
       "admin": {
@@ -998,8 +998,8 @@
     "sending": "በመላክ ላይ...",
     "sendMessage": "መልእክት ላክ",
     "clear": "አጽዳ",
-    "visitMuJemea": "ሙጀአ አት-ተቃዋን ይጎብኙ",
-    "visitDescription": "ሙጀአ አት-ተቃዋ፣ አዲስ አበባ፣ ኢትዮጵያ — በማህበረሰቡ መሃል ያግኙን።",
+    "visitMuJemea": "ሙጀማ ተቅዋ መስጂድን ይጎብኙ",
+    "visitDescription": "ሙጀማ ተቅዋ መስጂድ፣ አዲስ አበባ፣ ኢትዮጵያ — በማህበረሰቡ መሃል ያግኙን።",
     "openInGoogleMaps": "በጉግል ካርታ ውስጥ ክፈት",
     "callUs": "ደውሉልን",
     "frequentlyAskedQuestions": "ተደጋግሞ የሚጠየቁ ጥያቄዎች",
@@ -1017,7 +1017,7 @@
   },
   "membership": {
     "title": "አባልነት",
-    "subtitle": "ማህበረሰባችንን ይቀላቀሉ እና የሙጀአ አት-ተቃዋ አባል ይሁኑ።",
+    "subtitle": "ማህበረሰባችንን ይቀላቀሉ እና የሙጀማ ተቅዋ መስጂድ አባል ይሁኑ።",
     "loginToJoin": "ለመቀላቀል ይግቡ",
     "chooseMembershipTier": "የአባልነት ደረጃዎን ይምረጡ",
     "membershipSubtitle": "መስጊዳችንን ድገፉ እና ለማህበረሰብ ልዩ ጥቅሞችን ይድረሱ። ለአላማችን የሚስማማ ዕቅድን ይምረጡ።",

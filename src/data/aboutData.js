@@ -2,14 +2,14 @@ import { FiClock, FiUsers, FiBookOpen, FiTarget, FiEye, FiHeart, FiGlobe } from 
 
 export const aboutData = {
     hero: {
-        title: "About MuJemea",
-        titleHighlight: "At-Tekwa",
+        title: "About",
+        titleHighlight: "MUJEMA’ TEQWA MOSQUE",
         description: "A beacon of faith, knowledge, and community service in the heart of our city."
     },
     stats: [
-        { icon: FiClock, number: '15+', label: 'Years of Service T' },
-        { icon: FiUsers, number: '500+', label: 'Community Members T' },
-        { icon: FiBookOpen, number: '50+', label: 'Weekly Programs T' },
+        { icon: FiClock, number: '2023', label: 'Established' },
+        { icon: FiUsers, number: '2500+', label: 'Masjid Capacity' },
+        { icon: FiBookOpen, number: '50+', label: 'Weekly Programs' },
     ],
     purpose: {
         title: "Our Purpose",
@@ -17,7 +17,7 @@ export const aboutData = {
     },
     mission: {
         title: "Our Mission",
-        desc: "At MuJemea At-Tekwa, we strive to be a welcoming space for worship, learning, and community building. Our mission is to nurture faith, knowledge, and service while preserving Islamic values and traditions.",
+        desc: "At MUJEMA’ TEQWA MOSQUE, we strive to be a welcoming space for worship, learning, and community building. Our mission is to nurture faith, knowledge, and service while preserving Islamic values and traditions.",
         icon: FiTarget
     },
     vision: {
@@ -35,10 +35,8 @@ export const aboutData = {
         title: "Our Journey",
         subtitle: "From humble beginnings to a thriving community center",
         items: [
-            { year: '2008', title: 'Foundation', desc: 'MuJemea At-Tekwa was established by dedicated community members who saw the need for an Islamic center.' },
-            { year: '2012', title: 'First Expansion', desc: 'Added dedicated prayer area for women and classrooms for the weekend Islamic school.' },
-            { year: '2018', title: '10th Anniversary', desc: 'Completed new community center and launched several educational programs.' },
-            { year: '2023', title: 'Digital Era', desc: 'Launched online services and digital prayer time systems for the community.' }
+            { year: '2023', title: 'Established', desc: 'MUJEMA’ TEQWA MOSQUE was established to serve the community in Kolfe Keraniyo.' },
+            { year: '2023', title: 'Digital Launch', desc: 'Launched online services and digital systems to connect our community.' }
         ]
     },
     cta: {
