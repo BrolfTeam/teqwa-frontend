@@ -1,15 +1,17 @@
 import { useState, useEffect, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiSave, FiGlobe, FiMail, FiShield, FiBell, FiUser, FiSettings } from 'react-icons/fi';
+import { FiSave, FiGlobe, FiMail, FiShield, FiBell, FiUser, FiSettings, FiCreditCard } from 'react-icons/fi';
 import { Card, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import { AdminModuleHeader } from '@/components/admin/AdminModuleHeader';
+import siteService from '@/services/siteService';
 
 const Settings = memo(() => {
     const { t } = useTranslation();
     const [saving, setSaving] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [settings, setSettings] = useState({
         // General Settings
         siteName: 'Teqwa Mosque',
@@ -53,41 +55,73 @@ const Settings = memo(() => {
         dailyImamAsr: '',
         dailyImamMaghrib: '',
         dailyImamIsha: '',
+
+        // Payment Settings (Backend Synced)
+        cbeAccountNumber: '',
+        cbeAccountName: '',
+        telebirrAccountNumber: '',
+        telebirrAccountName: '',
     });
 
     useEffect(() => {
-        try {
-            const storedKhatib = localStorage.getItem('jumuah_khatib');
-            if (storedKhatib) {
-                const khatib = JSON.parse(storedKhatib);
-                setSettings(prev => ({
-                    ...prev,
-                    jumuahKhatibName: khatib.name || '',
-                    jumuahKhatibTitle: khatib.title || '',
-                    jumuahKhatibPhoto: khatib.photo || ''
-                }));
-            }
+        const fetchSettings = async () => {
+            setLoading(true);
+            try {
+                // Fetch local storage settings
+                const storedKhatib = localStorage.getItem('jumuah_khatib');
+                if (storedKhatib) {
+                    const khatib = JSON.parse(storedKhatib);
+                    setSettings(prev => ({
+                        ...prev,
+                        jumuahKhatibName: khatib.name || '',
+                        jumuahKhatibTitle: khatib.title || '',
+                        jumuahKhatibPhoto: khatib.photo || ''
+                    }));
+                }
 
-            const storedImams = localStorage.getItem('daily_imams');
-            if (storedImams) {
-                const imams = JSON.parse(storedImams);
-                setSettings(prev => ({
-                    ...prev,
-                    dailyImamFajr: imams.fajr || '',
-                    dailyImamDhuhr: imams.dhuhr || '',
-                    dailyImamAsr: imams.asr || '',
-                    dailyImamMaghrib: imams.maghrib || '',
-                    dailyImamIsha: imams.isha || ''
-                }));
+                const storedImams = localStorage.getItem('daily_imams');
+                if (storedImams) {
+                    const imams = JSON.parse(storedImams);
+                    setSettings(prev => ({
+                        ...prev,
+                        dailyImamFajr: imams.fajr || '',
+                        dailyImamDhuhr: imams.dhuhr || '',
+                        dailyImamAsr: imams.asr || '',
+                        dailyImamMaghrib: imams.maghrib || '',
+                        dailyImamIsha: imams.isha || ''
+                    }));
+                }
+
+                // Fetch backend settings
+                try {
+                    const siteConfig = await siteService.getSiteConfig();
+                    if (siteConfig && siteConfig.data) {
+                        const data = siteConfig.data;
+                        setSettings(prev => ({
+                            ...prev,
+                            cbeAccountNumber: data.cbe_account_number || '',
+                            cbeAccountName: data.cbe_account_name || '',
+                            telebirrAccountNumber: data.telebirr_account_number || '',
+                            telebirrAccountName: data.telebirr_account_name || '',
+                        }));
+                    }
+                } catch (apiErr) {
+                    console.error('Failed to fetch site config:', apiErr);
+                }
+            } catch (e) {
+                console.error('Error loading settings:', e);
+            } finally {
+                setLoading(false);
             }
-        } catch (e) {
-            console.error('Error loading settings:', e);
-        }
+        };
+
+        fetchSettings();
     }, []);
 
     const handleSave = async () => {
         setSaving(true);
         try {
+            // Save local storage settings
             if (settings.jumuahKhatibName) {
                 const khatibInfo = {
                     name: settings.jumuahKhatibName,
@@ -113,10 +147,24 @@ const Settings = memo(() => {
                 localStorage.removeItem('daily_imams');
             }
 
+            // Save backend settings
+            try {
+                await siteService.updateSiteConfig({
+                    cbe_account_number: settings.cbeAccountNumber,
+                    cbe_account_name: settings.cbeAccountName,
+                    telebirr_account_number: settings.telebirrAccountNumber,
+                    telebirr_account_name: settings.telebirrAccountName,
+                });
+            } catch (apiErr) {
+                console.error('Failed to update site config:', apiErr);
+                throw apiErr;
+            }
+
             toast.success(t('settings.settingsSaved') || 'Settings saved successfully');
             window.dispatchEvent(new CustomEvent('custom:data-change', { detail: { type: 'settings:updated' } }));
             window.dispatchEvent(new CustomEvent('jumuah-khatib-updated'));
             window.dispatchEvent(new CustomEvent('daily-imams-updated'));
+            window.dispatchEvent(new CustomEvent('site-config-updated'));
         } catch (error) {
             console.error('Failed to save settings:', error);
             toast.error(t('settings.failedToSave') || 'Failed to save settings');
@@ -217,6 +265,18 @@ const Settings = memo(() => {
                 { key: 'dailyImamAsr', label: t('settings.dailyImamAsr'), type: 'text' },
                 { key: 'dailyImamMaghrib', label: t('settings.dailyImamMaghrib'), type: 'text' },
                 { key: 'dailyImamIsha', label: t('settings.dailyImamIsha'), type: 'text' },
+            ]
+        },
+        {
+            id: 'payment',
+            title: t('settings.paymentSettings') || 'Payment Settings',
+            icon: FiCreditCard,
+            color: 'text-amber-500 bg-amber-50',
+            fields: [
+                { key: 'cbeAccountNumber', label: t('settings.cbeAccountNumber') || 'CBE Account Number', type: 'text' },
+                { key: 'cbeAccountName', label: t('settings.cbeAccountName') || 'CBE Account Name', type: 'text' },
+                { key: 'telebirrAccountNumber', label: t('settings.telebirrAccountNumber') || 'Telebirr Number', type: 'text' },
+                { key: 'telebirrAccountName', label: t('settings.telebirrAccountName') || 'Telebirr Name', type: 'text' },
             ]
         }
     ];

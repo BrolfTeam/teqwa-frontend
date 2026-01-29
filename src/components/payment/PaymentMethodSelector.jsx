@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiCreditCard, FiSmartphone, FiUploadCloud, FiCheck, FiInfo, FiFileText, FiX } from 'react-icons/fi';
+import { FiCreditCard, FiSmartphone, FiUploadCloud, FiCheck, FiInfo, FiFileText, FiX, FiLoader } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { Card } from '@/components/ui/Card';
+import siteService from '@/services/siteService';
 
 export const PaymentMethodSelector = ({
     selectedMethod,
@@ -16,6 +17,13 @@ export const PaymentMethodSelector = ({
     const [previewUrl, setPreviewUrl] = useState(null);
     const [dragActive, setDragActive] = useState(false);
     const [manualSubMethod, setManualSubMethod] = useState('cbe');
+    const [config, setConfig] = useState({
+        cbe_account_number: '1000123456789',
+        cbe_account_name: 'MUJEMA’ TEQWA MOSQUE',
+        telebirr_account_number: '0911223344',
+        telebirr_account_name: 'MUJEMA’ TEQWA MOSQUE'
+    });
+    const [loadingConfig, setLoadingConfig] = useState(true);
 
     // Clean up preview URL on unmount
     useEffect(() => {
@@ -23,6 +31,24 @@ export const PaymentMethodSelector = ({
             if (previewUrl) URL.revokeObjectURL(previewUrl);
         };
     }, [previewUrl]);
+
+    // Fetch site config for payment details
+    useEffect(() => {
+        const fetchConfig = async () => {
+            try {
+                const response = await siteService.getSiteConfig();
+                if (response && response.data) {
+                    setConfig(response.data);
+                }
+            } catch (err) {
+                console.error('Failed to load payment config:', err);
+                // Keep defaults if fetch fails
+            } finally {
+                setLoadingConfig(false);
+            }
+        };
+        fetchConfig();
+    }, []);
 
     const handleFile = (file) => {
         if (file) {
@@ -185,8 +211,8 @@ export const PaymentMethodSelector = ({
                                                     <span className="block text-[10px] text-muted-foreground uppercase font-bold tracking-wider">{t('payment.bankName')}</span>
                                                     <span className="text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded-full font-bold">ACTIVE</span>
                                                 </div>
-                                                <span className="font-mono text-lg font-bold block mb-1">1000123456789</span>
-                                                <span className="block text-xs font-medium text-foreground/80">MUJEMA’ TEQWA MOSQUE</span>
+                                                {loadingConfig ? <div className="h-6 w-32 bg-muted animate-pulse rounded" /> : <span className="font-mono text-lg font-bold block mb-1">{config.cbe_account_number}</span>}
+                                                {loadingConfig ? <div className="h-4 w-48 bg-muted animate-pulse rounded" /> : <span className="block text-xs font-medium text-foreground/80">{config.cbe_account_name}</span>}
                                             </div>
                                         ) : (
                                             <div className="bg-background p-4 rounded-xl border border-border shadow-sm">
@@ -194,8 +220,8 @@ export const PaymentMethodSelector = ({
                                                     <span className="block text-[10px] text-muted-foreground uppercase font-bold tracking-wider">{t('payment.telebirr')}</span>
                                                     <span className="text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded-full font-bold">ACTIVE</span>
                                                 </div>
-                                                <span className="font-mono text-lg font-bold block mb-1">0911223344</span>
-                                                <span className="block text-xs font-medium text-foreground/80">MUJEMA’ TEQWA MOSQUE</span>
+                                                {loadingConfig ? <div className="h-6 w-32 bg-muted animate-pulse rounded" /> : <span className="font-mono text-lg font-bold block mb-1">{config.telebirr_account_number}</span>}
+                                                {loadingConfig ? <div className="h-4 w-48 bg-muted animate-pulse rounded" /> : <span className="block text-xs font-medium text-foreground/80">{config.telebirr_account_name}</span>}
                                             </div>
                                         )}
                                     </div>
@@ -203,11 +229,15 @@ export const PaymentMethodSelector = ({
 
                                 <div className="flex flex-col items-center justify-center space-y-3">
                                     <div className="w-40 h-40 bg-white p-3 rounded-2xl shadow-lg border border-border/40 flex items-center justify-center overflow-hidden relative group">
-                                        <img
-                                            src={`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(manualSubMethod === 'cbe' ? '1000123456789' : '0911223344')}`}
-                                            alt={`${manualSubMethod} QR Code`}
-                                            className="w-full h-full"
-                                        />
+                                        {loadingConfig ? (
+                                            <FiLoader className="w-8 h-8 text-primary animate-spin" />
+                                        ) : (
+                                            <img
+                                                src={`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(manualSubMethod === 'cbe' ? config.cbe_account_number : config.telebirr_account_number)}`}
+                                                alt={`${manualSubMethod} QR Code`}
+                                                className="w-full h-full"
+                                            />
+                                        )}
                                         <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                                     </div>
                                     <div className="flex flex-col items-center">
