@@ -115,7 +115,7 @@ const DonationManagement = memo(() => {
                             <div>
                                 <p className="text-sm font-medium text-muted-foreground">Donors Count</p>
                                 <h3 className="text-3xl font-black mt-1 tabular-nums">
-                                    {stats?.donors_count || iterations?.length || 0}
+                                    {stats?.donors_count || donations?.length || 0}
                                 </h3>
                             </div>
                             <div className="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center text-blue-600">

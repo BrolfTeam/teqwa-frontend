@@ -20,7 +20,7 @@ export const schemas = {
   phone: z
     .string()
     .regex(
-      /^\+?[0-9\s-()]+$/,
+      /^(\+?[0-9\s-()]+)?$/,
       'Please enter a valid phone number'
     ),
   url: z.string().url('Please enter a valid URL'),

@@ -497,7 +497,8 @@ const Futsal = memo(() => {
                 : user?.username || '',
             contactEmail: user?.email || '',
             contactPhone: user?.phone || '',
-            playerCount: Math.min(slot.max_players || 12, 6)
+            playerCount: Math.min(slot.max_players || 12, 6),
+            agreeToRules: false
         }));
         setErrors({});
         setBookingModalOpen(true);
@@ -975,8 +976,15 @@ const Futsal = memo(() => {
                                         value={form.contactPhone}
                                         onChange={handleFormChange}
                                         placeholder={t('futsal.phonePlaceholder')}
-                                        className="w-full border border-border rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
+                                        className={`w-full border rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all ${errors['contactPhone'] ? 'border-red-500' : 'border-border'
+                                            }`}
                                     />
+                                    {errors['contactPhone'] && (
+                                        <div className="text-red-600 text-sm mt-1.5 flex items-center gap-1">
+                                            <FiXCircle className="w-3.5 h-3.5" />
+                                            {errors['contactPhone']}
+                                        </div>
+                                    )}
                                 </FormField>
                             </div>
                         </div>
