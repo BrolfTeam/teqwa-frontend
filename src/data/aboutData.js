@@ -7,7 +7,7 @@ export const aboutData = {
         description: "A beacon of faith, knowledge, and community service in the heart of our city."
     },
     stats: [
-        { icon: FiClock, number: '2023', label: 'Established' },
+        { icon: FiClock, number: 3, suffix: '+', label: 'Years of Service' },
         { icon: FiUsers, number: '2500+', label: 'Masjid Capacity' },
         { icon: FiBookOpen, number: '50+', label: 'Weekly Programs' },
     ],
@@ -35,8 +35,9 @@ export const aboutData = {
         title: "Our Journey",
         subtitle: "From humble beginnings to a thriving community center",
         items: [
-            { year: '2023', title: 'Established', desc: 'MUJEMA’ TEQWA MOSQUE was established to serve the community in Kolfe Keraniyo.' },
-            { year: '2023', title: 'Digital Launch', desc: 'Launched online services and digital systems to connect our community.' }
+            { year: '2023', title: 'Foundation', desc: 'MUJEMA’ TEQWA MOSQUE was established to serve the community in Kolfe Keraniyo, Addis Ababa.' },
+            { year: '2024', title: 'Community Growth', desc: 'Expanded educational programs and started the weekly Ders system.' },
+            { year: '2025', title: 'Digital Transformation', desc: 'Launched online services and digital systems to connect our community.' }
         ]
     },
     cta: {

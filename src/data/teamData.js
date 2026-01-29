@@ -2,30 +2,30 @@
 export const getTeamData = (t) => [
     {
         id: 1,
-        name: t('about.teamMembers.imamAbdullah.name'),
-        role: t('about.teamMembers.imamAbdullah.role'),
-        description: t('about.teamMembers.imamAbdullah.description'),
+        name: t('about.teamMembers.shehKamil.name'),
+        role: t('about.teamMembers.shehKamil.role'),
+        description: t('about.teamMembers.shehKamil.description'),
         image: null
     },
     {
         id: 2,
-        name: t('about.teamMembers.drAisha.name'),
-        role: t('about.teamMembers.drAisha.role'),
-        description: t('about.teamMembers.drAisha.description'),
+        name: t('about.teamMembers.shehSeidAli.name'),
+        role: t('about.teamMembers.shehSeidAli.role'),
+        description: t('about.teamMembers.shehSeidAli.description'),
         image: null
     },
     {
         id: 3,
-        name: t('about.teamMembers.yusufKhan.name'),
-        role: t('about.teamMembers.yusufKhan.role'),
-        description: t('about.teamMembers.yusufKhan.description'),
+        name: t('about.teamMembers.shehSeidSherif.name'),
+        role: t('about.teamMembers.shehSeidSherif.role'),
+        description: t('about.teamMembers.shehSeidSherif.description'),
         image: null
     },
     {
         id: 4,
-        name: t('about.teamMembers.fatimaAhmed.name'),
-        role: t('about.teamMembers.fatimaAhmed.role'),
-        description: t('about.teamMembers.fatimaAhmed.description'),
+        name: t('about.teamMembers.ustazAli.name'),
+        role: t('about.teamMembers.ustazAli.role'),
+        description: t('about.teamMembers.ustazAli.description'),
         image: null
     }
 ];

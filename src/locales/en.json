@@ -944,36 +944,36 @@
     "meetOurTeam": "Meet Our Team",
     "teamSubtitle": "The dedicated individuals serving our community",
     "teamMembers": {
-      "imamAbdullah": {
-        "name": "Imam Abdullah Al-Mansour",
-        "role": "Head Imam",
-        "description": "Serving the community with dedication for many years."
+      "shehKamil": {
+        "name": "Sheh Kamil Shemsu",
+        "role": "Imam",
+        "description": "Providing spiritual guidance and leadership to the community."
       },
-      "drAisha": {
-        "name": "Dr. Aisha Rahman",
-        "role": "Education Director",
-        "description": "Leads our learning & youth programs."
+      "shehSeidAli": {
+        "name": "Sheh Seid Ali",
+        "role": "Imam",
+        "description": "Dedicated to teaching and spiritual growth of our members."
       },
-      "yusufKhan": {
-        "name": "Yusuf Khan",
-        "role": "Community Outreach",
-        "description": "Connects community members and initiatives."
+      "shehSeidSherif": {
+        "name": "Sheh Seid Sherif",
+        "role": "Imam",
+        "description": "Serving the community through daily prayers and counseling."
       },
-      "fatimaAhmed": {
-        "name": "Fatima Ahmed",
-        "role": "Youth Coordinator",
-        "description": "Builds strong programs for our young people."
+      "ustazAli": {
+        "name": "Ustaz Ali Taha",
+        "role": "Madressa Coordinator",
+        "description": "Managing and coordinating educational programs for all ages."
       }
     },
     "ourJourney": "Our Journey",
     "journeySubtitle": "From humble beginnings to a thriving community center",
     "foundation": "Foundation",
-    "foundationDesc": "MUJEMA’ TEQWA MOSQUE was established by dedicated community members who saw the need for an Islamic center.",
-    "firstExpansion": "First Expansion",
-    "firstExpansionDesc": "Added dedicated prayer area for women and classrooms for the weekend Islamic school.",
-    "tenthAnniversary": "10th Anniversary",
-    "tenthAnniversaryDesc": "Completed new community center and launched several educational programs.",
-    "digitalEra": "Digital Era",
+    "foundationDesc": "MUJEMA’ TEQWA MOSQUE was established in 2023 by dedicated community members in Kolfe Keraniyo.",
+    "firstExpansion": "Community Growth",
+    "firstExpansionDesc": "Expanded educational programs and launched the weekly Ders system to serve the growing needs.",
+    "tenthAnniversary": "Continued Development",
+    "tenthAnniversaryDesc": "Enhanced our facilities and introduced specialized youth and community outreach programs.",
+    "digitalEra": "Digital Transformation",
     "digitalEraDesc": "Launched online services and digital prayer time systems for the community.",
     "joinOurCommunity": "Join Our Community",
     "joinDescription": "Be part of a growing community dedicated to faith, learning, and service.",

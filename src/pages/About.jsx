@@ -15,14 +15,19 @@ import Counter from '@/components/ui/Counter';
 
 const About = () => {
   const { t } = useTranslation();
-  
-  // Create translated stats with parsed numbers for counter animation
+
+  // Calculate years of service since 2023
+  const currentYear = new Date().getFullYear();
+  const establishmentYear = 2023;
+  const yearsOfService = currentYear - establishmentYear;
+
+  // Dynamic stats using site configuration and calculated values
   const stats = [
-    { icon: FiClock, number: 15, suffix: '+', label: t('about.yearsOfService') },
-    { icon: FiUsers, number: 500, suffix: '+', label: t('about.communityMembers') },
+    { icon: FiClock, number: yearsOfService, suffix: '+', label: t('about.yearsOfService') },
+    { icon: FiUsers, number: 2500, suffix: '+', label: t('about.communityMembers') },
     { icon: FiBookOpen, number: 50, suffix: '+', label: t('about.weeklyPrograms') },
   ];
-  
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-background font-sans selection:bg-primary/20 w-full overflow-x-hidden">
       <Hero
@@ -52,8 +57,8 @@ const About = () => {
                   <stat.icon className="h-6 w-6" />
                 </div>
                 <div className="text-4xl font-bold text-foreground mb-2">
-                  <Counter 
-                    end={stat.number} 
+                  <Counter
+                    end={stat.number}
                     suffix={stat.suffix}
                     duration={2000}
                   />
@@ -205,12 +210,7 @@ const About = () => {
           <div className="relative">
             <div className="absolute left-1/2 w-0.5 h-full bg-gradient-to-b from-primary/10 via-primary/30 to-primary/10 transform -translate-x-1/2 hidden md:block" />
 
-            {[
-              { year: '2008', title: t('about.foundation'), desc: t('about.foundationDesc') },
-              { year: '2012', title: t('about.firstExpansion'), desc: t('about.firstExpansionDesc') },
-              { year: '2018', title: t('about.tenthAnniversary'), desc: t('about.tenthAnniversaryDesc') },
-              { year: '2023', title: t('about.digitalEra'), desc: t('about.digitalEraDesc') }
-            ].map((item, index) => (
+            {aboutData.timeline.items.map((item, index) => (
               <motion.div
                 key={item.year}
                 initial={{ opacity: 0, y: 20 }}
