@@ -25,7 +25,7 @@ const Membership = () => {
     // Payment UI State
     const [selectedTier, setSelectedTier] = useState(null);
     const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
-    const [paymentMethod, setPaymentMethod] = useState('card');
+    const [paymentMethod, setPaymentMethod] = useState('manual_qr');
     const [proofFile, setProofFile] = useState(null);
 
     useEffect(() => {
@@ -157,6 +157,28 @@ const Membership = () => {
             />
 
             <div className="container container-padding py-16">
+                {/* Coming Soon Banner */}
+                <motion.div
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="mb-12"
+                >
+                    <div className="bg-gradient-to-r from-amber-500/10 via-amber-500/5 to-amber-500/10 border border-amber-500/30 rounded-2xl p-6 sm:p-8 text-center">
+                        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-amber-500/20 mb-4">
+                            <FiStar className="w-8 h-8 text-amber-600" />
+                        </div>
+                        <div className="inline-block bg-amber-500 text-white text-sm font-bold px-4 py-1.5 rounded-full mb-4">
+                            {t('common.comingSoon') || 'Coming Soon'}
+                        </div>
+                        <h3 className="text-xl sm:text-2xl font-bold text-foreground mb-2">
+                            {t('membership.comingSoonTitle') || 'Membership Program Launching Soon!'}
+                        </h3>
+                        <p className="text-muted-foreground max-w-xl mx-auto">
+                            {t('membership.comingSoonDescription') || 'We are working hard to bring you an amazing membership experience. Stay tuned for exclusive benefits and community perks!'}
+                        </p>
+                    </div>
+                </motion.div>
+
                 <div className="text-center max-w-3xl mx-auto mb-16">
                     <h2 className="text-3xl font-bold mb-4">{t('membership.chooseMembershipTier')}</h2>
                     <p className="text-muted-foreground">

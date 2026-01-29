@@ -181,42 +181,42 @@ const IslamicCalendar = memo(() => {
         ]}
       />
 
-      <div className="container mx-auto px-4 py-12 relative z-10">
+      <div className="container mx-auto px-3 sm:px-4 py-8 sm:py-12 relative z-10">
         <div className="max-w-6xl mx-auto">
           {/* Status Display Card */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-8"
+            className="mb-6 sm:mb-8"
           >
             <Card className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-primary/20 shadow-xl overflow-hidden group">
-              <div className="absolute top-0 left-0 w-2 h-full bg-primary" />
-              <CardContent className="p-8">
-                <div className="grid md:grid-cols-2 gap-12 items-center">
-                  <div className="text-center md:text-left space-y-2">
-                    <div className="flex items-center justify-center md:justify-start gap-3 mb-2">
-                      <div className="p-2 bg-yellow-500/10 rounded-lg text-yellow-600">
-                        <FiSun className="w-5 h-5" />
+              <div className="absolute top-0 left-0 w-1.5 sm:w-2 h-full bg-primary" />
+              <CardContent className="p-4 sm:p-6 md:p-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8 md:gap-12 items-center">
+                  <div className="text-center sm:text-left space-y-1.5 sm:space-y-2">
+                    <div className="flex items-center justify-center sm:justify-start gap-2 sm:gap-3 mb-1 sm:mb-2">
+                      <div className="p-1.5 sm:p-2 bg-yellow-500/10 rounded-lg text-yellow-600">
+                        <FiSun className="w-4 h-4 sm:w-5 sm:h-5" />
                       </div>
-                      <span className="text-sm font-bold tracking-widest uppercase text-muted-foreground">
+                      <span className="text-xs sm:text-sm font-bold tracking-widest uppercase text-muted-foreground">
                         {isBrowsingToday ? t('calendar.todayGregorian') : t('calendar.gregorian')}
                       </span>
                     </div>
-                    <div className="text-3xl font-black text-foreground">
+                    <div className="text-xl sm:text-2xl md:text-3xl font-black text-foreground">
                       {isBrowsingToday ? format(new Date(), 'EEEE, MMMM d, yyyy') : format(calendarMonth, 'MMMM yyyy')}
                     </div>
                   </div>
 
-                  <div className={`text-center md:text-right space-y-2 relative ${isRTL ? 'md:border-l' : 'md:border-r'} border-transparent`}>
-                    <div className={`flex items-center justify-center ${isRTL ? 'md:justify-start' : 'md:justify-end'} gap-3 mb-2`}>
-                      <span className="text-sm font-bold tracking-widest uppercase text-muted-foreground">
+                  <div className={`text-center sm:text-right space-y-1.5 sm:space-y-2 relative pt-4 sm:pt-0 border-t sm:border-t-0 border-border/50`}>
+                    <div className={`flex items-center justify-center sm:justify-end gap-2 sm:gap-3 mb-1 sm:mb-2`}>
+                      <span className="text-xs sm:text-sm font-bold tracking-widest uppercase text-muted-foreground">
                         {isBrowsingToday ? t('calendar.todayHijri') : t('calendar.hijriApprox')}
                       </span>
-                      <div className="p-2 bg-primary/10 rounded-lg text-primary">
-                        <FiMoon className="w-5 h-5" />
+                      <div className="p-1.5 sm:p-2 bg-primary/10 rounded-lg text-primary">
+                        <FiMoon className="w-4 h-4 sm:w-5 sm:h-5" />
                       </div>
                     </div>
-                    <div className="text-3xl font-black text-primary">
+                    <div className="text-xl sm:text-2xl md:text-3xl font-black text-primary">
                       {(isBrowsingToday ? todayHijri : viewingHijri).day > 0 && (isBrowsingToday ? todayHijri : viewingHijri).day}{' '}
                       {hijriMonths[(isBrowsingToday ? todayHijri : viewingHijri).month]} {(isBrowsingToday ? todayHijri : viewingHijri).year} {t('calendar.hijriSuffix')}
                     </div>
@@ -226,7 +226,7 @@ const IslamicCalendar = memo(() => {
             </Card>
           </motion.div>
 
-          <div className="grid lg:grid-cols-3 gap-8">
+          <div className="grid lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
             {/* Gregorian Calendar Grid */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
@@ -236,38 +236,38 @@ const IslamicCalendar = memo(() => {
             >
               <Card className="shadow-2xl border-0 overflow-hidden bg-white dark:bg-slate-900">
                 <CardHeader className="bg-slate-50 dark:bg-slate-800/50 border-b">
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="flex items-center gap-2 text-xl font-bold">
-                      <FiCalendar className="w-5 h-5 text-primary" />
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                    <CardTitle className="flex items-center gap-2 text-base sm:text-lg font-bold">
+                      <FiCalendar className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                       {t('calendar.gregorianCalendar')}
                     </CardTitle>
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-2 sm:gap-4 w-full sm:w-auto">
                       {/* Syncing indicator removed */}
-                      <div className="flex items-center bg-white dark:bg-slate-900 rounded-full shadow-inner p-1">
+                      <div className="flex items-center bg-white dark:bg-slate-900 rounded-full shadow-inner p-0.5 sm:p-1">
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="rounded-full hover:bg-primary/10 h-8 w-8"
+                          className="rounded-full hover:bg-primary/10 h-7 w-7 sm:h-8 sm:w-8"
                           onClick={() => navigateMonth(-1)}
                         >
-                          <FiChevronLeft className="w-4 h-4" />
+                          <FiChevronLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                         </Button>
-                        <span className="text-sm font-bold min-w-[120px] text-center">
-                          {format(calendarMonth, 'MMMM yyyy')}
+                        <span className="text-xs sm:text-sm font-bold min-w-[90px] sm:min-w-[120px] text-center">
+                          {format(calendarMonth, 'MMM yyyy')}
                         </span>
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="rounded-full hover:bg-primary/10 h-8 w-8"
+                          className="rounded-full hover:bg-primary/10 h-7 w-7 sm:h-8 sm:w-8"
                           onClick={() => navigateMonth(1)}
                         >
-                          <FiChevronRight className="w-4 h-4" />
+                          <FiChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                         </Button>
                       </div>
                       <Button
                         variant="outline"
                         size="sm"
-                        className="rounded-full font-bold text-xs"
+                        className="rounded-full font-bold text-[10px] sm:text-xs px-2 sm:px-3 h-7 sm:h-8"
                         onClick={() => {
                           setCalendarMonth(new Date());
                           setSelectedDate(new Date());
@@ -278,18 +278,18 @@ const IslamicCalendar = memo(() => {
                     </div>
                   </div>
                 </CardHeader>
-                <CardContent className="p-6">
+                <CardContent className="p-3 sm:p-4 md:p-6">
                   {/* Weekday Headers */}
-                  <div className="grid grid-cols-7 gap-2 mb-4">
+                  <div className="grid grid-cols-7 gap-1 sm:gap-2 mb-2 sm:mb-4">
                     {weekdays.map(day => (
-                      <div key={day} className="text-center text-xs font-black text-muted-foreground uppercase tracking-widest py-2">
-                        {day}
+                      <div key={day} className="text-center text-[10px] sm:text-xs font-bold text-muted-foreground uppercase tracking-tight sm:tracking-widest py-1 sm:py-2">
+                        {day.slice(0, 2)}
                       </div>
                     ))}
                   </div>
 
                   {/* Calendar Days */}
-                  <div className="grid grid-cols-7 gap-2">
+                  <div className="grid grid-cols-7 gap-1 sm:gap-2">
                     {calendarDays.map((day, idx) => {
                       const inMonth = isSameMonth(day, calendarMonth);
                       const isTodayDate = isToday(day);
@@ -299,30 +299,30 @@ const IslamicCalendar = memo(() => {
                       return (
                         <motion.button
                           key={idx}
-                          whileHover={inMonth ? { scale: 1.05, y: -2 } : {}}
+                          whileHover={inMonth ? { scale: 1.05 } : {}}
                           whileTap={inMonth ? { scale: 0.95 } : {}}
                           onClick={() => inMonth && handleDateClick(day)}
                           className={`
-                            aspect-square rounded-2xl text-sm font-bold transition-all duration-300
-                            relative flex flex-col items-center justify-center gap-0.5
+                            aspect-square rounded-lg sm:rounded-2xl text-xs sm:text-sm font-bold transition-all duration-300
+                            relative flex flex-col items-center justify-center gap-0
                             ${inMonth
                               ? isSelectedDate
                                 ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/30 z-10'
                                 : isTodayDate
                                   ? 'bg-primary/5 text-primary border-2 border-primary/20'
-                                  : 'bg-slate-50 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-700 text-foreground border border-transparent hover:border-primary/20 hover:shadow-xl'
+                                  : 'bg-slate-50 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-700 text-foreground border border-transparent hover:border-primary/20 hover:shadow-md'
                               : 'text-muted-foreground/10 cursor-default opacity-20'
                             }
                           `}
                         >
-                          <span className="text-base">{format(day, 'd')}</span>
+                          <span className="text-sm sm:text-base">{format(day, 'd')}</span>
                           {inMonth && (
-                            <span className={`text-[11px] font-medium ${isSelectedDate ? 'text-primary-foreground/80' : 'text-muted-foreground/60'}`}>
+                            <span className={`text-[9px] sm:text-[11px] font-medium ${isSelectedDate ? 'text-primary-foreground/80' : 'text-muted-foreground/60'}`}>
                               {hijriDate.day}
                             </span>
                           )}
                           {isTodayDate && !isSelectedDate && (
-                            <div className="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full animate-pulse" />
+                            <div className="absolute top-1 right-1 sm:top-2 sm:right-2 w-1.5 h-1.5 sm:w-2 sm:h-2 bg-primary rounded-full animate-pulse" />
                           )}
                         </motion.button>
                       );

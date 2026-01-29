@@ -29,7 +29,7 @@ const Education = () => {
     // Payment UI State
     const [selectedService, setSelectedService] = useState(null);
     const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
-    const [paymentMethod, setPaymentMethod] = useState('card');
+    const [paymentMethod, setPaymentMethod] = useState('manual_qr');
     const [proofFile, setProofFile] = useState(null);
 
     // ... (rest of state and logic unrelated to UI structure)

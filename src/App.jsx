@@ -5,12 +5,13 @@ import { useTranslation } from 'react-i18next';
 import { ThemeProvider } from '@/context/ThemeContext';
 import { AuthProvider } from '@/context/AuthContext';
 import MainLayout from '@/components/layout/MainLayout';
+import DashboardLayout from '@/components/layout/DashboardLayout';
+
 import AuthLayout from '@/components/layout/AuthLayout';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import ScrollToTop from '@/components/layout/ScrollToTop';
 import { LoadingSpinner } from '@/components/ui';
 
-// Lazy load pages for better performance
 // Lazy load pages for better performance
 const Home = lazy(() => import('@/pages/Home'));
 const About = lazy(() => import('@/pages/About'));
@@ -43,6 +44,8 @@ const ResetPassword = lazy(() => import('@/pages/auth/ResetPassword'));
 const Dashboard = lazy(() => import('@/pages/Dashboard'));
 const Profile = lazy(() => import('@/pages/Profile'));
 const Services = lazy(() => import('@/pages/Services'));
+
+// ... (keep existing code)
 
 // Booking & Staff pages
 const BookingList = lazy(() => import('@/pages/bookings/BookingList'));
@@ -139,7 +142,7 @@ const AppContent = memo(() => {
           {/* Protected Routes */}
           <Route path="/dashboard" element={
             <ProtectedRoute>
-              <MainLayout><Dashboard /></MainLayout>
+              <DashboardLayout><Dashboard /></DashboardLayout>
             </ProtectedRoute>
           } />
           <Route path="/profile" element={
@@ -151,51 +154,51 @@ const AppContent = memo(() => {
           {/* Module Routes */}
           <Route path="/bookings" element={
             <ProtectedRoute>
-              <MainLayout><BookingList /></MainLayout>
+              <DashboardLayout><BookingList /></DashboardLayout>
             </ProtectedRoute>
           } />
           <Route path="/bookings/user" element={
             <ProtectedRoute>
-              <MainLayout><UserBookings /></MainLayout>
+              <DashboardLayout><UserBookings /></DashboardLayout>
             </ProtectedRoute>
           } />
 
           {/* Staff Routes */}
           <Route path="/staff" element={
             <ProtectedRoute>
-              <MainLayout><StaffList /></MainLayout>
+              <DashboardLayout><StaffList /></DashboardLayout>
             </ProtectedRoute>
           } />
           <Route path="/staff/attendance" element={
             <ProtectedRoute>
-              <MainLayout><Attendance /></MainLayout>
+              <DashboardLayout><Attendance /></DashboardLayout>
             </ProtectedRoute>
           } />
           <Route path="/staff/hours" element={
             <ProtectedRoute>
-              <MainLayout><WorkingHours /></MainLayout>
+              <DashboardLayout><WorkingHours /></DashboardLayout>
             </ProtectedRoute>
           } />
           <Route path="/staff/tasks" element={
             <ProtectedRoute>
-              <MainLayout><StaffTasks /></MainLayout>
+              <DashboardLayout><StaffTasks /></DashboardLayout>
             </ProtectedRoute>
           } />
           <Route path="/staff/reports" element={
             <ProtectedRoute>
-              <MainLayout><StaffReports /></MainLayout>
+              <DashboardLayout><StaffReports /></DashboardLayout>
             </ProtectedRoute>
           } />
 
           {/* Admin Routes */}
           <Route path="/admin/users" element={
             <ProtectedRoute>
-              <MainLayout><UserManagement /></MainLayout>
+              <DashboardLayout><UserManagement /></DashboardLayout>
             </ProtectedRoute>
           } />
           <Route path="/admin/settings" element={
             <ProtectedRoute>
-              <MainLayout><AdminSettings /></MainLayout>
+              <DashboardLayout><AdminSettings /></DashboardLayout>
             </ProtectedRoute>
           } />
 

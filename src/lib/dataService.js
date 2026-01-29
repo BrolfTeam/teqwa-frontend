@@ -15,6 +15,25 @@ class DataService {
   constructor() {
     this.cache = new Map();
     this.cacheTimeout = 5 * 60 * 1000; // 5 minutes
+    this.isConnected = true;
+    this.listeners = new Set();
+  }
+
+  // Connection state management
+  setConnectionStatus(connected) {
+    if (this.isConnected !== connected) {
+      this.isConnected = connected;
+      this.notifyListeners();
+    }
+  }
+
+  subscribe(listener) {
+    this.listeners.add(listener);
+    return () => this.listeners.delete(listener);
+  }
+
+  notifyListeners() {
+    this.listeners.forEach(listener => listener(this.isConnected));
   }
 
   // Generic cache management
@@ -51,6 +70,7 @@ class DataService {
 
     try {
       const response = await apiMethod(params);
+      this.setConnectionStatus(true);
       const data = response?.data || response || [];
 
       // Cache successful responses
@@ -107,21 +127,27 @@ class DataService {
       // Log other errors (not 404 student profile or 403 permission denied)
       console.error(`API call failed for ${apiMethod.name}:`, error);
 
-      // Handle network errors gracefully
+      // Handle network errors gracefully - no toast, just log and return empty data
       if (error.message && (error.message.includes('Network error') || error.message.includes('Failed to fetch') || error.message.includes('ERR_EMPTY_RESPONSE'))) {
-        console.warn(`Network error for ${apiMethod.name}, returning empty data`);
-        if (showError) {
-          toast.error('Unable to connect to server. Please check your connection.');
+        this.setConnectionStatus(false);
+        // Log only once per session to avoid console spam
+        if (!window._networkErrorLogged) {
+          console.debug(
+            '%c⚠️ Connection Issue:',
+            'color: #f59e0b; font-weight: bold;',
+            'Unable to connect to server - components will display empty states. This is handled gracefully.'
+          );
+          window._networkErrorLogged = true;
         }
         // Return empty data structure instead of throwing
         return [];
       }
 
-      // Don't show error toast for 403 (Forbidden) or 401 (Unauthorized) - these are permission issues
-      // that should be handled gracefully by the calling code
-      if (showError && error.status !== 403 && error.status !== 401 && error.status !== 429) {
-        const errorMessage = error.data?.message || error.message || 'An error occurred';
-        toast.error(errorMessage);
+      // Don't show error toast for connection issues, 403 (Forbidden), 401 (Unauthorized), or 429 (Rate limited)
+      // These are handled gracefully by returning empty data - no need to disturb the user
+      // Only log significant errors to console for debugging
+      if (error.status !== 403 && error.status !== 401 && error.status !== 429) {
+        console.debug('API Error:', error.data?.message || error.message || 'An error occurred');
       }
 
       throw error;

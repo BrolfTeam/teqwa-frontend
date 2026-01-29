@@ -84,12 +84,12 @@ const Navbar = memo(() => {
         : 'bg-white dark:bg-slate-900 border-b border-transparent'
         }`}
     >
-      <div className="container flex h-20 items-center justify-between px-4">
+      <div className="container flex h-16 items-center justify-between px-4">
         {/* Logo */}
         <Link to="/" className="flex items-center space-x-3 group">
-          <img src={logo} alt="MuJemea At-Tekwa" className="h-12 w-auto rounded-full group-hover:scale-105 transition-transform duration-300" />
+          <img src={logo} alt="MuJemea At-Tekwa" className="h-10 w-auto rounded-full group-hover:scale-105 transition-transform duration-300" />
           <div className="hidden sm:block">
-            <span className="font-bold text-xl text-emerald-800 dark:text-emerald-400 block leading-none">MuJemea</span>
+            <span className="font-semibold text-lg text-emerald-800 dark:text-emerald-400 block leading-none">MuJemea</span>
             <span className="text-xs text-emerald-600 dark:text-emerald-500 font-medium tracking-wider">At-Tekwa Mosque</span>
           </div>
         </Link>

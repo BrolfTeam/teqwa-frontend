@@ -420,7 +420,7 @@ const Home = memo(() => {
     <div className="min-h-screen bg-gray-50 dark:bg-background font-sans selection:bg-primary/20 w-full overflow-x-hidden">
       {/* Enhanced Hero Section */}
       <section
-        className="relative h-[90vh] min-h-[600px] flex items-center overflow-hidden bg-primary"
+        className="relative h-[80vh] min-h-[500px] flex items-center overflow-hidden bg-primary"
         onTouchStart={onTouchStart}
         onTouchMove={onTouchMove}
         onTouchEnd={onTouchEnd}
@@ -493,7 +493,7 @@ const Home = memo(() => {
                   initial={{ opacity: 0, y: 15 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
-                  className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold leading-tight mb-6 drop-shadow-2xl text-white"
+                  className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-semibold leading-tight mb-5 drop-shadow-2xl text-white"
                 >
                   {currentSlideData?.title || "Welcome to Teqwa"}
                   {currentSlideData?.titleHighlight && (
@@ -734,7 +734,7 @@ const Home = memo(() => {
       </section>
 
       {/* Quick Links Section - Enhanced */}
-      <section className="bg-gray-50 dark:bg-background py-16">
+      <section className="bg-gray-50 dark:bg-background py-12">
         <div className="container container-padding">
           <div className="mx-auto max-w-7xl">
             <motion.div
@@ -754,10 +754,10 @@ const Home = memo(() => {
               </div>
 
               {/* Section Title */}
-              <div className="flex flex-col items-center justify-center mb-12 text-center">
-                <h2 className="text-3xl font-bold text-foreground mb-3">{t('home.quickActions')}</h2>
-                <div className="h-1 w-20 bg-accent rounded-full mb-4" />
-                <p className="text-muted-foreground text-lg">{t('home.accessServices')}</p>
+              <div className="flex flex-col items-center justify-center mb-10 text-center">
+                <h2 className="text-2xl font-semibold text-foreground mb-2">{t('home.quickActions')}</h2>
+                <div className="h-1 w-16 bg-accent rounded-full mb-3" />
+                <p className="text-muted-foreground text-base">{t('home.accessServices')}</p>
               </div>
 
               {/* Quick Links Grid */}
@@ -782,11 +782,11 @@ const Home = memo(() => {
                     className="h-full flex"
                   >
                     <Link to={item.to} className="block h-full w-full group">
-                      <Card className="h-full w-full border-border/40 dark:border-border/60 group-hover:border-primary/50 dark:group-hover:border-primary/60 group-hover:shadow-xl transition-all duration-300 bg-card/80 dark:bg-card/70 backdrop-blur-sm flex flex-col items-center justify-center p-4 sm:p-5 md:p-6 lg:p-6 hover:bg-gradient-to-br hover:from-primary/5 hover:to-accent/5 dark:hover:from-primary/10 dark:hover:to-accent/10">
-                        <div className={`p-3 sm:p-3.5 md:p-4 lg:p-4 rounded-2xl ${item.bg} ${item.color} mb-3 sm:mb-3.5 md:mb-4 lg:mb-4 group-hover:scale-110 transition-transform duration-300 ${item.hoverBg} flex-shrink-0 flex items-center justify-center w-fit mx-auto`}>
-                          <item.icon className="h-6 w-6 sm:h-6 sm:w-6 md:h-7 md:w-7 lg:h-7 lg:w-7" />
+                      <Card className="h-full w-full border-border/40 dark:border-border/60 group-hover:border-primary/50 dark:group-hover:border-primary/60 group-hover:shadow-lg transition-all duration-300 bg-card/80 dark:bg-card/70 backdrop-blur-sm flex flex-col items-center justify-center p-3 sm:p-4 md:p-5 lg:p-5 hover:bg-gradient-to-br hover:from-primary/5 hover:to-accent/5 dark:hover:from-primary/10 dark:hover:to-accent/10">
+                        <div className={`p-2.5 sm:p-3 md:p-3.5 lg:p-3.5 rounded-xl ${item.bg} ${item.color} mb-2.5 sm:mb-3 md:mb-3 lg:mb-3 group-hover:scale-110 transition-transform duration-300 ${item.hoverBg} flex-shrink-0 flex items-center justify-center w-fit mx-auto`}>
+                          <item.icon className="h-5 w-5 sm:h-5 sm:w-5 md:h-6 md:w-6 lg:h-6 lg:w-6" />
                         </div>
-                        <span className="font-semibold text-sm sm:text-sm md:text-base lg:text-base text-foreground group-hover:text-primary transition-colors text-center leading-tight w-full block mt-auto">{item.title}</span>
+                        <span className="font-medium text-xs sm:text-sm md:text-sm lg:text-sm text-foreground group-hover:text-primary transition-colors text-center leading-tight w-full block mt-auto">{item.title}</span>
                       </Card>
                     </Link>
                   </motion.div>

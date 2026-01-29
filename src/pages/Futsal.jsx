@@ -438,7 +438,7 @@ const Futsal = memo(() => {
 
 
     // Payment State
-    const [paymentMethod, setPaymentMethod] = useState('card');
+    const [paymentMethod, setPaymentMethod] = useState('manual_qr');
     const [proofFile, setProofFile] = useState(null);
 
     // Fetch user bookings

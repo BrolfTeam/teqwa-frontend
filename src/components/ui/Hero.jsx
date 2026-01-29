@@ -24,7 +24,7 @@ const Hero = ({
   const containerAlignClass = isLeftAligned ? 'mx-0 max-w-3xl' : 'mx-auto max-w-4xl';
 
   return (
-    <section className={`relative min-h-[500px] lg:min-h-[85vh] flex items-center overflow-hidden ${className}`}>
+    <section className={`relative min-h-[400px] lg:min-h-[75vh] flex items-center overflow-hidden ${className}`}>
       {backgroundImage && (
         <div
           className="absolute inset-0 bg-cover bg-center"
@@ -52,7 +52,7 @@ const Hero = ({
           )}
 
           <motion.h1
-            className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight text-white"
+            className="text-3xl md:text-4xl lg:text-5xl font-semibold mb-5 leading-tight text-white"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
@@ -73,7 +73,7 @@ const Hero = ({
 
           {subtitle && (
             <motion.h2
-              className="text-2xl md:text-3xl text-white/90 mb-6"
+              className="text-xl md:text-2xl text-white/90 mb-5"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.3 }}
@@ -84,7 +84,7 @@ const Hero = ({
 
           {description && (
             <motion.p
-              className={`text-xl md:text-2xl text-white/90 mb-10 leading-relaxed ${!isLeftAligned ? 'mx-auto' : ''}`}
+              className={`text-lg md:text-xl text-white/90 mb-8 leading-relaxed ${!isLeftAligned ? 'mx-auto' : ''}`}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
@@ -101,13 +101,17 @@ const Hero = ({
           >
             {/* Support for actions array */}
             {actions.length > 0 ? (
-              actions.map((action, index) => (
-                action.onClick ? (
+              actions.map((action, index) => {
+                // For outline buttons in hero, ensure white text visibility
+                const isOutline = action.variant === 'outline';
+                const outlineStyles = isOutline ? 'border-white/40 text-white bg-white/10 hover:bg-white/20 hover:border-white/60' : '';
+
+                return action.onClick ? (
                   <Button
                     key={index}
                     variant={action.variant || (index === 0 ? 'primary' : 'secondary')}
-                    size="xl"
-                    className="shadow-2xl hover:shadow-glow"
+                    size="lg"
+                    className={`shadow-xl hover:shadow-2xl ${outlineStyles}`}
                     onClick={action.onClick}
                   >
                     {action.label}
@@ -117,8 +121,8 @@ const Hero = ({
                     key={index}
                     asChild
                     variant={action.variant || (index === 0 ? 'primary' : 'secondary')}
-                    size="xl"
-                    className="shadow-2xl hover:shadow-glow"
+                    size="lg"
+                    className={`shadow-xl hover:shadow-2xl ${outlineStyles}`}
                   >
                     {action.href?.startsWith('#') ? (
                       <a href={action.href}>{action.label}</a>
@@ -126,8 +130,8 @@ const Hero = ({
                       <Link to={action.href || '#'}>{action.label}</Link>
                     )}
                   </Button>
-                )
-              ))
+                );
+              })
             ) : (
               <>
                 {primaryAction && (

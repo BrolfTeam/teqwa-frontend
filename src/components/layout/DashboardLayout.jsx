@@ -1,48 +1,63 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { FiMenu, FiX, FiHome, FiCalendar, FiHeart, FiUsers } from 'react-icons/fi';
+import { FiMenu, FiX, FiHome, FiCalendar, FiHeart, FiUsers, FiSettings } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useAuth } from '@/context/AuthContext';
 
 export default function DashboardLayout({ children }) {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const location = useLocation();
+    const { user } = useAuth();
 
     const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
     const closeSidebar = () => setIsSidebarOpen(false);
 
-    const navItems = [
-        { to: "/dashboard", label: "Overview", icon: <FiHome className="w-5 h-5" /> },
-        { to: "/bookings", label: "Bookings", icon: <FiCalendar className="w-5 h-5" /> }, // Adjusted paths to likely real paths based on Dashboard buttons
-        { to: "/donate", label: "Donations", icon: <FiHeart className="w-5 h-5" /> },
-        { to: "/staff", label: "Staff", icon: <FiUsers className="w-5 h-5" /> },
+    const allNavItems = [
+        { to: "/dashboard", label: "Overview", icon: <FiHome className="w-5 h-5" />, roles: ['admin', 'staff', 'member', 'teacher', 'parent', 'student'] },
+        { to: "/admin/users", label: "Users", icon: <FiUsers className="w-5 h-5" />, roles: ['admin'] },
+        { to: "/admin/settings", label: "Settings", icon: <FiSettings className="w-5 h-5" />, roles: ['admin'] },
+        { to: "/staff/tasks", label: "My Tasks", icon: <FiCalendar className="w-5 h-5" />, roles: ['staff'] },
+        { to: "/bookings", label: "Bookings", icon: <FiCalendar className="w-5 h-5" />, roles: ['member', 'student', 'parent', 'admin', 'staff'] },
+        { to: "/donate", label: "Donations", icon: <FiHeart className="w-5 h-5" />, roles: ['member', 'student', 'parent', 'admin', 'staff', 'visitor'] },
     ];
 
+    const navItems = allNavItems.filter(item =>
+        !item.roles || item.roles.includes(user?.role) || (user?.is_superuser && item.roles.includes('admin'))
+    );
+
     const SidebarContent = () => (
-        <div className="h-full flex flex-col">
+        <div className="h-full flex flex-col bg-card dark:bg-slate-900 border-r border-border/40">
             <div className="p-6 border-b border-border/10 flex items-center justify-between">
-                <span className="font-bold text-xl bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Teqwa Admin</span>
+                <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-emerald-600 flex items-center justify-center text-white font-bold">
+                        T
+                    </div>
+                    <span className="font-bold text-xl text-emerald-950 dark:text-emerald-50">Teqwa Admin</span>
+                </div>
                 <button onClick={closeSidebar} className="md:hidden p-2 text-muted-foreground hover:text-primary transition-colors">
                     <FiX className="w-6 h-6" />
                 </button>
             </div>
-            <nav className="p-4 space-y-2 flex-1 overflow-y-auto">
+            <nav className="p-4 space-y-1 flex-1 overflow-y-auto">
                 {navItems.map((item) => (
                     <Link
                         key={item.to}
                         to={item.to}
                         onClick={closeSidebar}
-                        className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${location.pathname === item.to
-                                ? 'bg-primary text-primary-foreground shadow-md shadow-primary/20'
-                                : 'hover:bg-accent/10 hover:text-primary text-muted-foreground'
+                        className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 font-medium ${location.pathname === item.to
+                            ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-600/20'
+                            : 'text-gray-600 dark:text-gray-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 hover:text-emerald-700 dark:hover:text-emerald-400'
                             }`}
                     >
                         {item.icon}
-                        <span className="font-medium">{item.label}</span>
+                        <span>{item.label}</span>
                     </Link>
                 ))}
             </nav>
             <div className="p-4 border-t border-border/10">
-                <p className="text-xs text-center text-muted-foreground">© 2024 Teqwa Project</p>
+                <div className="bg-emerald-50 dark:bg-emerald-900/20 rounded-xl p-4">
+                    <p className="text-xs text-center text-emerald-800 dark:text-emerald-300 font-medium">© 2024 Teqwa Project</p>
+                </div>
             </div>
         </div>
     );

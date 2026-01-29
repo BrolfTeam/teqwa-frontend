@@ -14,7 +14,7 @@ const Card = memo(React.forwardRef(
     },
     ref
   ) => {
-    const baseStyles = 'rounded-xl border bg-card text-card-foreground shadow-card overflow-hidden transition-all duration-300';
+    const baseStyles = 'rounded-xl border bg-card text-card-foreground shadow-sm overflow-hidden transition-all duration-300';
 
     const variants = {
       default: 'border-border/50 bg-card text-card-foreground shadow-sm hover:shadow-md',
@@ -62,7 +62,7 @@ const Card = memo(React.forwardRef(
 
 const CardHeader = memo(({ className, ...props }) => (
   <div
-    className={cn('flex flex-col space-y-1.5 p-6 pb-4', className)}
+    className={cn('flex flex-col space-y-1.5 p-5 pb-3', className)}
     {...props}
   />
 ));
@@ -70,7 +70,7 @@ const CardHeader = memo(({ className, ...props }) => (
 const CardTitle = memo(({ className, gradient = false, ...props }) => (
   <h3
     className={cn(
-      'text-2xl font-semibold leading-none tracking-tight',
+      'text-xl font-medium leading-none tracking-tight',
       gradient && 'gradient-text',
       className
     )}
@@ -86,12 +86,12 @@ const CardDescription = memo(({ className, ...props }) => (
 ));
 
 const CardContent = memo(({ className, ...props }) => (
-  <div className={cn('p-6 pt-0', className)} {...props} />
+  <div className={cn('p-5 pt-0', className)} {...props} />
 ));
 
 const CardFooter = memo(({ className, ...props }) => (
   <div
-    className={cn('flex items-center p-6 pt-4 border-t border-border/50', className)}
+    className={cn('flex items-center p-5 pt-3 border-t border-border/50', className)}
     {...props}
   />
 ));

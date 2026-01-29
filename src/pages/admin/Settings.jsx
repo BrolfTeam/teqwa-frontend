@@ -222,83 +222,81 @@ const Settings = memo(() => {
     ];
 
     return (
-        <div className="min-h-screen bg-gray-50/50 pb-20">
-            <div className="container px-4 py-8 max-w-7xl mx-auto">
-                <AdminModuleHeader
-                    title={t('settings.systemSettings')}
-                    subtitle={t('settings.configureSubtitle') || "Adjust system-wide configurations, security, and mosque-specific parameters."}
-                />
+        <div className="max-w-7xl mx-auto space-y-8">
+            <AdminModuleHeader
+                title={t('settings.systemSettings')}
+                subtitle={t('settings.configureSubtitle') || "Adjust system-wide configurations, security, and mosque-specific parameters."}
+            />
 
-                <div className="flex justify-end mb-10">
-                    <Button
-                        onClick={handleSave}
-                        disabled={saving}
-                        className="h-16 px-10 rounded-3xl bg-emerald-600 hover:bg-emerald-700 shadow-xl shadow-emerald-500/20 text-lg font-black transition-all"
+            <div className="flex justify-end mb-10">
+                <Button
+                    onClick={handleSave}
+                    disabled={saving}
+                    className="h-16 px-10 rounded-3xl bg-emerald-600 hover:bg-emerald-700 shadow-xl shadow-emerald-500/20 text-lg font-black transition-all"
+                >
+                    <FiSave className={`mr-3 ${saving ? 'animate-spin' : ''}`} />
+                    {saving ? t('settings.saving') : t('settings.saveAll')}
+                </Button>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {sections.map((section, idx) => (
+                    <motion.div
+                        key={section.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: idx * 0.1 }}
                     >
-                        <FiSave className={`mr-3 ${saving ? 'animate-spin' : ''}`} />
-                        {saving ? t('settings.saving') : t('settings.saveAll')}
-                    </Button>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    {sections.map((section, idx) => (
-                        <motion.div
-                            key={section.id}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: idx * 0.1 }}
-                        >
-                            <Card className="h-full border-white/20 bg-white/40 backdrop-blur-xl shadow-xl rounded-[2.5rem] overflow-hidden group">
-                                <CardContent className="p-8">
-                                    <div className="flex items-center gap-4 mb-8">
-                                        <div className={`p-4 rounded-2xl ${section.color} shadow-sm group-hover:scale-110 transition-transform`}>
-                                            <section.icon className="w-6 h-6" />
-                                        </div>
-                                        <h3 className="text-2xl font-black text-gray-800 tracking-tight">{section.title}</h3>
+                        <Card className="h-full border-white/20 bg-white/40 backdrop-blur-xl shadow-xl rounded-[2.5rem] overflow-hidden group">
+                            <CardContent className="p-8">
+                                <div className="flex items-center gap-4 mb-8">
+                                    <div className={`p-4 rounded-2xl ${section.color} shadow-sm group-hover:scale-110 transition-transform`}>
+                                        <section.icon className="w-6 h-6" />
                                     </div>
+                                    <h3 className="text-2xl font-black text-gray-800 tracking-tight">{section.title}</h3>
+                                </div>
 
-                                    <div className="space-y-6">
-                                        {section.fields.map(field => (
-                                            <div key={field.key} className="space-y-2">
-                                                <label className="block text-xs font-black text-gray-400 uppercase tracking-widest ml-1">{field.label}</label>
-                                                {field.type === 'textarea' ? (
-                                                    <textarea
-                                                        value={settings[field.key]}
-                                                        onChange={(e) => setSettings({ ...settings, [field.key]: e.target.value })}
-                                                        className="w-full px-5 py-4 bg-white/60 border-2 border-transparent focus:border-emerald-500/30 focus:bg-white rounded-2xl transition-all outline-none font-bold text-gray-700 min-h-[100px]"
-                                                    />
-                                                ) : field.type === 'select' ? (
-                                                    <select
-                                                        value={settings[field.key]}
-                                                        onChange={(e) => setSettings({ ...settings, [field.key]: e.target.value })}
-                                                        className="w-full px-5 py-4 bg-white/60 border-2 border-transparent focus:border-emerald-500/30 focus:bg-white rounded-2xl transition-all outline-none font-bold text-gray-700 cursor-pointer"
-                                                    >
-                                                        {field.options.map(o => <option key={o.v} value={o.v}>{o.l}</option>)}
-                                                    </select>
-                                                ) : field.type === 'checkbox' ? (
-                                                    <div className="flex items-center gap-3 bg-white/60 p-4 rounded-2xl cursor-pointer hover:bg-white/80 transition-colors"
-                                                        onClick={() => setSettings({ ...settings, [field.key]: !settings[field.key] })}>
-                                                        <div className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all ${settings[field.key] ? 'bg-emerald-500 border-emerald-500' : 'border-gray-300'}`}>
-                                                            {settings[field.key] && <div className="w-2 h-2 bg-white rounded-full" />}
-                                                        </div>
-                                                        <span className="font-bold text-gray-600">Enabled</span>
+                                <div className="space-y-6">
+                                    {section.fields.map(field => (
+                                        <div key={field.key} className="space-y-2">
+                                            <label className="block text-xs font-black text-gray-400 uppercase tracking-widest ml-1">{field.label}</label>
+                                            {field.type === 'textarea' ? (
+                                                <textarea
+                                                    value={settings[field.key]}
+                                                    onChange={(e) => setSettings({ ...settings, [field.key]: e.target.value })}
+                                                    className="w-full px-5 py-4 bg-white/60 border-2 border-transparent focus:border-emerald-500/30 focus:bg-white rounded-2xl transition-all outline-none font-bold text-gray-700 min-h-[100px]"
+                                                />
+                                            ) : field.type === 'select' ? (
+                                                <select
+                                                    value={settings[field.key]}
+                                                    onChange={(e) => setSettings({ ...settings, [field.key]: e.target.value })}
+                                                    className="w-full px-5 py-4 bg-white/60 border-2 border-transparent focus:border-emerald-500/30 focus:bg-white rounded-2xl transition-all outline-none font-bold text-gray-700 cursor-pointer"
+                                                >
+                                                    {field.options.map(o => <option key={o.v} value={o.v}>{o.l}</option>)}
+                                                </select>
+                                            ) : field.type === 'checkbox' ? (
+                                                <div className="flex items-center gap-3 bg-white/60 p-4 rounded-2xl cursor-pointer hover:bg-white/80 transition-colors"
+                                                    onClick={() => setSettings({ ...settings, [field.key]: !settings[field.key] })}>
+                                                    <div className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all ${settings[field.key] ? 'bg-emerald-500 border-emerald-500' : 'border-gray-300'}`}>
+                                                        {settings[field.key] && <div className="w-2 h-2 bg-white rounded-full" />}
                                                     </div>
-                                                ) : (
-                                                    <input
-                                                        type={field.type}
-                                                        value={settings[field.key]}
-                                                        onChange={(e) => setSettings({ ...settings, [field.key]: e.target.value })}
-                                                        className="w-full px-5 py-4 bg-white/60 border-2 border-transparent focus:border-emerald-500/30 focus:bg-white rounded-2xl transition-all outline-none font-bold text-gray-700"
-                                                    />
-                                                )}
-                                            </div>
-                                        ))}
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        </motion.div>
-                    ))}
-                </div>
+                                                    <span className="font-bold text-gray-600">Enabled</span>
+                                                </div>
+                                            ) : (
+                                                <input
+                                                    type={field.type}
+                                                    value={settings[field.key]}
+                                                    onChange={(e) => setSettings({ ...settings, [field.key]: e.target.value })}
+                                                    className="w-full px-5 py-4 bg-white/60 border-2 border-transparent focus:border-emerald-500/30 focus:bg-white rounded-2xl transition-all outline-none font-bold text-gray-700"
+                                                />
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </motion.div>
+                ))}
             </div>
         </div>
     );

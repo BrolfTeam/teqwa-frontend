@@ -80,32 +80,32 @@ const Footer = memo(() => {
       </div>
 
       {/* Main Footer Content */}
-      <div className="relative container mx-auto px-4 py-8 md:py-12 lg:py-16">
-        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-5 gap-x-6 gap-y-8 lg:gap-12 mb-8 lg:mb-12">
+      <div className="relative container mx-auto px-4 py-6 md:py-8 lg:py-10">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-5 gap-x-5 gap-y-6 lg:gap-8 mb-6 lg:mb-8">
           {/* Brand Section */}
-          <div className="col-span-2 lg:col-span-2 space-y-4">
-            <Link to="/" className="flex items-center gap-3 group">
+          <div className="col-span-2 lg:col-span-2 space-y-3">
+            <Link to="/" className="flex items-center gap-2.5 group">
               <div className="relative">
                 <img
                   src={logo}
                   alt={siteConfig.name}
-                  className="h-12 w-auto rounded-full transition-transform duration-300 group-hover:scale-110"
+                  className="h-10 w-auto rounded-full transition-transform duration-300 group-hover:scale-110"
                 />
                 <div className="absolute inset-0 rounded-full bg-primary/20 opacity-0 group-hover:opacity-100 blur-xl transition-opacity duration-300" />
               </div>
               <div>
-                <h3 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors">
+                <h3 className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors">
                   {siteConfig.name}
                 </h3>
                 <p className="text-xs text-muted-foreground">{siteConfig.slogan}</p>
               </div>
             </Link>
-            <p className="text-sm text-muted-foreground leading-relaxed max-w-md">
+            <p className="text-sm text-muted-foreground leading-relaxed max-w-sm">
               {siteConfig.description || 'A welcoming place of worship, learning, and community for Muslims in Addis Ababa.'}
             </p>
 
             {/* Social Media Links */}
-            <div className="flex items-center gap-4 pt-2">
+            <div className="flex items-center gap-3 pt-1">
               {socialLinks.map((social) => {
                 const Icon = social.icon;
                 return (
@@ -118,14 +118,14 @@ const Footer = memo(() => {
                     whileHover={{ scale: 1.1, y: -2 }}
                     whileTap={{ scale: 0.95 }}
                     className={`
-                      w-10 h-10 rounded-lg bg-muted border border-border/50
+                      w-9 h-9 rounded-lg bg-muted border border-border/50
                       flex items-center justify-center
                       text-muted-foreground transition-all duration-300
-                      hover:bg-primary/10 hover:border-primary/50 hover:shadow-md
+                      hover:bg-primary/10 hover:border-primary/50 hover:shadow-sm
                       ${social.color}
                     `}
                   >
-                    <Icon className="w-5 h-5" />
+                    <Icon className="w-4 h-4" />
                   </motion.a>
                 );
               })}
@@ -133,16 +133,16 @@ const Footer = memo(() => {
           </div>
 
           {/* Quick Links */}
-          <div className="space-y-4">
-            <h4 className="text-base font-bold text-foreground mb-4">{t('footer.quickLinks')}</h4>
-            <ul className="space-y-3">
+          <div className="space-y-3">
+            <h4 className="text-sm font-semibold text-foreground mb-3">{t('footer.quickLinks')}</h4>
+            <ul className="space-y-2">
               {quickLinks.map((link) => (
                 <li key={link.href}>
                   <Link
                     to={link.href}
-                    className="text-base text-muted-foreground hover:text-primary transition-colors duration-200 inline-flex items-center gap-2 group"
+                    className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200 inline-flex items-center gap-1.5 group"
                   >
-                    <span className="w-1.5 h-1.5 rounded-full bg-primary/0 group-hover:bg-primary transition-all duration-200" />
+                    <span className="w-1 h-1 rounded-full bg-primary/0 group-hover:bg-primary transition-all duration-200" />
                     {link.name}
                   </Link>
                 </li>
@@ -151,16 +151,16 @@ const Footer = memo(() => {
           </div>
 
           {/* Services */}
-          <div className="space-y-4">
-            <h4 className="text-base font-bold text-foreground mb-4">{t('footer.services')}</h4>
-            <ul className="space-y-3">
+          <div className="space-y-3">
+            <h4 className="text-sm font-semibold text-foreground mb-3">{t('footer.services')}</h4>
+            <ul className="space-y-2">
               {services.map((service) => (
                 <li key={service.href}>
                   <Link
                     to={service.href}
-                    className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200 inline-flex items-center gap-2 group"
+                    className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200 inline-flex items-center gap-1.5 group"
                   >
-                    <span className="w-1.5 h-1.5 rounded-full bg-primary/0 group-hover:bg-primary transition-all duration-200" />
+                    <span className="w-1 h-1 rounded-full bg-primary/0 group-hover:bg-primary transition-all duration-200" />
                     {service.name}
                   </Link>
                 </li>
@@ -169,17 +169,17 @@ const Footer = memo(() => {
           </div>
 
           {/* Contact Info */}
-          <div className="col-span-2 lg:col-span-1 space-y-4">
-            <h4 className="text-base font-bold text-foreground mb-4">{t('footer.contactUs')}</h4>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4">
+          <div className="col-span-2 lg:col-span-1 space-y-3">
+            <h4 className="text-sm font-semibold text-foreground mb-3">{t('footer.contactUs')}</h4>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-3">
               {/* Address */}
-              <div className="flex items-start gap-3 group">
-                <div className="mt-0.5 p-2 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
-                  <FiMapPin className="h-4 w-4 text-primary flex-shrink-0" />
+              <div className="flex items-start gap-2.5 group">
+                <div className="mt-0.5 p-1.5 rounded-md bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                  <FiMapPin className="h-3.5 w-3.5 text-primary flex-shrink-0" />
                 </div>
                 <div className="flex-1">
-                  <p className="text-base font-medium text-foreground">{siteConfig.name}</p>
-                  <p className="text-xs text-muted-foreground mt-1">
+                  <p className="text-sm font-medium text-foreground">{siteConfig.name}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">
                     {siteConfig.contact?.address || 'Addis Ababa, Ethiopia'}
                   </p>
                 </div>
@@ -188,43 +188,43 @@ const Footer = memo(() => {
               {/* Email */}
               <a
                 href={`mailto:${siteConfig.contact?.email || 'info@mujea-at-tekwa.org'}`}
-                className="flex items-start gap-3 group"
+                className="flex items-start gap-2.5 group"
               >
-                <div className="mt-0.5 p-2 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
-                  <FiMail className="h-4 w-4 text-primary flex-shrink-0" />
+                <div className="mt-0.5 p-1.5 rounded-md bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                  <FiMail className="h-3.5 w-3.5 text-primary flex-shrink-0" />
                 </div>
                 <div className="flex-1">
                   <p className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">
                     {siteConfig.contact?.email || 'info@mujea-at-tekwa.org'}
                   </p>
-                  <p className="text-xs text-muted-foreground mt-1">{t('footer.generalInquiries')}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">{t('footer.generalInquiries')}</p>
                 </div>
               </a>
 
               {/* Phone */}
               <a
                 href={`tel:${(siteConfig.contact?.phone || '+251 11 123 4567').replace(/[^0-9+]/g, '')}`}
-                className="flex items-start gap-3 group"
+                className="flex items-start gap-2.5 group"
               >
-                <div className="mt-0.5 p-2 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
-                  <FiPhone className="h-4 w-4 text-primary flex-shrink-0" />
+                <div className="mt-0.5 p-1.5 rounded-md bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                  <FiPhone className="h-3.5 w-3.5 text-primary flex-shrink-0" />
                 </div>
                 <div className="flex-1">
                   <p className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">
                     {siteConfig.contact?.phone || '+251 11 123 4567'}
                   </p>
-                  <p className="text-xs text-muted-foreground mt-1">{t('footer.officeHours')}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">{t('footer.officeHours')}</p>
                 </div>
               </a>
 
               {/* Working Hours */}
-              <div className="flex items-start gap-3">
-                <div className="mt-0.5 p-2 rounded-lg bg-primary/10">
-                  <FiClock className="h-4 w-4 text-primary flex-shrink-0" />
+              <div className="flex items-start gap-2.5">
+                <div className="mt-0.5 p-1.5 rounded-md bg-primary/10">
+                  <FiClock className="h-3.5 w-3.5 text-primary flex-shrink-0" />
                 </div>
                 <div className="flex-1">
                   <p className="text-sm font-medium text-foreground">{t('footer.openDaily')}</p>
-                  <p className="text-xs text-muted-foreground mt-1">5:00 AM - 10:00 PM</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">5:00 AM - 10:00 PM</p>
                 </div>
               </div>
             </div>
@@ -233,16 +233,16 @@ const Footer = memo(() => {
 
         {/* Resources Section */}
         {resources.length > 0 && (
-          <div className="pt-8 border-t border-border/50 mb-8">
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div className="pt-6 border-t border-border/50 mb-6">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
               <div>
-                <h4 className="text-sm font-semibold text-foreground mb-3">{t('footer.resources')}</h4>
-                <div className="flex flex-wrap gap-x-6 gap-y-2">
+                <h4 className="text-xs font-semibold text-foreground mb-2">{t('footer.resources')}</h4>
+                <div className="flex flex-wrap gap-x-5 gap-y-1.5">
                   {resources.map((resource) => (
                     <Link
                       key={resource.href}
                       to={resource.href}
-                      className="text-base text-muted-foreground hover:text-primary transition-colors duration-200"
+                      className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200"
                     >
                       {resource.name}
                     </Link>
@@ -254,25 +254,25 @@ const Footer = memo(() => {
         )}
 
         {/* Bottom Bar */}
-        <div className="pt-6 md:pt-8 border-t border-border/50">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+        <div className="pt-5 md:pt-6 border-t border-border/50">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-3">
             {/* Copyright */}
-            <div className="flex flex-col md:flex-row items-center gap-2 md:gap-4 text-sm text-muted-foreground">
-              <p className="flex items-center gap-2">
-                © {currentYear} <span className="font-semibold text-foreground">{siteConfig.name}</span>. {t('footer.allRightsReserved')}.
+            <div className="flex flex-col md:flex-row items-center gap-2 md:gap-3 text-xs text-muted-foreground">
+              <p className="flex items-center gap-1.5">
+                © {currentYear} <span className="font-medium text-foreground">{siteConfig.name}</span>. {t('footer.allRightsReserved')}.
               </p>
               <span className="hidden md:inline">•</span>
-              <p className="flex items-center gap-1.5">
-                {t('footer.builtWith')} <FiHeart className="w-4 h-4 text-red-500" /> {t('footer.forCommunity')}
+              <p className="flex items-center gap-1">
+                {t('footer.builtWith')} <FiHeart className="w-3.5 h-3.5 text-red-500" /> {t('footer.forCommunity')}
               </p>
             </div>
 
           </div>
 
           {/* Additional Info */}
-          <div className="mt-4 pt-4 border-t border-border/30 flex flex-col md:flex-row justify-between items-center gap-2 text-xs text-muted-foreground/80">
+          <div className="mt-3 pt-3 border-t border-border/30 flex flex-col md:flex-row justify-between items-center gap-2 text-xs text-muted-foreground/80">
             <p>{t('footer.poweredBy')}</p>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
               <Link to="/privacy" className="hover:text-primary transition-colors">
                 {t('footer.privacyPolicy')}
               </Link>

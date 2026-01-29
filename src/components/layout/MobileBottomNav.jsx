@@ -2,13 +2,9 @@ import { memo } from 'react';
 import { NavLink } from 'react-router-dom';
 import { FiHome, FiClock, FiGrid, FiUser, FiHeart, FiRss } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
-import { useAuth } from '@/context/AuthContext';
 
 const MobileBottomNav = memo(() => {
     const { t } = useTranslation();
-    const { isAuthenticated } = useAuth();
-
-    if (!isAuthenticated) return null;
 
     const navLinks = [
         { to: '/', icon: FiHome, label: t('nav.home') },

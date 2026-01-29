@@ -35,7 +35,7 @@ const Donations = memo(() => {
     phone: '',
     anonymous: false,
   });
-  const [paymentMethod, setPaymentMethod] = useState('card');
+  const [paymentMethod, setPaymentMethod] = useState('manual_qr');
   const [proofFile, setProofFile] = useState(null);
   const [zakatEligibleAmount, setZakatEligibleAmount] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);

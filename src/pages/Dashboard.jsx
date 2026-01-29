@@ -9,6 +9,7 @@ import ParentDashboard from '@/components/dashboard/ParentDashboard';
 import TeacherDashboard from '@/components/dashboard/TeacherDashboard';
 import IslamicPattern from '@/components/ui/IslamicPattern';
 import { useTranslation } from 'react-i18next';
+import { ConnectionAlert } from '@/components/dashboard/ConnectionAlert';
 
 const Dashboard = memo(() => {
   const { t } = useTranslation();
@@ -28,6 +29,7 @@ const Dashboard = memo(() => {
       {/* Background Pattern */}
       <IslamicPattern color="currentColor" className="text-primary/5 fixed top-0 left-0 w-full h-full z-[-1]" opacity={0.03} />
       <div className="container px-4 py-8 mx-auto">
+        <ConnectionAlert />
         {children}
       </div>
     </div>
@@ -42,9 +44,9 @@ const Dashboard = memo(() => {
   }
 
   // Check if user is a teacher (either role is 'teacher' or staff_profile role is 'teacher')
-  const isTeacher = user?.role === 'teacher' || 
+  const isTeacher = user?.role === 'teacher' ||
     (user?.role === 'staff' && user?.staff_profile?.role === 'teacher');
-  
+
   if (isTeacher) {
     return (
       <DashboardWrapper>

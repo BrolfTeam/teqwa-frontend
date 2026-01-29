@@ -1,5 +1,5 @@
 export const siteConfig = {
-  name: 'MuJemea At-Tekwa',
+  name: 'MUJEMA’ TEQWA',
   slogan: 'Serving faith, learning, and community',
   description: 'A place of worship, learning, and community for Muslims in our area.',
   url: 'https://mujemaateqwa.org',

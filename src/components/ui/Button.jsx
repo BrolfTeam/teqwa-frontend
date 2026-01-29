@@ -17,7 +17,7 @@ const Button = React.forwardRef(
     },
     ref
   ) => {
-    const baseStyles = 'inline-flex items-center justify-center transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none relative overflow-hidden select-none font-semibold tracking-wide [&_a]:text-inherit [&_a]:hover:text-inherit';
+    const baseStyles = 'inline-flex items-center justify-center transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none relative overflow-hidden select-none font-medium tracking-wide [&_a]:text-inherit [&_a]:hover:text-inherit';
 
     const variants = {
       primary: 'bg-primary text-primary-foreground shadow-md hover:brightness-110 hover:shadow-lg hover:shadow-primary/30 hover:ring-2 hover:ring-primary/50 active:scale-95 border border-primary/20',
@@ -29,11 +29,11 @@ const Button = React.forwardRef(
     };
 
     const sizes = {
-      sm: 'h-9 px-4 text-xs rounded-lg', // 36px
-      md: 'h-11 px-6 py-2 rounded-xl',   // 44px (Touch target compliant)
-      lg: 'h-12 px-8 rounded-xl text-lg',
-      xl: 'h-14 px-10 text-xl rounded-2xl',
-      icon: 'h-11 w-11 rounded-xl',
+      sm: 'h-8 px-3 text-xs rounded-lg', // 32px
+      md: 'h-10 px-5 py-2 rounded-xl',   // 40px (Touch target compliant)
+      lg: 'h-11 px-6 rounded-xl text-base',
+      xl: 'h-12 px-8 text-lg rounded-2xl',
+      icon: 'h-10 w-10 rounded-xl',
     };
 
     const Component = asChild ? 'span' : motion.button;
@@ -47,7 +47,7 @@ const Button = React.forwardRef(
       <Component
         className={cn(
           baseStyles,
-          'font-semibold',
+          'font-medium',
           variants[variant],
           sizes[size],
           isLoading && 'cursor-not-allowed',
