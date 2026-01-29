@@ -62,11 +62,17 @@
     "student": "Student",
     "parent": "Parent",
     "you": "You",
-    "saveChanges": "Save Changes"
+    "saveChanges": "Save Changes",
+    "comingSoon": "Coming Soon",
+    "connectionError": "Connection unstable",
+    "offlineNotice": "Some content may not be up to date. We'll keep trying to connect.",
+    "retry": "Retry"
   },
   "payment": {
     "selectMethod": "Select Payment Method",
     "onlinePayment": "Online Payment",
+    "onlineComingSoon": "Online payment coming soon!",
+    "onlineDisabledDesc": "Card payments will be available soon.",
     "payWithChapa": "Pay securely with Chapa (Telebirr, CBE, Cards)",
     "manualTransfer": "Manual Transfer / QR",
     "scanQrDesc": "Scan QR code or transfer to bank account",
@@ -82,6 +88,26 @@
     "paymentFailed": "Payment initialization failed",
     "proofUploaded": "Proof uploaded successfully",
     "invalidFileType": "Invalid file type. Please upload an image."
+  },
+  "membership": {
+    "title": "Membership",
+    "subtitle": "Become a member of our community and gain access to exclusive benefits.",
+    "loginToJoin": "Login to Join",
+    "comingSoonTitle": "Membership Program Launching Soon!",
+    "comingSoonDescription": "We are working hard to bring you an amazing membership experience. Stay tuned for exclusive benefits and community perks!",
+    "chooseMembershipTier": "Choose Your Membership Tier",
+    "membershipSubtitle": "Select the plan that best fits your needs and start enjoying the benefits today.",
+    "popular": "Most Popular",
+    "etbPerMonth": "ETB / Month",
+    "currentPlan": "Current Plan",
+    "joinNow": "Join Now",
+    "completeSubscription": "Complete Subscription",
+    "failedToLoad": "Failed to load membership data",
+    "pleaseLogin": "Please login to subscribe",
+    "subscriptionSubmitted": "Subscription submitted for review!",
+    "subscriptionSuccess": "Subscription successful!",
+    "paymentFailed": "Payment initialization failed",
+    "failedToProcess": "Failed to process subscription"
   },
   "nav": {
     "home": "Home",

@@ -59,6 +59,7 @@ const StaffReports = lazy(() => import('@/pages/staff/Reports'));
 // Admin pages
 const UserManagement = lazy(() => import('@/pages/admin/UserManagement'));
 const AdminSettings = lazy(() => import('@/pages/admin/Settings'));
+const DonationManagement = lazy(() => import('@/pages/admin/DonationManagement'));
 
 // Student pages
 const StudentTimetable = lazy(() => import('@/pages/student/StudentTimetable'));
@@ -199,6 +200,11 @@ const AppContent = memo(() => {
           <Route path="/admin/settings" element={
             <ProtectedRoute>
               <DashboardLayout><AdminSettings /></DashboardLayout>
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/donations" element={
+            <ProtectedRoute>
+              <DashboardLayout><DonationManagement /></DashboardLayout>
             </ProtectedRoute>
           } />
 

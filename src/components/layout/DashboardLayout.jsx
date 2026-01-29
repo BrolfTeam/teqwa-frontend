@@ -15,15 +15,22 @@ export default function DashboardLayout({ children }) {
     const allNavItems = [
         { to: "/dashboard", label: "Overview", icon: <FiHome className="w-5 h-5" />, roles: ['admin', 'staff', 'member', 'teacher', 'parent', 'student'] },
         { to: "/admin/users", label: "Users", icon: <FiUsers className="w-5 h-5" />, roles: ['admin'] },
+        { to: "/admin/donations", label: "Donations", icon: <FiHeart className="w-5 h-5" />, roles: ['admin'] },
         { to: "/admin/settings", label: "Settings", icon: <FiSettings className="w-5 h-5" />, roles: ['admin'] },
         { to: "/staff/tasks", label: "My Tasks", icon: <FiCalendar className="w-5 h-5" />, roles: ['staff'] },
         { to: "/bookings", label: "Bookings", icon: <FiCalendar className="w-5 h-5" />, roles: ['member', 'student', 'parent', 'admin', 'staff'] },
-        { to: "/donate", label: "Donations", icon: <FiHeart className="w-5 h-5" />, roles: ['member', 'student', 'parent', 'admin', 'staff', 'visitor'] },
+        { to: "/donate", label: "Donations", icon: <FiHeart className="w-5 h-5" />, roles: ['member', 'student', 'parent', 'staff', 'visitor'] },
     ];
 
-    const navItems = allNavItems.filter(item =>
-        !item.roles || item.roles.includes(user?.role) || (user?.is_superuser && item.roles.includes('admin'))
-    );
+    const navItems = allNavItems.filter(item => {
+        const userRole = user?.role;
+        const isSuperUser = user?.is_superuser;
+
+        // If it's the public donations link and user is an admin, hide it (as they have the admin one)
+        if (item.to === "/donate" && (userRole === 'admin' || isSuperUser)) return false;
+
+        return !item.roles || item.roles.includes(userRole) || (isSuperUser && item.roles.includes('admin'));
+    });
 
     const SidebarContent = () => (
         <div className="h-full flex flex-col bg-card dark:bg-slate-900 border-r border-border/40">
