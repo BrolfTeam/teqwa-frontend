@@ -269,14 +269,14 @@ const Settings = memo(() => {
         },
         {
             id: 'payment',
-            title: t('settings.paymentSettings') || 'Payment Settings',
+            title: t('settings.paymentSettings'),
             icon: FiCreditCard,
             color: 'text-amber-500 bg-amber-50',
             fields: [
-                { key: 'cbeAccountNumber', label: t('settings.cbeAccountNumber') || 'CBE Account Number', type: 'text' },
-                { key: 'cbeAccountName', label: t('settings.cbeAccountName') || 'CBE Account Name', type: 'text' },
-                { key: 'telebirrAccountNumber', label: t('settings.telebirrAccountNumber') || 'Telebirr Number', type: 'text' },
-                { key: 'telebirrAccountName', label: t('settings.telebirrAccountName') || 'Telebirr Name', type: 'text' },
+                { key: 'cbeAccountNumber', label: t('settings.cbeAccountNumber'), type: 'text' },
+                { key: 'cbeAccountName', label: t('settings.cbeAccountName'), type: 'text' },
+                { key: 'telebirrAccountNumber', label: t('settings.telebirrAccountNumber'), type: 'text' },
+                { key: 'telebirrAccountName', label: t('settings.telebirrAccountName'), type: 'text' },
             ]
         }
     ];

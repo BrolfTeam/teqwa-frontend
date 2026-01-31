@@ -75,7 +75,10 @@
     "paymentInitialized": "تم بدء الدفع بنجاح",
     "paymentFailed": "فشل بدء الدفع",
     "proofUploaded": "تم رفع الإثبات بنجاح",
-    "invalidFileType": "نوع الملف غير صالح. يرجى تحميل صورة."
+    "invalidFileType": "نوع الملف غير صالح. يرجى تحميل صورة.",
+    "cbe": "CBE",
+    "cbeDetails": "تفاصيل CBE",
+    "telebirrDetails": "تفاصيل تيليبير"
   },
   "nav": {
     "home": "الرئيسية",
@@ -1533,6 +1536,11 @@
     "dailyImamAsr": "إمام العصر",
     "dailyImamMaghrib": "إمام المغرب",
     "dailyImamIsha": "إمام العشاء",
+    "paymentSettings": "إعدادات الدفع",
+    "cbeAccountNumber": "رقم حساب CBE",
+    "cbeAccountName": "اسم حساب CBE",
+    "telebirrAccountNumber": "رقم تيليبير",
+    "telebirrAccountName": "اسم تيليبير",
     "saveSettings": "حفظ الإعدادات",
     "saveAll": "حفظ جميع التغييرات",
     "saving": "جاري الحفظ...",

@@ -75,7 +75,10 @@
     "paymentInitialized": "ክፍያ በተሳካ ሁኔታ ተጀምሯል",
     "paymentFailed": "የክፍያ ማስጀመር አልተሳካም",
     "proofUploaded": "ማረጋገጫ በተሳካ ሁኔታ ተሰቅሏል",
-    "invalidFileType": "ልክ ያልሆነ የፋይል አይነት። እባክዎ ምስል ይስቀሉ።"
+    "invalidFileType": "ልክ ያልሆነ የፋይል አይነት። እባክዎ ምስል ይስቀሉ።",
+    "cbe": "ሲቢኢ",
+    "cbeDetails": "የሲቢኢ ዝርዝሮች",
+    "telebirrDetails": "የቴሌብር ዝርዝሮች"
   },
   "nav": {
     "home": "መነሻ",
@@ -1526,6 +1529,11 @@
     "dailyImamAsr": "የአስር ኢማም",
     "dailyImamMaghrib": "የመግሪብ ኢማም",
     "dailyImamIsha": "የኢሻ ኢማም",
+    "paymentSettings": "የክፍያ ቅንብሮች",
+    "cbeAccountNumber": "የሲቢኢ ሂሳብ ቁጥር",
+    "cbeAccountName": "የሲቢኢ ሂሳብ ስም",
+    "telebirrAccountNumber": "የቴሌብር ቁጥር",
+    "telebirrAccountName": "የቴሌብር ስም",
     "saveSettings": "ቅንብሮችን አስቀምጥ",
     "saveAll": "ሁሉንም ለውጦች አስቀምጥ",
     "saving": "በመቀመጥ ላይ...",

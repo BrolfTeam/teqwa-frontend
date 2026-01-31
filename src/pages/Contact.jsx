@@ -3,6 +3,7 @@ import { FaPhone, FaEnvelope, FaMapMarkerAlt, FaClock, FaFacebook, FaTwitter, Fa
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/Button';
 import { CONTACT_INFO } from '@/config/constants';
+import { siteConfig } from '@/config/site';
 import { apiService } from '@/lib/apiService';
 import { useTranslation } from 'react-i18next';
 

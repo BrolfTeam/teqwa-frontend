@@ -179,7 +179,7 @@ export const PaymentMethodSelector = ({
                                     `}
                                 >
                                     <span className={`text-xs font-bold uppercase tracking-widest ${manualSubMethod === 'cbe' ? 'text-primary' : 'text-muted-foreground'}`}>
-                                        {t('payment.cbe') || 'CBE'}
+                                        {t('payment.cbe')}
                                     </span>
                                 </div>
                                 <div
@@ -192,7 +192,7 @@ export const PaymentMethodSelector = ({
                                     `}
                                 >
                                     <span className={`text-xs font-bold uppercase tracking-widest ${manualSubMethod === 'telebirr' ? 'text-primary' : 'text-muted-foreground'}`}>
-                                        {t('payment.telebirr') || 'Telebirr'}
+                                        {t('payment.telebirr')}
                                     </span>
                                 </div>
                             </div>
@@ -202,7 +202,7 @@ export const PaymentMethodSelector = ({
                                 <div className="space-y-4">
                                     <h4 className="font-semibold text-foreground flex items-center gap-2">
                                         <FiInfo className="w-4 h-4 text-primary" />
-                                        {manualSubMethod === 'cbe' ? t('payment.cbeDetails') || 'CBE Details' : t('payment.telebirrDetails') || 'Telebirr Details'}
+                                        {manualSubMethod === 'cbe' ? t('payment.cbeDetails') : t('payment.telebirrDetails')}
                                     </h4>
                                     <div className="space-y-3 text-sm">
                                         {manualSubMethod === 'cbe' ? (

@@ -87,7 +87,10 @@
     "paymentInitialized": "Payment initialized successfully",
     "paymentFailed": "Payment initialization failed",
     "proofUploaded": "Proof uploaded successfully",
-    "invalidFileType": "Invalid file type. Please upload an image."
+    "invalidFileType": "Invalid file type. Please upload an image.",
+    "cbe": "CBE",
+    "cbeDetails": "CBE Details",
+    "telebirrDetails": "Telebirr Details"
   },
   "membership": {
     "title": "Membership",
@@ -1522,6 +1525,11 @@
     "dailyImamAsr": "Asr Imam",
     "dailyImamMaghrib": "Maghrib Imam",
     "dailyImamIsha": "Isha Imam",
+    "paymentSettings": "Payment Settings",
+    "cbeAccountNumber": "CBE Account Number",
+    "cbeAccountName": "CBE Account Name",
+    "telebirrAccountNumber": "Telebirr Number",
+    "telebirrAccountName": "Telebirr Name",
     "saveSettings": "Save Settings",
     "saveAll": "Save All Changes",
     "saving": "Saving...",
