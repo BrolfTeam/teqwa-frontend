@@ -615,6 +615,7 @@ const Futsal = memo(() => {
             fetchSlots(selectedDate);
             fetchBookings();
 
+        } catch (error) {
             console.error('Booking error:', error);
             if (error?.errors || (error?.data && typeof error.data === 'object' && !Array.isArray(error.data))) {
                 const validationErrors = {};

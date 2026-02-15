@@ -690,6 +690,13 @@ class ApiService {
     return this.request(`/itikaf/${query ? `?${query}` : ''}`);
   }
 
+  async updateItikafStatus(id, status) {
+    return this.request(`/itikaf/registrations/${id}/status/`, {
+      method: 'PATCH',
+      body: JSON.stringify({ status })
+    });
+  }
+
   async getItikafParticipants(programId) {
     return this.request(`/itikaf/${programId}/participants/`);
   }
