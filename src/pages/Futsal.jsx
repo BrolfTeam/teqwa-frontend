@@ -615,17 +615,28 @@ const Futsal = memo(() => {
             fetchSlots(selectedDate);
             fetchBookings();
 
-        } catch (error) {
             console.error('Booking error:', error);
-            if (error?.errors) {
+            if (error?.errors || (error?.data && typeof error.data === 'object' && !Array.isArray(error.data))) {
                 const validationErrors = {};
-                error.errors.forEach(e => {
-                    validationErrors[e.path.join('.')] = e.message;
-                });
+
+                // Handle Zod errors (array of objects with path/message)
+                if (Array.isArray(error?.errors)) {
+                    error.errors.forEach(e => {
+                        validationErrors[e.path.join('.')] = e.message;
+                    });
+                }
+                // Handle standard API field errors (object with field: [messages] or field: message)
+                else if (error?.data) {
+                    Object.entries(error.data).forEach(([key, value]) => {
+                        validationErrors[key] = Array.isArray(value) ? value[0] : value;
+                    });
+                }
+
                 setErrors(validationErrors);
             } else {
-                setErrors({ form: error.message || 'An unexpected error occurred' });
-                toast.error(error.message || 'Booking failed. Please try again.');
+                const message = error?.message || (typeof error?.data === 'string' ? error.data : 'An unexpected error occurred');
+                setErrors({ form: message });
+                toast.error(message);
             }
         } finally {
             setIsBooking(false);
@@ -902,7 +913,7 @@ const Futsal = memo(() => {
                                         </div>
                                     </div>
                                     <div className="bg-background rounded-xl p-5 border border-border/50 min-w-[140px]">
-                                        <div className="text-xs text-muted-foreground uppercase tracking-wide mb-1">{t('donations.donationAmount')}</div>
+                                        <div className="text-xs text-muted-foreground uppercase tracking-wide mb-1">{t('futsal.bookingAmount')}</div>
                                         <div className="text-3xl font-bold text-primary">{selectedSlot.price}</div>
                                         <div className="text-xs text-muted-foreground">ETB</div>
                                     </div>
@@ -1061,7 +1072,7 @@ const Futsal = memo(() => {
                                 ) : (
                                     <>
                                         <FiCheckCircle className="w-4 h-4 mr-2" />
-                                        {t('common.submit')} & {t('donations.donate')} {selectedSlot.price} ETB
+                                        {t('futsal.payAndBook')} ({selectedSlot.price} ETB)
                                     </>
                                 )}
                             </Button>

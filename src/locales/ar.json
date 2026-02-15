@@ -510,6 +510,8 @@
     "showHistory": "عرض السجل",
     "confirmBooking": "تأكيد الحجز الخاص بك",
     "bookingSummary": "ملخص الحجز",
+    "bookingAmount": "مبلغ الحجز",
+    "payAndBook": "ادفع واحجز",
     "contactName": "اسم جهة الاتصال",
     "contactEmail": "البريد الإلكتروني لجهة الاتصال",
     "numberOfPlayers": "عدد اللاعبين",

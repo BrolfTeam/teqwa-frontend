@@ -245,6 +245,10 @@ class DataService {
     return this.apiCall(() => apiService.getAllDonations(params), params, { useCache: false });
   }
 
+  async updateDonationStatus(id, status) {
+    return this.apiCall(() => apiService.updateDonationStatus(id, status), { id, status }, { useCache: false });
+  }
+
   // Staff
   async getStaff(params = {}) {
     return this.apiCall(() => apiService.getStaff(params), params);
@@ -356,6 +360,14 @@ class DataService {
 
   async getMyItikafRegistrations() {
     return this.apiCall(() => apiService.getMyItikafRegistrations(), {}, { useCache: false });
+  }
+
+  async getAllItikafRegistrations(params = {}) {
+    return this.apiCall(() => apiService.getAllItikafRegistrations(params), params, { useCache: false });
+  }
+
+  async updateItikafRegistrationStatus(id, status) {
+    return this.apiCall(() => apiService.updateEnrollmentStatus(id, status), { id, status }, { useCache: false });
   }
 
   // Authentication

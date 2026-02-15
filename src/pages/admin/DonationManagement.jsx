@@ -1,6 +1,6 @@
 import { useState, useEffect, memo, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiHeart, FiSearch, FiRefreshCw, FiFilter, FiDownload, FiDollarSign, FiUsers, FiTrendingUp } from 'react-icons/fi';
+import { FiHeart, FiSearch, FiRefreshCw, FiFilter, FiDownload, FiDollarSign, FiUsers, FiTrendingUp, FiImage, FiX } from 'react-icons/fi';
 import { Card, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { dataService } from '@/lib/dataService';
@@ -17,6 +17,8 @@ const DonationManagement = memo(() => {
     const [searchTerm, setSearchTerm] = useState('');
     const [statusFilter, setStatusFilter] = useState('all');
     const [refreshing, setRefreshing] = useState(false);
+    const [selectedImage, setSelectedImage] = useState(null);
+    const [showModal, setShowModal] = useState(false);
 
     useEffect(() => {
         fetchData();
@@ -198,8 +200,10 @@ const DonationManagement = memo(() => {
                                 <th className="px-6 py-4">Cause</th>
                                 <th className="px-6 py-4">Amount</th>
                                 <th className="px-6 py-4">Status</th>
+                                <th className="px-6 py-4">Proof</th>
                                 <th className="px-6 py-4">Date</th>
                                 <th className="px-6 py-4 text-right">Reference</th>
+                                <th className="px-6 py-4 text-right">Actions</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-border/50">
@@ -239,11 +243,26 @@ const DonationManagement = memo(() => {
                                                 {donation.amount} {donation.currency || 'ETB'}
                                             </div>
                                             <div className="text-[10px] text-muted-foreground uppercase font-bold tracking-tighter">
-                                                {donation.payment_method || 'Chapa'}
+                                                {donation.payment_method || donation.method || 'Chapa'}
                                             </div>
                                         </td>
                                         <td className="px-6 py-4">
                                             {getStatusBadge(donation.status)}
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            {donation.proof_image ? (
+                                                <div
+                                                    className="w-12 h-12 rounded-lg border border-border overflow-hidden cursor-zoom-in group-hover:border-emerald-500/50 transition-colors"
+                                                    onClick={() => {
+                                                        setSelectedImage(donation.proof_image);
+                                                        setShowModal(true);
+                                                    }}
+                                                >
+                                                    <img src={donation.proof_image} alt="Proof" className="w-full h-full object-cover" />
+                                                </div>
+                                            ) : (
+                                                <div className="text-[10px] text-muted-foreground italic">No proof</div>
+                                            )}
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap">
                                             <div className="text-foreground">
@@ -257,6 +276,43 @@ const DonationManagement = memo(() => {
                                             <span className="font-mono text-xs bg-muted px-2 py-1 rounded select-all">
                                                 {donation.reference || donation.id?.toString().slice(0, 8) || 'N/A'}
                                             </span>
+                                        </td>
+                                        <td className="px-6 py-4 text-right">
+                                            {donation.status === 'pending' && (
+                                                <div className="flex justify-end gap-2 outline-none">
+                                                    <Button
+                                                        size="sm"
+                                                        className="h-8 bg-emerald-500 hover:bg-emerald-600 text-white font-bold"
+                                                        onClick={async () => {
+                                                            try {
+                                                                await dataService.updateDonationStatus(donation.id, 'completed');
+                                                                toast.success('Donation approved successfully');
+                                                                fetchData();
+                                                            } catch (e) {
+                                                                toast.error('Failed to approve donation');
+                                                            }
+                                                        }}
+                                                    >
+                                                        Approve
+                                                    </Button>
+                                                    <Button
+                                                        size="sm"
+                                                        variant="outline"
+                                                        className="h-8 border-rose-500/50 text-rose-500 hover:bg-rose-500 hover:text-white font-bold"
+                                                        onClick={async () => {
+                                                            try {
+                                                                await dataService.updateDonationStatus(donation.id, 'failed');
+                                                                toast.success('Donation rejected');
+                                                                fetchData();
+                                                            } catch (e) {
+                                                                toast.error('Failed to reject donation');
+                                                            }
+                                                        }}
+                                                    >
+                                                        Reject
+                                                    </Button>
+                                                </div>
+                                            )}
                                         </td>
                                     </motion.tr>
                                 ))}
@@ -280,6 +336,35 @@ const DonationManagement = memo(() => {
                     </div>
                 </div>
             </div>
+
+            {/* Image Modal */}
+            <AnimatePresence>
+                {showModal && (
+                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => setShowModal(false)}
+                            className="absolute inset-0 bg-black/80 backdrop-blur-sm cursor-zoom-out"
+                        />
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                            className="relative w-full max-w-4xl aspect-video bg-zinc-900 rounded-3xl overflow-hidden shadow-2xl"
+                        >
+                            <img src={selectedImage} alt="Payment Proof" className="w-full h-full object-contain" />
+                            <button
+                                onClick={() => setShowModal(false)}
+                                className="absolute top-6 right-6 p-3 bg-white/10 hover:bg-white/20 text-white rounded-full backdrop-blur-md transition-all"
+                            >
+                                <FiX className="w-6 h-6" />
+                            </button>
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
         </div>
     );
 });

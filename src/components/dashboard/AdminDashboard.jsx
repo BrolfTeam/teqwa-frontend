@@ -30,7 +30,8 @@ const AdminDashboard = memo(() => {
     const [bookings, setBookings] = useState([]);
     const [donations, setDonations] = useState([]);
     const [enrollments, setEnrollments] = useState([]);
-    const [moduleLoading, setModuleLoading] = useState({ bookings: true, donations: true, enrollments: true });
+    const [itikafRegistrations, setItikafRegistrations] = useState([]);
+    const [moduleLoading, setModuleLoading] = useState({ bookings: true, donations: true, enrollments: true, itikaf: true });
 
     const fetchStats = useCallback(async (showLoading = false) => {
         try {
@@ -97,6 +98,19 @@ const AdminDashboard = memo(() => {
             setEnrollments([]);
         } finally {
             setModuleLoading(prev => ({ ...prev, enrollments: false }));
+        }
+
+        // Fetch Itikaf
+        try {
+            setModuleLoading(prev => ({ ...prev, itikaf: true }));
+            const itikafData = await dataService.getAllItikafRegistrations().catch(() => ({ data: [] }));
+            const itikafList = Array.isArray(itikafData) ? itikafData : (itikafData?.data || itikafData || []);
+            setItikafRegistrations(itikafList);
+        } catch (e) {
+            console.error('Failed to fetch itikaf:', e);
+            setItikafRegistrations([]);
+        } finally {
+            setModuleLoading(prev => ({ ...prev, itikaf: false }));
         }
     }, []);
 
@@ -214,6 +228,7 @@ const AdminDashboard = memo(() => {
                 bookings={bookings}
                 donations={donations}
                 enrollments={enrollments}
+                itikafRegistrations={itikafRegistrations}
                 moduleLoading={moduleLoading}
                 fetchModuleData={fetchModuleData}
                 itemVariants={itemVariants}

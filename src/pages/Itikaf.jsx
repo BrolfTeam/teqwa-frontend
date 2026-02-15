@@ -728,7 +728,7 @@ const Itikaf = memo(() => {
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 50 }}
-              className="bg-background w-full max-w-lg rounded-2xl shadow-xl overflow-hidden"
+              className="bg-background w-full max-w-lg max-h-[90vh] rounded-2xl shadow-xl overflow-hidden flex flex-col"
             >
               <div className="p-6 border-b border-border/50 flex justify-between items-center bg-muted/10">
                 <h3 className="font-bold text-xl">{t('itikaf.registerForItikaf')} {selectedProgram.title}</h3>
@@ -736,7 +736,7 @@ const Itikaf = memo(() => {
                   <FiX className="w-5 h-5" />
                 </button>
               </div>
-              <div className="p-6 space-y-4">
+              <div className="p-6 space-y-4 overflow-y-auto flex-1">
                 <div className="space-y-4">
                   <div>
                     <label className="text-sm font-medium mb-1.5 block">{t('itikaf.emergencyContact')} <span className="text-red-500">*</span></label>

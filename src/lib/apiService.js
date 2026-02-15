@@ -568,6 +568,13 @@ class ApiService {
     return this.request(`/donations/${query ? `?${query}` : ''}`);
   }
 
+  async updateDonationStatus(id, status) {
+    return this.request(`/donations/${id}/status/`, {
+      method: 'PATCH',
+      body: JSON.stringify({ status })
+    });
+  }
+
   async getAllEducationEnrollments(params = {}) {
     const query = new URLSearchParams(params).toString();
     return this.request(`/education/bookings/${query ? `?${query}` : ''}`);
@@ -676,6 +683,11 @@ class ApiService {
 
   async getMyItikafRegistrations() {
     return this.request('/itikaf/my-registrations/');
+  }
+
+  async getAllItikafRegistrations(params = {}) {
+    const query = new URLSearchParams(params).toString();
+    return this.request(`/itikaf/${query ? `?${query}` : ''}`);
   }
 
   async getItikafParticipants(programId) {
