@@ -11,13 +11,8 @@ import {
     FiLoader,
     FiUsers,
     FiActivity,
-    FiShield,
     FiArrowLeft,
     FiArrowRight,
-    FiChevronDown,
-    FiChevronUp,
-    FiEdit,
-    FiTrash2,
     FiRefreshCw,
     FiEye,
     FiAlertCircle,
@@ -28,14 +23,12 @@ import {
 } from 'react-icons/fi';
 import { PaymentMethodSelector } from '@/components/payment/PaymentMethodSelector';
 import Hero from '@/components/ui/Hero';
-import Navbar from '@/components/layout/Navbar';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import Modal from '@/components/ui/Modal';
 import FormField from '@/components/ui/FormField';
 import { LoadingSpinner } from '@/components/ui';
-import IslamicPattern from '@/components/ui/IslamicPattern';
 import { dataService } from '@/lib/dataService';
 import paymentService from '@/services/paymentService';
 import { formSchemas } from '@/lib/validation';
@@ -702,175 +695,171 @@ const Futsal = memo(() => {
 
     return (
         <div className="min-h-screen bg-background pb-20 overflow-x-hidden">
-            <Navbar />
+            {/* Hero Section — uses the shared Hero component */}
+            <Hero
+                title="Futsal Booking"
+                titleHighlight="Premium Sports Experience"
+                description="Experience elite-level futsal at Mujemaa Teqwa. Seamless booking, premium turf, and a vibrant community await."
+                backgroundImage={headerBg}
+                actions={[
+                    {
+                        label: 'Book Now',
+                        href: '#booking-section',
+                        variant: 'primary',
+                    },
+                    ...(isAuthenticated ? [{
+                        label: 'My Bookings',
+                        onClick: () => setShowBookingHistory(true),
+                        variant: 'outline',
+                    }] : []),
+                ]}
+            />
 
-            {/* Hero Section with Premium Design */}
-            <section className="relative pt-32 pb-20 overflow-hidden">
-                <div className="absolute inset-0 z-0">
-                    <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-pulse" />
-                    <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
-                </div>
-
-                <div className="max-container px-4 relative z-10">
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="text-center max-w-4xl mx-auto mb-16"
-                    >
-                        <span className="inline-block px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-semibold mb-6 tracking-wide uppercase">
-                            Premium Sports Experience
-                        </span>
-                        <h1 className="text-4xl md:text-7xl font-extrabold mb-6 bg-gradient-to-r from-foreground via-foreground/80 to-foreground/60 bg-clip-text text-transparent">
-                            The Future of <br />
-                            <span className="text-primary italic">Futsal Booking</span>
-                        </h1>
-                        <p className="text-xl text-muted-foreground leading-relaxed max-w-2xl mx-auto">
-                            Experience elite-level futsal at Mujemaa Teqwa. Seamless booking, premium turf, and a vibrant community await.
-                        </p>
-                    </motion.div>
-
-                    {/* Interactive Stats Cards */}
-                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-24">
-                        {[
-                            { label: 'Live Available', value: availableSlots.length, icon: FiActivity, color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
-                            { label: 'Weekly Sessions', value: '112+', icon: FiClock, color: 'text-blue-500', bg: 'bg-blue-500/10' },
-                            { label: 'Court Quality', value: 'FIFA Standard', icon: FiAward, color: 'text-amber-500', bg: 'bg-amber-500/10' },
-                            { label: 'Active Players', value: '800+', icon: FiUsers, color: 'text-primary', bg: 'bg-primary/10' },
-                        ].map((stat, idx) => (
-                            <motion.div
-                                key={idx}
-                                initial={{ opacity: 0, scale: 0.9 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                transition={{ delay: idx * 0.1 }}
-                                className="bg-card/40 backdrop-blur-md border border-border/50 p-8 rounded-[2rem] hover:border-primary/40 transition-all group relative overflow-hidden"
-                            >
-                                <div className={`absolute top-0 right-0 w-24 h-24 ${stat.bg} blur-3xl -mr-12 -mt-12 group-hover:scale-150 transition-transform duration-500`} />
-                                <stat.icon className={`w-10 h-10 ${stat.color} mb-6 group-hover:scale-110 transition-transform relative z-10`} />
-                                <h3 className="text-3xl font-bold mb-2 relative z-10">{stat.value}</h3>
-                                <p className="text-sm text-muted-foreground font-medium relative z-10">{stat.label}</p>
-                            </motion.div>
-                        ))}
-                    </div>
-
-                    {/* Sticky Booking Bar */}
-                    <div className="sticky top-24 z-40 mb-16 px-2">
-                        <div className="bg-card/70 backdrop-blur-xl border border-border/60 shadow-[0_20px_50px_rgba(0,0,0,0.1)] rounded-[2.5rem] p-6 md:p-10">
-                            <div className="flex flex-col lg:flex-row gap-10 items-center justify-between">
-                                <div className="flex items-center gap-6">
-                                    <div className="h-20 w-20 bg-primary/10 rounded-[1.5rem] flex items-center justify-center border border-primary/20">
-                                        <FiCalendar className="w-10 h-10 text-primary" />
-                                    </div>
-                                    <div>
-                                        <h2 className="text-3xl font-bold tracking-tight">Select Match Date</h2>
-                                        <p className="text-muted-foreground font-medium">Ready for your next competitive match?</p>
-                                    </div>
-                                </div>
-
-                                <div className="w-full lg:w-auto flex flex-col sm:flex-row gap-4">
-                                    <DatePicker
-                                        selectedDate={new Date(selectedDate)}
-                                        onDateSelect={handleDateSelect}
-                                        className="w-full sm:w-[350px]"
-                                    />
-                                    <Button
-                                        variant={showBookingHistory ? "default" : "outline"}
-                                        onClick={() => setShowBookingHistory(!showBookingHistory)}
-                                        className="rounded-2xl h-[58px] px-8 font-semibold border-primary/20 hover:bg-primary/5"
-                                    >
-                                        <FiClock className="w-5 h-5 mr-3" />
-                                        {showBookingHistory ? "View Available Slots" : "My Recent Bookings"}
-                                    </Button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Dynamic Content Area */}
-                    {showBookingHistory ? (
+            {/* Stats Section */}
+            <section className="container container-padding py-12">
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+                    {[
+                        { label: 'Live Available', value: availableSlots.length, icon: FiActivity, color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
+                        { label: 'Weekly Sessions', value: '112+', icon: FiClock, color: 'text-blue-500', bg: 'bg-blue-500/10' },
+                        { label: 'Court Quality', value: 'FIFA Standard', icon: FiAward, color: 'text-amber-500', bg: 'bg-amber-500/10' },
+                        { label: 'Active Players', value: '800+', icon: FiUsers, color: 'text-primary', bg: 'bg-primary/10' },
+                    ].map((stat, idx) => (
                         <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-[2.5rem] p-8 md:p-12"
+                            key={idx}
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            whileInView={{ opacity: 1, scale: 1 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: idx * 0.1 }}
+                            className="bg-card border border-border/50 p-6 md:p-8 rounded-2xl hover:border-primary/40 transition-all group relative overflow-hidden"
                         >
-                            <div className="flex items-center justify-between mb-10">
-                                <h2 className="text-3xl font-bold">Booking History</h2>
-                                <Badge variant="secondary" className="px-4 py-1.5 rounded-full">{bookings.length} Sessions</Badge>
-                            </div>
-                            <BookingHistory bookings={bookings} onRefresh={fetchBookings} />
+                            <div className={`absolute top-0 right-0 w-24 h-24 ${stat.bg} blur-3xl -mr-12 -mt-12 group-hover:scale-150 transition-transform duration-500`} />
+                            <stat.icon className={`w-8 h-8 md:w-10 md:h-10 ${stat.color} mb-4 md:mb-6 group-hover:scale-110 transition-transform relative z-10`} />
+                            <h3 className="text-2xl md:text-3xl font-bold mb-1 relative z-10">{stat.value}</h3>
+                            <p className="text-sm text-muted-foreground font-medium relative z-10">{stat.label}</p>
                         </motion.div>
-                    ) : (
-                        <div className="space-y-16">
-                            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-                                <div>
-                                    <h3 className="text-3xl font-bold mb-2">Available Sessions</h3>
-                                    <p className="text-muted-foreground text-lg">Pick a time that works for your team</p>
-                                </div>
-                                <div className="flex bg-muted/50 p-1.5 rounded-2xl border border-border/50">
-                                    <button
-                                        onClick={() => setViewMode('grid')}
-                                        className={`flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-bold transition-all ${viewMode === 'grid' ? 'bg-background shadow-lg text-primary translate-y-[-1px]' : 'text-muted-foreground hover:bg-background/40'}`}
-                                    >
-                                        <FiGrid className="w-4 h-4" />
-                                        Grid
-                                    </button>
-                                    <button
-                                        onClick={() => setViewMode('list')}
-                                        className={`flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-bold transition-all ${viewMode === 'list' ? 'bg-background shadow-lg text-primary translate-y-[-1px]' : 'text-muted-foreground hover:bg-background/40'}`}
-                                    >
-                                        <FiList className="w-4 h-4" />
-                                        List
-                                    </button>
-                                </div>
-                            </div>
-
-                            {loading ? (
-                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                                    {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-                                        <Skeleton key={i} className="h-64 rounded-[2rem]" />
-                                    ))}
-                                </div>
-                            ) : slots.length === 0 ? (
-                                <motion.div
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    className="text-center py-32 bg-muted/20 rounded-[3rem] border-2 border-dashed border-border/50"
-                                >
-                                    <div className="p-8 bg-background rounded-full w-28 h-28 mx-auto mb-8 flex items-center justify-center shadow-2xl">
-                                        <FiCalendar className="w-12 h-12 text-muted-foreground/50" />
-                                    </div>
-                                    <h4 className="text-2xl font-bold mb-4">No Matches Found</h4>
-                                    <p className="text-muted-foreground max-w-sm mx-auto mb-10 text-lg leading-relaxed">
-                                        There are no available slots for {format(new Date(selectedDate), 'EEEE, MMMM do')}.
-                                    </p>
-                                    <Button
-                                        variant="outline"
-                                        onClick={() => setSelectedDate(today)}
-                                        className="rounded-full px-10 py-7 text-lg h-auto border-2 hover:bg-primary hover:text-white hover:border-primary transition-all font-bold"
-                                    >
-                                        Check Today's Availability
-                                    </Button>
-                                </motion.div>
-                            ) : (
-                                <div className={`grid gap-8 ${viewMode === 'grid' ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4' : 'grid-cols-1 max-w-5xl mx-auto'}`}>
-                                    <AnimatePresence mode="popLayout">
-                                        {slots.map((slot, index) => (
-                                            <SlotCard
-                                                key={slot.id}
-                                                slot={slot}
-                                                onSelect={handleSlotSelect}
-                                                index={index}
-                                                viewMode={viewMode}
-                                            />
-                                        ))}
-                                    </AnimatePresence>
-                                </div>
-                            )}
-                        </div>
-                    )}
+                    ))}
                 </div>
             </section>
 
-            {/* Premium Booking Modal */}
+            {/* Booking Section */}
+            <section id="booking-section" className="container container-padding pb-16">
+                {/* Date Picker & Toggle Bar */}
+                <div className="bg-card border border-border/50 shadow-lg rounded-2xl p-6 md:p-8 mb-10">
+                    <div className="flex flex-col lg:flex-row gap-8 items-center justify-between">
+                        <div className="flex items-center gap-4">
+                            <div className="h-14 w-14 bg-primary/10 rounded-xl flex items-center justify-center border border-primary/20">
+                                <FiCalendar className="w-7 h-7 text-primary" />
+                            </div>
+                            <div>
+                                <h2 className="text-2xl font-bold tracking-tight">Select Match Date</h2>
+                                <p className="text-muted-foreground text-sm">Ready for your next competitive match?</p>
+                            </div>
+                        </div>
+
+                        <div className="w-full lg:w-auto flex flex-col sm:flex-row gap-4">
+                            <DatePicker
+                                selectedDate={new Date(selectedDate)}
+                                onDateSelect={handleDateSelect}
+                                className="w-full sm:w-[350px]"
+                            />
+                            {isAuthenticated && (
+                                <Button
+                                    variant={showBookingHistory ? "default" : "outline"}
+                                    onClick={() => setShowBookingHistory(!showBookingHistory)}
+                                    className="rounded-xl h-[48px] px-6 font-semibold"
+                                >
+                                    <FiClock className="w-4 h-4 mr-2" />
+                                    {showBookingHistory ? "View Available Slots" : "My Bookings"}
+                                </Button>
+                            )}
+                        </div>
+                    </div>
+                </div>
+
+                {/* Dynamic Content Area */}
+                {showBookingHistory ? (
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                    >
+                        <div className="flex items-center justify-between mb-8">
+                            <h2 className="text-2xl font-bold">Booking History</h2>
+                            <Badge variant="secondary" className="px-3 py-1 rounded-full">{bookings.length} Sessions</Badge>
+                        </div>
+                        <BookingHistory bookings={bookings} onRefresh={fetchBookings} />
+                    </motion.div>
+                ) : (
+                    <div className="space-y-10">
+                        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+                            <div>
+                                <h3 className="text-2xl font-bold mb-1">Available Sessions</h3>
+                                <p className="text-muted-foreground">Pick a time that works for your team</p>
+                            </div>
+                            <div className="flex bg-muted/50 p-1 rounded-xl border border-border/50">
+                                <button
+                                    onClick={() => setViewMode('grid')}
+                                    className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${viewMode === 'grid' ? 'bg-background shadow-md text-primary' : 'text-muted-foreground hover:bg-background/40'}`}
+                                >
+                                    <FiGrid className="w-4 h-4" />
+                                    Grid
+                                </button>
+                                <button
+                                    onClick={() => setViewMode('list')}
+                                    className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${viewMode === 'list' ? 'bg-background shadow-md text-primary' : 'text-muted-foreground hover:bg-background/40'}`}
+                                >
+                                    <FiList className="w-4 h-4" />
+                                    List
+                                </button>
+                            </div>
+                        </div>
+
+                        {loading ? (
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                {[1, 2, 3, 4, 5, 6].map((i) => (
+                                    <Skeleton key={i} className="h-56 rounded-2xl" />
+                                ))}
+                            </div>
+                        ) : slots.length === 0 ? (
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                className="text-center py-24 bg-muted/20 rounded-2xl border-2 border-dashed border-border/50"
+                            >
+                                <div className="p-6 bg-background rounded-full w-20 h-20 mx-auto mb-6 flex items-center justify-center shadow-xl">
+                                    <FiCalendar className="w-10 h-10 text-muted-foreground/50" />
+                                </div>
+                                <h4 className="text-xl font-bold mb-3">No Matches Found</h4>
+                                <p className="text-muted-foreground max-w-sm mx-auto mb-8">
+                                    There are no available slots for {format(new Date(selectedDate), 'EEEE, MMMM do')}.
+                                </p>
+                                <Button
+                                    variant="outline"
+                                    onClick={() => setSelectedDate(today)}
+                                    className="rounded-full px-8 py-3 h-auto border-2 hover:bg-primary hover:text-white hover:border-primary transition-all font-semibold"
+                                >
+                                    Check Today's Availability
+                                </Button>
+                            </motion.div>
+                        ) : (
+                            <div className={`grid gap-6 ${viewMode === 'grid' ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1 max-w-3xl mx-auto'}`}>
+                                <AnimatePresence mode="popLayout">
+                                    {slots.map((slot, index) => (
+                                        <SlotCard
+                                            key={slot.id}
+                                            slot={slot}
+                                            onSelect={handleSlotSelect}
+                                            index={index}
+                                            viewMode={viewMode}
+                                        />
+                                    ))}
+                                </AnimatePresence>
+                            </div>
+                        )}
+                    </div>
+                )}
+            </section>
+
+            {/* Booking Modal — single-column vertical flow, matching Membership/Donations */}
             <Modal
                 open={isBookingModalOpen}
                 onClose={() => {
@@ -879,250 +868,235 @@ const Futsal = memo(() => {
                     setErrors({});
                 }}
                 title={t('futsal.confirmBooking')}
-                size="lg"
+                size="md"
             >
                 {selectedSlot && (
-                    <div className="space-y-8 py-4">
-                        {/* Summary Header */}
-                        <div className="relative overflow-hidden bg-primary rounded-[2rem] p-8 text-white shadow-[0_20px_40px_rgba(var(--primary-rgb),0.3)]">
-                            <IslamicPattern className="opacity-10 scale-150" />
-                            <div className="relative z-10 flex flex-col md:flex-row justify-between items-center gap-6">
-                                <div className="flex items-center gap-6">
-                                    <div className="bg-white/20 backdrop-blur-md rounded-2xl p-4">
-                                        <FiClock className="w-10 h-10 text-white" />
+                    <div className="space-y-6">
+                        {/* Slot Summary */}
+                        <div className="bg-gradient-to-r from-primary to-primary/80 rounded-xl p-5 text-white">
+                            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                                <div className="flex items-center gap-4">
+                                    <div className="bg-white/20 rounded-lg p-3">
+                                        <FiClock className="w-6 h-6" />
                                     </div>
                                     <div>
-                                        <div className="text-4xl font-black mb-1">{selectedSlot.time}</div>
-                                        <div className="text-white/80 font-medium flex items-center gap-2">
-                                            <FiCalendar className="w-4 h-4" />
+                                        <div className="text-2xl font-bold">{selectedSlot.time}</div>
+                                        <div className="text-white/80 text-sm flex items-center gap-1.5">
+                                            <FiCalendar className="w-3.5 h-3.5" />
                                             {format(new Date(selectedSlot.date || selectedDate), 'EEEE, MMMM do, yyyy')}
                                         </div>
                                     </div>
                                 </div>
-                                <div className="text-center md:text-right bg-black/10 backdrop-blur-md px-8 py-4 rounded-3xl border border-white/20">
-                                    <div className="text-xs uppercase tracking-[0.2em] font-bold text-white/70 mb-1">Price</div>
-                                    <div className="text-4xl font-black">{selectedSlot.price} <span className="text-sm font-bold">ETB</span></div>
+                                <div className="text-right bg-white/10 px-5 py-3 rounded-xl">
+                                    <div className="text-xs uppercase tracking-wider text-white/70 font-semibold">Price</div>
+                                    <div className="text-2xl font-bold">{selectedSlot.price} <span className="text-sm">ETB</span></div>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                            <div className="lg:col-span-2 space-y-8">
-                                {/* Recurring Feature Section */}
-                                <div className={`p-6 rounded-[2rem] border-2 transition-all ${isRecurring ? 'border-primary bg-primary/5' : 'border-border/50 bg-muted/20 hover:border-primary/30'}`}>
-                                    <div className="flex items-center justify-between mb-4">
-                                        <div className="flex items-center gap-4">
-                                            <div className={`p-3 rounded-xl ${isRecurring ? 'bg-primary text-white' : 'bg-background border border-border text-muted-foreground'}`}>
-                                                <FiRefreshCw className={`w-6 h-6 ${isRecurring ? 'animate-spin-slow' : ''}`} />
-                                            </div>
-                                            <div>
-                                                <h4 className="font-bold text-lg">Recurring Match Contract</h4>
-                                                <p className="text-sm text-muted-foreground font-medium">Auto-reserve this slot weekly</p>
-                                            </div>
-                                        </div>
-                                        <label className="relative inline-flex items-center cursor-pointer">
-                                            <input
-                                                type="checkbox"
-                                                className="sr-only peer"
-                                                checked={isRecurring}
-                                                onChange={(e) => setIsRecurring(e.target.checked)}
-                                            />
-                                            <div className="w-14 h-7 bg-muted peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-primary shadow-inner"></div>
-                                        </label>
+                        {/* Recurring Option */}
+                        <div className={`p-4 rounded-xl border-2 transition-all ${isRecurring ? 'border-primary bg-primary/5' : 'border-border/50 hover:border-primary/30'}`}>
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-3">
+                                    <div className={`p-2 rounded-lg ${isRecurring ? 'bg-primary text-white' : 'bg-muted text-muted-foreground'}`}>
+                                        <FiRefreshCw className={`w-5 h-5 ${isRecurring ? 'animate-spin-slow' : ''}`} />
                                     </div>
-
-                                    {isRecurring && (
-                                        <motion.div
-                                            initial={{ opacity: 0, height: 0 }}
-                                            animate={{ opacity: 1, height: 'auto' }}
-                                            className="mt-6 pt-6 border-t border-primary/20"
-                                        >
-                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                                                <div className="space-y-2">
-                                                    <label className="text-sm font-bold ml-1">MATCH DURATION</label>
-                                                    <select
-                                                        className="w-full bg-background border-2 border-border/50 rounded-2xl px-4 py-3 font-bold focus:border-primary transition-all outline-none"
-                                                        value={recurringDuration.value}
-                                                        onChange={(e) => setRecurringDuration({ type: 'weeks', value: parseInt(e.target.value) })}
-                                                    >
-                                                        <option value={4}>4 Matching Sessions</option>
-                                                        <option value={12}>12 Matching Sessions</option>
-                                                        <option value={24}>24 Matching Sessions</option>
-                                                    </select>
-                                                </div>
-                                                <div className="bg-primary/10 rounded-2xl p-4 border border-primary/20">
-                                                    <div className="text-xs font-bold text-primary/70 uppercase tracking-widest mb-1">Contract Total</div>
-                                                    <div className="text-2xl font-black text-primary">
-                                                        {(parseFloat(selectedSlot.price) * recurringDuration.value).toLocaleString()} ETB
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </motion.div>
-                                    )}
-                                </div>
-
-                                {/* Booking Information Form */}
-                                <div className="space-y-6">
-                                    <div className="flex items-center justify-between px-2">
-                                        <h3 className="text-xl font-bold flex items-center gap-3">
-                                            Contact Information
-                                            {isAuthenticated ? (
-                                                <Badge className="bg-primary/10 text-primary border-primary/20 px-3 py-1">Member</Badge>
-                                            ) : (
-                                                <Badge className="bg-amber-500/10 text-amber-600 border-amber-500/20 px-3 py-1">Guest</Badge>
-                                            )}
-                                        </h3>
-                                    </div>
-
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        <FormField label="Full Name" required>
-                                            <input
-                                                name="contactName"
-                                                value={form.contactName}
-                                                onChange={handleFormChange}
-                                                placeholder="John Doe"
-                                                className={`w-full bg-muted/30 border-2 rounded-[1.2rem] px-5 py-4 font-medium focus:bg-background focus:border-primary transition-all outline-none ${errors.contactName ? 'border-red-500 bg-red-50/50' : 'border-border/50'}`}
-                                            />
-                                        </FormField>
-
-                                        <FormField label="Email Address" required>
-                                            <input
-                                                type="email"
-                                                name="contactEmail"
-                                                value={form.contactEmail}
-                                                onChange={handleFormChange}
-                                                placeholder="john@example.com"
-                                                className={`w-full bg-muted/30 border-2 rounded-[1.2rem] px-5 py-4 font-medium focus:bg-background focus:border-primary transition-all outline-none ${errors.contactEmail ? 'border-red-500 bg-red-50/50' : 'border-border/50'}`}
-                                            />
-                                        </FormField>
-
-                                        <FormField label="Players Count" required>
-                                            <div className="relative">
-                                                <input
-                                                    type="number"
-                                                    name="playerCount"
-                                                    value={form.playerCount}
-                                                    onChange={handleFormChange}
-                                                    min="1"
-                                                    max={selectedSlot.max_players || 12}
-                                                    className={`w-full bg-muted/30 border-2 rounded-[1.2rem] px-5 py-4 font-medium focus:bg-background focus:border-primary transition-all outline-none ${errors.playerCount ? 'border-red-500' : 'border-border/50'}`}
-                                                />
-                                                <div className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground font-bold">Players</div>
-                                            </div>
-                                        </FormField>
-
-                                        <FormField label="Phone Number (Required for confirmation)" required>
-                                            <input
-                                                type="tel"
-                                                name="contactPhone"
-                                                value={form.contactPhone}
-                                                onChange={handleFormChange}
-                                                placeholder="+251 912 345 678"
-                                                className={`w-full bg-muted/30 border-2 rounded-[1.2rem] px-5 py-4 font-medium focus:bg-background focus:border-primary transition-all outline-none ${errors.contactPhone ? 'border-red-500' : 'border-border/50'}`}
-                                            />
-                                        </FormField>
+                                    <div>
+                                        <h4 className="font-semibold">Recurring Match Contract</h4>
+                                        <p className="text-xs text-muted-foreground">Auto-reserve this slot weekly</p>
                                     </div>
                                 </div>
-                            </div>
-
-                            <div className="space-y-8">
-                                {/* Payment Selection Wrapper */}
-                                <div className="bg-card/40 backdrop-blur-md border border-border/50 rounded-[2rem] p-6 shadow-xl">
-                                    <PaymentMethodSelector
-                                        selectedMethod={paymentMethod}
-                                        onMethodChange={(method) => {
-                                            setPaymentMethod(method);
-                                            if (method !== 'manual_qr') setProofFile(null);
-                                        }}
-                                        onFileChange={setProofFile}
-                                        amount={parseFloat(selectedSlot.price) * (isRecurring ? recurringDuration.value : 1)}
+                                <label className="relative inline-flex items-center cursor-pointer">
+                                    <input
+                                        type="checkbox"
+                                        className="sr-only peer"
+                                        checked={isRecurring}
+                                        onChange={(e) => setIsRecurring(e.target.checked)}
                                     />
-                                </div>
+                                    <div className="w-11 h-6 bg-muted rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                                </label>
+                            </div>
 
-                                {/* Dynamic Rules & Policy from Settings */}
-                                <div className={`p-6 rounded-[2rem] border-2 transition-all ${errors.agreeToRules ? 'bg-red-50 border-red-500 ring-2 ring-red-500/20' : 'bg-primary/5 border-primary/20'}`}>
-                                    <div className="flex items-start gap-4">
-                                        <div className="pt-1">
-                                            <input
-                                                type="checkbox"
-                                                id="agreeToRules"
-                                                name="agreeToRules"
-                                                checked={form.agreeToRules}
-                                                onChange={handleFormChange}
-                                                className="w-6 h-6 rounded-lg border-2 border-primary text-primary focus:ring-primary shadow-sm cursor-pointer"
-                                            />
+                            {isRecurring && (
+                                <motion.div
+                                    initial={{ opacity: 0, height: 0 }}
+                                    animate={{ opacity: 1, height: 'auto' }}
+                                    className="mt-4 pt-4 border-t border-primary/20"
+                                >
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="space-y-1">
+                                            <label className="text-xs font-semibold text-muted-foreground uppercase">Sessions</label>
+                                            <select
+                                                className="w-full bg-background border-2 border-border/50 rounded-lg px-3 py-2 text-sm font-medium focus:border-primary transition-all outline-none"
+                                                value={recurringDuration.value}
+                                                onChange={(e) => setRecurringDuration({ type: 'weeks', value: parseInt(e.target.value) })}
+                                            >
+                                                <option value={4}>4 Sessions</option>
+                                                <option value={12}>12 Sessions</option>
+                                                <option value={24}>24 Sessions</option>
+                                            </select>
                                         </div>
-                                        <label htmlFor="agreeToRules" className="text-sm font-bold flex-1 cursor-pointer">
-                                            Accept Rules & Booking Policies
-                                            <div className="mt-4 p-4 bg-background/80 backdrop-blur-sm rounded-2xl border border-primary/10 text-xs text-muted-foreground space-y-4 max-h-[220px] overflow-y-auto custom-scrollbar">
-                                                {futsalSettings ? (
-                                                    <>
-                                                        <div>
-                                                            <div className="text-primary font-black mb-1 uppercase tracking-tighter">Official Rules</div>
-                                                            <p className="whitespace-pre-line leading-relaxed">{futsalSettings.rules}</p>
-                                                        </div>
-                                                        <div className="pt-2 border-t border-border/50">
-                                                            <div className="text-primary font-black mb-1 uppercase tracking-tighter">Cancellation Policy</div>
-                                                            <p className="leading-relaxed">{futsalSettings.booking_policy}</p>
-                                                        </div>
-                                                    </>
-                                                ) : (
-                                                    <div className="animate-pulse flex space-y-3 flex-col">
-                                                        <div className="h-3 bg-muted rounded w-1/2"></div>
-                                                        <div className="h-2 bg-muted rounded w-full"></div>
-                                                        <div className="h-2 bg-muted rounded w-5/6"></div>
-                                                    </div>
-                                                )}
+                                        <div className="bg-primary/10 rounded-lg p-3 border border-primary/20 flex flex-col justify-center">
+                                            <div className="text-xs font-semibold text-primary/70 uppercase">Total</div>
+                                            <div className="text-xl font-bold text-primary">
+                                                {(parseFloat(selectedSlot.price) * recurringDuration.value).toLocaleString()} ETB
                                             </div>
-                                        </label>
+                                        </div>
                                     </div>
-                                </div>
+                                </motion.div>
+                            )}
+                        </div>
+
+                        {/* Contact Information */}
+                        <div className="space-y-4">
+                            <h3 className="text-base font-semibold flex items-center gap-2">
+                                Contact Information
+                                {isAuthenticated ? (
+                                    <Badge className="bg-primary/10 text-primary border-primary/20 text-xs">Member</Badge>
+                                ) : (
+                                    <Badge className="bg-amber-500/10 text-amber-600 border-amber-500/20 text-xs">Guest</Badge>
+                                )}
+                            </h3>
+
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <FormField label="Full Name" required>
+                                    <input
+                                        name="contactName"
+                                        value={form.contactName}
+                                        onChange={handleFormChange}
+                                        placeholder="John Doe"
+                                        className={`w-full bg-background border-2 rounded-xl px-4 py-3 text-sm focus:border-primary transition-all outline-none ${errors.contactName ? 'border-red-500 bg-red-50/50' : 'border-border'}`}
+                                    />
+                                </FormField>
+
+                                <FormField label="Email Address" required>
+                                    <input
+                                        type="email"
+                                        name="contactEmail"
+                                        value={form.contactEmail}
+                                        onChange={handleFormChange}
+                                        placeholder="john@example.com"
+                                        className={`w-full bg-background border-2 rounded-xl px-4 py-3 text-sm focus:border-primary transition-all outline-none ${errors.contactEmail ? 'border-red-500 bg-red-50/50' : 'border-border'}`}
+                                    />
+                                </FormField>
+
+                                <FormField label="Players Count" required>
+                                    <div className="relative">
+                                        <input
+                                            type="number"
+                                            name="playerCount"
+                                            value={form.playerCount}
+                                            onChange={handleFormChange}
+                                            min="1"
+                                            max={selectedSlot.max_players || 12}
+                                            className={`w-full bg-background border-2 rounded-xl px-4 py-3 text-sm focus:border-primary transition-all outline-none ${errors.playerCount ? 'border-red-500' : 'border-border'}`}
+                                        />
+                                        <div className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground font-medium">Players</div>
+                                    </div>
+                                </FormField>
+
+                                <FormField label="Phone Number" required>
+                                    <input
+                                        type="tel"
+                                        name="contactPhone"
+                                        value={form.contactPhone}
+                                        onChange={handleFormChange}
+                                        placeholder="+251 912 345 678"
+                                        className={`w-full bg-background border-2 rounded-xl px-4 py-3 text-sm focus:border-primary transition-all outline-none ${errors.contactPhone ? 'border-red-500' : 'border-border'}`}
+                                    />
+                                </FormField>
                             </div>
                         </div>
 
-                        {/* Modal Actions */}
-                        <div className="flex flex-col sm:flex-row justify-between items-center gap-6 pt-10 border-t border-border/50">
-                            <button
+                        {/* Payment Method */}
+                        <div className="pt-4 border-t border-border/50">
+                            <PaymentMethodSelector
+                                selectedMethod={paymentMethod}
+                                onMethodChange={(method) => {
+                                    setPaymentMethod(method);
+                                    if (method !== 'manual_qr') setProofFile(null);
+                                }}
+                                onFileChange={setProofFile}
+                                amount={parseFloat(selectedSlot.price) * (isRecurring ? recurringDuration.value : 1)}
+                            />
+                        </div>
+
+                        {/* Rules & Policy */}
+                        <div className={`p-4 rounded-xl border-2 transition-all ${errors.agreeToRules ? 'bg-red-50 border-red-500' : 'bg-primary/5 border-primary/20'}`}>
+                            <div className="flex items-start gap-3">
+                                <input
+                                    type="checkbox"
+                                    id="agreeToRules"
+                                    name="agreeToRules"
+                                    checked={form.agreeToRules}
+                                    onChange={handleFormChange}
+                                    className="w-5 h-5 rounded border-2 border-primary text-primary focus:ring-primary mt-0.5 cursor-pointer"
+                                />
+                                <label htmlFor="agreeToRules" className="text-sm font-medium flex-1 cursor-pointer">
+                                    Accept Rules & Booking Policies
+                                    <div className="mt-3 p-3 bg-background/80 rounded-lg border border-primary/10 text-xs text-muted-foreground space-y-3 max-h-[150px] overflow-y-auto">
+                                        {futsalSettings ? (
+                                            <>
+                                                <div>
+                                                    <div className="text-primary font-bold mb-1 uppercase text-[10px] tracking-wider">Official Rules</div>
+                                                    <p className="whitespace-pre-line leading-relaxed">{futsalSettings.rules}</p>
+                                                </div>
+                                                <div className="pt-2 border-t border-border/50">
+                                                    <div className="text-primary font-bold mb-1 uppercase text-[10px] tracking-wider">Cancellation Policy</div>
+                                                    <p className="leading-relaxed">{futsalSettings.booking_policy}</p>
+                                                </div>
+                                            </>
+                                        ) : (
+                                            <div className="animate-pulse flex space-y-2 flex-col">
+                                                <div className="h-3 bg-muted rounded w-1/2"></div>
+                                                <div className="h-2 bg-muted rounded w-full"></div>
+                                                <div className="h-2 bg-muted rounded w-5/6"></div>
+                                            </div>
+                                        )}
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        {/* Error Message */}
+                        {errors.form && (
+                            <div className="p-4 bg-red-500/10 border border-red-500/20 text-red-600 rounded-xl flex items-center gap-3">
+                                <FiAlertCircle className="w-5 h-5 shrink-0" />
+                                <p className="text-sm font-medium">{errors.form}</p>
+                            </div>
+                        )}
+
+                        {/* Actions */}
+                        <div className="flex justify-end gap-3 pt-4 border-t border-border">
+                            <Button
+                                variant="ghost"
                                 onClick={() => {
                                     setIsBookingModalOpen(false);
                                     setSelectedSlot(null);
                                     setErrors({});
                                 }}
-                                className="text-muted-foreground font-black hover:text-foreground transition-colors uppercase tracking-widest text-xs"
                                 disabled={isSubmitting}
                             >
-                                Discard Booking
-                            </button>
+                                Cancel
+                            </Button>
                             <Button
                                 onClick={handleBook}
-                                size="lg"
-                                className="w-full sm:w-auto min-w-[320px] h-[72px] rounded-3xl text-xl font-black shadow-[0_20px_40px_rgba(var(--primary-rgb),0.3)] hover:scale-[1.02] active:scale-[0.98] transition-all"
                                 disabled={isSubmitting}
+                                className="min-w-[160px]"
                             >
                                 {isSubmitting ? (
                                     <>
-                                        <FiLoader className="w-6 h-6 mr-3 animate-spin" />
-                                        Creating Your Match...
+                                        <FiLoader className="w-4 h-4 mr-2 animate-spin" />
+                                        Processing...
                                     </>
                                 ) : (
                                     <>
-                                        <FiCheckCircle className="w-6 h-6 mr-3" />
+                                        <FiCheckCircle className="w-4 h-4 mr-2" />
                                         Complete Payment
                                     </>
                                 )}
                             </Button>
                         </div>
-
-                        {errors.form && (
-                            <motion.div
-                                initial={{ opacity: 0, scale: 0.95 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                className="p-5 bg-red-500/10 border-2 border-red-500/20 text-red-500 rounded-3xl flex items-center gap-4 mt-6"
-                            >
-                                <FiAlertCircle className="w-6 h-6 shrink-0" />
-                                <p className="font-bold text-sm tracking-tight">{errors.form}</p>
-                            </motion.div>
-                        )}
                     </div>
                 )}
             </Modal>
