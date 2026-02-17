@@ -18,7 +18,7 @@ import { useTranslation } from 'react-i18next';
 import mesjidBg from '@/assets/mesjid2.jpg';
 import QiblaCompass from '@/components/widgets/QiblaCompass';
 import { isRamadan, getRamadanDay, getStoredHijriAdjustment, calculateHijri } from '@/utils/hijriUtils';
-import { apiService } from '@/lib/apiService';
+import siteService from '@/services/siteService';
 import { FiUser } from 'react-icons/fi';
 
 const PRAYER_NAMES = {
@@ -66,7 +66,7 @@ const PrayerTimes = memo(() => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await apiService.getSiteConfig();
+        const response = await siteService.getSiteConfig();
         const data = response?.data || response;
         setSiteConfig(data);
 

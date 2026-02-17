@@ -12,6 +12,7 @@ import { prayerTimesService, PRAYER_INFO, formatTimeRemaining, MOSQUE_LOCATION }
 import { format, addDays, subDays } from 'date-fns';
 import { useTranslation } from '@/hooks/useTranslation';
 import { isRamadan, getRamadanDay, getStoredHijriAdjustment } from '@/utils/hijriUtils';
+import siteService from '@/services/siteService';
 
 // Helper function to get daily imams from localStorage
 const getDailyImams = () => {
@@ -70,7 +71,7 @@ const PrayerTimesWidget = memo(({ className = '', showNavigation = true, compact
   useEffect(() => {
     const fetchSiteConfig = async () => {
       try {
-        const response = await apiService.getSiteConfig();
+        const response = await siteService.getSiteConfig();
         const data = response?.data || response;
         setSiteConfig(data);
       } catch (err) {

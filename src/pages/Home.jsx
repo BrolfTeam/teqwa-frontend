@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/Badge';
 import { useEffect, useState, useMemo, memo, useCallback } from 'react';
 import { dataService } from '@/lib/dataService';
 import { apiService } from '@/lib/apiService';
+import siteService from '@/services/siteService';
 import { DEFAULT_PRAYER_TIMES } from '@/config/constants';
 import { useAuth } from '@/context/AuthContext';
 import { getHeroSlides, isRamadan as checkRamadan } from '@/data/heroContent';
@@ -348,7 +349,7 @@ const Home = memo(() => {
         const [homeData, causesResponse, configResponse] = await Promise.all([
           dataService.getHomePageData().catch(() => ({ events: [], announcements: [] })),
           apiService.getDonationCauses({ active: 'true' }).catch(() => ({ data: [] })),
-          apiService.getSiteConfig().catch(() => ({ data: null }))
+          siteService.getSiteConfig().catch(() => ({ data: null }))
         ]);
 
         if (isMounted) {
