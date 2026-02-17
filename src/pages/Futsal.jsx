@@ -1097,7 +1097,7 @@ const Futsal = memo(() => {
                         </div>
 
                         {/* Terms and Conditions */}
-                        <div className="bg-muted/30 rounded-lg p-4 border border-border/50">
+                        <div className={`rounded-lg p-4 border transition-all ${errors['agreeToRules'] ? 'bg-red-50 dark:bg-red-900/10 border-red-200 dark:border-red-800' : 'bg-muted/30 border-border/50'}`}>
                             <div className="flex items-start gap-3">
                                 <input
                                     type="checkbox"
@@ -1105,14 +1105,14 @@ const Futsal = memo(() => {
                                     name="agreeToRules"
                                     checked={form.agreeToRules}
                                     onChange={handleFormChange}
-                                    className="mt-1 w-4 h-4 rounded border-border text-primary focus:ring-2 focus:ring-primary/50"
+                                    className={`mt-1 w-4 h-4 rounded border-border text-primary focus:ring-2 focus:ring-primary/50 ${errors['agreeToRules'] ? 'ring-2 ring-red-500 ring-offset-2' : ''}`}
                                 />
                                 <label htmlFor="agreeToRules" className="text-sm text-foreground cursor-pointer flex-1">
                                     I agree to the booking rules and terms. I understand that payment is required to confirm this booking and the booking may be cancelled if payment is not completed.
                                 </label>
                             </div>
                             {errors['agreeToRules'] && (
-                                <div className="text-red-600 text-sm mt-2 ml-7 flex items-center gap-1">
+                                <div className="text-red-600 text-sm mt-2 ml-7 flex items-center gap-1 font-medium">
                                     <FiXCircle className="w-3.5 h-3.5" />
                                     {errors['agreeToRules']}
                                 </div>
