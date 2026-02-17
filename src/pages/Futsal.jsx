@@ -21,10 +21,14 @@ import {
     FiRefreshCw,
     FiEye,
     FiAlertCircle,
-    FiInfo
+    FiInfo,
+    FiGrid,
+    FiList,
+    FiAward
 } from 'react-icons/fi';
 import { PaymentMethodSelector } from '@/components/payment/PaymentMethodSelector';
 import Hero from '@/components/ui/Hero';
+import Navbar from '@/components/layout/Navbar';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
@@ -38,7 +42,13 @@ import { formSchemas } from '@/lib/validation';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/context/AuthContext';
+import { format } from 'date-fns';
 import headerBg from '@/assets/futsal4.png';
+
+// Skeleton Component for loading states
+const Skeleton = ({ className }) => (
+    <div className={`animate-pulse bg-muted/40 rounded-xl ${className}`} />
+);
 
 const STATUS_COLORS = {
     available: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 border-green-200 dark:border-green-800',
@@ -219,10 +229,17 @@ const CalendarView = memo(({ selectedDate, onDateSelect, minDate }) => {
         </div>
     );
 });
-CalendarView.displayName = 'CalendarView';
+// DatePicker Component (using CalendarView internally)
+const DatePicker = ({ selectedDate, onDateSelect, className }) => {
+    return (
+        <div className={className}>
+            <CalendarView selectedDate={selectedDate} onDateSelect={onDateSelect} />
+        </div>
+    );
+};
 
 // Time Slot Card Component
-const TimeSlotCard = memo(({ slot, onSelect, isSelected }) => {
+const SlotCard = memo(({ slot, onSelect, isSelected, viewMode, index }) => {
     const { t } = useTranslation();
     const status = slot.available ? 'available' : 'booked';
     const StatusIcon = STATUS_ICONS[status];
@@ -311,7 +328,7 @@ const TimeSlotCard = memo(({ slot, onSelect, isSelected }) => {
         </motion.div>
     );
 });
-TimeSlotCard.displayName = 'TimeSlotCard';
+SlotCard.displayName = 'SlotCard';
 
 // Booking History Component
 const BookingHistory = memo(({ bookings, onRefresh }) => {
@@ -402,27 +419,52 @@ const Futsal = memo(() => {
     const [slots, setSlots] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selectedSlot, setSelectedSlot] = useState(null);
-    const [bookingModalOpen, setBookingModalOpen] = useState(false);
-    const [bookings, setBookings] = useState([]);
-    const [showBookingHistory, setShowBookingHistory] = useState(false);
-    const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'calendar'
+    const [futsalSettings, setFutsalSettings] = useState(null);
+    const [isRecurring, setIsRecurring] = useState(false);
+    const [recurringDuration, setRecurringDuration] = useState({ type: 'weeks', value: 4 });
+    const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
+    const [paymentMethod, setPaymentMethod] = useState('manual_qr');
+    const [proofFile, setProofFile] = useState(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
-    // Form State
     const [form, setForm] = useState({
-        slotId: '',
-        date: today,
         contactName: '',
         contactEmail: '',
         contactPhone: '',
-        playerCount: 6,
+        playerCount: 12,
+        notes: '',
         agreeToRules: false
     });
-    const [errors, setErrors] = useState({});
-    const [isBooking, setIsBooking] = useState(false);
 
-    // Recurring Booking State
-    const [isRecurring, setIsRecurring] = useState(false);
-    const [recurringDuration, setRecurringDuration] = useState({ type: 'weeks', value: 4 }); // 1 month default
+    const [errors, setErrors] = useState({});
+
+    // Fetch Futsal Settings
+    useEffect(() => {
+        const fetchSettings = async () => {
+            try {
+                const data = await dataService.getFutsalSettings();
+                setFutsalSettings(data);
+            } catch (err) {
+                console.error('Error fetching futsal settings:', err);
+            }
+        };
+        fetchSettings();
+    }, []);
+
+    // Pre-fill form if user is authenticated
+    useEffect(() => {
+        if (isAuthenticated && user) {
+            setForm(prev => ({
+                ...prev,
+                contactName: `${user.first_name || ''} ${user.last_name || ''}`.trim() || user.username || '',
+                contactEmail: user.email || '',
+                contactPhone: user.phone || prev.contactPhone
+            }));
+        }
+    }, [isAuthenticated, user]);
+    const [bookings, setBookings] = useState([]);
+    const [showBookingHistory, setShowBookingHistory] = useState(false);
+    const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'calendar'
 
     // Fetch slots for selected date
     const fetchSlots = useCallback(async (date) => {
@@ -437,13 +479,7 @@ const Futsal = memo(() => {
         } finally {
             setLoading(false);
         }
-    }, []);
-
-
-
-    // Payment State
-    const [paymentMethod, setPaymentMethod] = useState('manual_qr');
-    const [proofFile, setProofFile] = useState(null);
+    }, [t]);
 
     // Fetch user bookings
     const fetchBookings = useCallback(async () => {
@@ -485,26 +521,22 @@ const Futsal = memo(() => {
     };
 
     const handleSlotSelect = (slot) => {
-        // Guest booking allowed - removed isAuthenticated check
-
         setSelectedSlot(slot);
         setForm(prev => ({
             ...prev,
             slotId: slot.id,
             date: slot.date || selectedDate,
-            contactName: user?.first_name && user?.last_name
-                ? `${user.first_name} ${user.last_name}`
-                : user?.username || '',
-            contactEmail: user?.email || '',
-            contactPhone: user?.phone || '',
-            playerCount: Math.min(slot.max_players || 12, 6),
+            contactName: isAuthenticated && user ? `${user.first_name || ''} ${user.last_name || ''}`.trim() || user.username : prev.contactName,
+            contactEmail: isAuthenticated && user ? user.email : prev.contactEmail,
+            contactPhone: isAuthenticated && user ? user.phone : prev.contactPhone,
+            playerCount: slot.max_players || 12,
             agreeToRules: false
         }));
         // Reset recurring state
         setIsRecurring(false);
         setRecurringDuration({ type: 'weeks', value: 4 });
         setErrors({});
-        setBookingModalOpen(true);
+        setIsBookingModalOpen(true);
     };
 
     const handleFormChange = (e) => {
@@ -531,7 +563,7 @@ const Futsal = memo(() => {
             return;
         }
 
-        setIsBooking(true);
+        setIsSubmitting(true);
         setErrors({});
 
         try {
@@ -628,7 +660,7 @@ const Futsal = memo(() => {
                 toast.success('Booking confirmed successfully!');
             }
 
-            setBookingModalOpen(false);
+            setIsBookingModalOpen(false);
             setSelectedSlot(null);
             setProofFile(null);
             setPaymentMethod('card');
@@ -664,239 +696,185 @@ const Futsal = memo(() => {
                 toast.error(message);
             }
         } finally {
-            setIsBooking(false);
+            setIsSubmitting(false);
         }
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-b from-background via-muted/20 to-background">
-            {/* Hero Section */}
-            <Hero
-                title={t('futsal.title')}
-                titleHighlight={t('futsal.bookNow')}
-                align="left"
-                description={t('futsal.bookSubtitle')}
-                backgroundImage={headerBg}
-                primaryAction={<a href="#booking-section">{t('futsal.bookNow')}</a>}
-                secondaryAction={<a href="#features">{t('common.learnMore')}</a>}
-            />
+        <div className="min-h-screen bg-background pb-20 overflow-x-hidden">
+            <Navbar />
 
-            {/* Features Section */}
-            <section id="features" className="container mx-auto px-4 py-16">
-                <div className="bg-muted/30 rounded-3xl p-8 md:p-16 relative overflow-hidden">
-                    <IslamicPattern className="opacity-[0.02]" />
-                    <div className="max-w-5xl mx-auto relative z-10">
-                        <div className="text-center mb-12">
-                            <h2 className="text-3xl md:text-4xl font-bold mb-4">{t('futsal.whyPlayHere.title')}</h2>
-                            <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
-                                {t('futsal.whyPlayHere.description')}
-                            </p>
-                        </div>
-                        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                            {[
-                                { icon: FiActivity, title: t('futsal.whyPlayHere.professionalCourt.title'), desc: t('futsal.whyPlayHere.professionalCourt.description') },
-                                { icon: FiDollarSign, title: t('futsal.whyPlayHere.affordableRates.title'), desc: t('futsal.whyPlayHere.affordableRates.description') },
-                                { icon: FiUsers, title: t('futsal.whyPlayHere.communityHub.title'), desc: t('futsal.whyPlayHere.communityHub.description') },
-                                { icon: FiShield, title: t('futsal.whyPlayHere.safeEnvironment.title'), desc: t('futsal.whyPlayHere.safeEnvironment.description') }
-                            ].map((feature, i) => (
-                                <motion.div
-                                    key={i}
-                                    initial={{ opacity: 0, y: 20 }}
-                                    whileInView={{ opacity: 1, y: 0 }}
-                                    viewport={{ once: true }}
-                                    transition={{ duration: 0.3, delay: i * 0.1 }}
-                                    className="text-center"
-                                >
-                                    <div className="bg-background rounded-xl w-14 h-14 flex items-center justify-center mx-auto mb-4 shadow-md border border-border/50">
-                                        <feature.icon className="w-7 h-7 text-primary" />
-                                    </div>
-                                    <h3 className="font-bold text-lg mb-2">{feature.title}</h3>
-                                    <p className="text-sm text-muted-foreground">{feature.desc}</p>
-                                </motion.div>
-                            ))}
-                        </div>
-                    </div>
+            {/* Hero Section with Premium Design */}
+            <section className="relative pt-32 pb-20 overflow-hidden">
+                <div className="absolute inset-0 z-0">
+                    <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-pulse" />
+                    <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
                 </div>
-            </section>
 
-            {/* Booking Section */}
-            <section id="booking-section" className="container mx-auto px-4 py-12">
-                <div className="max-w-7xl mx-auto">
-                    {/* Header */}
-                    <div className="mb-8">
-                        <h2 className="text-3xl md:text-4xl font-bold mb-2">{t('futsal.bookYourSlotTitle')}</h2>
-                        <p className="text-muted-foreground text-lg">{t('futsal.bookSubtitle')}</p>
+                <div className="max-container px-4 relative z-10">
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="text-center max-w-4xl mx-auto mb-16"
+                    >
+                        <span className="inline-block px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-semibold mb-6 tracking-wide uppercase">
+                            Premium Sports Experience
+                        </span>
+                        <h1 className="text-4xl md:text-7xl font-extrabold mb-6 bg-gradient-to-r from-foreground via-foreground/80 to-foreground/60 bg-clip-text text-transparent">
+                            The Future of <br />
+                            <span className="text-primary italic">Futsal Booking</span>
+                        </h1>
+                        <p className="text-xl text-muted-foreground leading-relaxed max-w-2xl mx-auto">
+                            Experience elite-level futsal at Mujemaa Teqwa. Seamless booking, premium turf, and a vibrant community await.
+                        </p>
+                    </motion.div>
+
+                    {/* Interactive Stats Cards */}
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-24">
+                        {[
+                            { label: 'Live Available', value: availableSlots.length, icon: FiActivity, color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
+                            { label: 'Weekly Sessions', value: '112+', icon: FiClock, color: 'text-blue-500', bg: 'bg-blue-500/10' },
+                            { label: 'Court Quality', value: 'FIFA Standard', icon: FiAward, color: 'text-amber-500', bg: 'bg-amber-500/10' },
+                            { label: 'Active Players', value: '800+', icon: FiUsers, color: 'text-primary', bg: 'bg-primary/10' },
+                        ].map((stat, idx) => (
+                            <motion.div
+                                key={idx}
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                transition={{ delay: idx * 0.1 }}
+                                className="bg-card/40 backdrop-blur-md border border-border/50 p-8 rounded-[2rem] hover:border-primary/40 transition-all group relative overflow-hidden"
+                            >
+                                <div className={`absolute top-0 right-0 w-24 h-24 ${stat.bg} blur-3xl -mr-12 -mt-12 group-hover:scale-150 transition-transform duration-500`} />
+                                <stat.icon className={`w-10 h-10 ${stat.color} mb-6 group-hover:scale-110 transition-transform relative z-10`} />
+                                <h3 className="text-3xl font-bold mb-2 relative z-10">{stat.value}</h3>
+                                <p className="text-sm text-muted-foreground font-medium relative z-10">{stat.label}</p>
+                            </motion.div>
+                        ))}
                     </div>
 
-                    {/* Date Selection & View Toggle */}
-                    <Card className="mb-8 p-6 bg-muted/30 border-border/50">
-                        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-                            <div className="flex items-center gap-4 flex-wrap">
-                                <div className="flex items-center gap-3">
-                                    <div className="bg-background rounded-xl p-3 border border-border/50 shadow-sm">
-                                        <FiCalendar className="w-5 h-5 text-primary" />
+                    {/* Sticky Booking Bar */}
+                    <div className="sticky top-24 z-40 mb-16 px-2">
+                        <div className="bg-card/70 backdrop-blur-xl border border-border/60 shadow-[0_20px_50px_rgba(0,0,0,0.1)] rounded-[2.5rem] p-6 md:p-10">
+                            <div className="flex flex-col lg:flex-row gap-10 items-center justify-between">
+                                <div className="flex items-center gap-6">
+                                    <div className="h-20 w-20 bg-primary/10 rounded-[1.5rem] flex items-center justify-center border border-primary/20">
+                                        <FiCalendar className="w-10 h-10 text-primary" />
                                     </div>
                                     <div>
-                                        <label className="text-sm font-medium text-muted-foreground block mb-1">
-                                            {t('futsal.selectDate')}
-                                        </label>
-                                        <input
-                                            type="date"
-                                            value={selectedDate}
-                                            onChange={(e) => {
-                                                setSelectedDate(e.target.value);
-                                                setSelectedSlot(null);
-                                            }}
-                                            min={today}
-                                            className="bg-background border border-border/50 rounded-lg px-4 py-2 text-base font-medium focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
-                                        />
+                                        <h2 className="text-3xl font-bold tracking-tight">Select Match Date</h2>
+                                        <p className="text-muted-foreground font-medium">Ready for your next competitive match?</p>
                                     </div>
                                 </div>
 
-                                <div className="flex items-center gap-2">
+                                <div className="w-full lg:w-auto flex flex-col sm:flex-row gap-4">
+                                    <DatePicker
+                                        selectedDate={new Date(selectedDate)}
+                                        onDateSelect={handleDateSelect}
+                                        className="w-full sm:w-[350px]"
+                                    />
                                     <Button
-                                        variant={viewMode === 'grid' ? 'primary' : 'outline'}
-                                        size="sm"
-                                        onClick={() => setViewMode('grid')}
+                                        variant={showBookingHistory ? "default" : "outline"}
+                                        onClick={() => setShowBookingHistory(!showBookingHistory)}
+                                        className="rounded-2xl h-[58px] px-8 font-semibold border-primary/20 hover:bg-primary/5"
                                     >
-                                        {t('futsal.gridView')}
-                                    </Button>
-                                    <Button
-                                        variant={viewMode === 'calendar' ? 'primary' : 'outline'}
-                                        size="sm"
-                                        onClick={() => setViewMode('calendar')}
-                                    >
-                                        {t('futsal.calendarView')}
+                                        <FiClock className="w-5 h-5 mr-3" />
+                                        {showBookingHistory ? "View Available Slots" : "My Recent Bookings"}
                                     </Button>
                                 </div>
                             </div>
-
-                            {loading ? (
-                                <div className="flex items-center gap-2 text-muted-foreground">
-                                    <FiLoader className="w-4 h-4 animate-spin" />
-                                    <span className="text-sm">{t('common.loading')}</span>
-                                </div>
-                            ) : (
-                                <div className="flex items-center gap-4 flex-wrap">
-                                    <Badge className="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
-                                        <FiCheckCircle className="w-3.5 h-3.5 mr-1" />
-                                        {availableSlots.length} {t('futsal.available')}
-                                    </Badge>
-                                    <Badge className="bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400">
-                                        <FiXCircle className="w-3.5 h-3.5 mr-1" />
-                                        {bookedSlots.length} {t('futsal.booked')}
-                                    </Badge>
-                                    <span className="text-sm text-muted-foreground">
-                                        {slots.length} {t('futsal.timeSlot')}
-                                    </span>
-                                </div>
-                            )}
                         </div>
-                    </Card>
+                    </div>
 
-                    {/* Calendar and Slots Grid */}
-                    <div className="grid lg:grid-cols-4 gap-6 mb-8">
-                        {/* Calendar View */}
-                        {viewMode === 'calendar' && (
-                            <div className="lg:col-span-1">
-                                <CalendarView
-                                    selectedDate={selectedDate}
-                                    onDateSelect={handleDateSelect}
-                                    minDate={today}
-                                />
+                    {/* Dynamic Content Area */}
+                    {showBookingHistory ? (
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-[2.5rem] p-8 md:p-12"
+                        >
+                            <div className="flex items-center justify-between mb-10">
+                                <h2 className="text-3xl font-bold">Booking History</h2>
+                                <Badge variant="secondary" className="px-4 py-1.5 rounded-full">{bookings.length} Sessions</Badge>
                             </div>
-                        )}
+                            <BookingHistory bookings={bookings} onRefresh={fetchBookings} />
+                        </motion.div>
+                    ) : (
+                        <div className="space-y-16">
+                            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+                                <div>
+                                    <h3 className="text-3xl font-bold mb-2">Available Sessions</h3>
+                                    <p className="text-muted-foreground text-lg">Pick a time that works for your team</p>
+                                </div>
+                                <div className="flex bg-muted/50 p-1.5 rounded-2xl border border-border/50">
+                                    <button
+                                        onClick={() => setViewMode('grid')}
+                                        className={`flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-bold transition-all ${viewMode === 'grid' ? 'bg-background shadow-lg text-primary translate-y-[-1px]' : 'text-muted-foreground hover:bg-background/40'}`}
+                                    >
+                                        <FiGrid className="w-4 h-4" />
+                                        Grid
+                                    </button>
+                                    <button
+                                        onClick={() => setViewMode('list')}
+                                        className={`flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-bold transition-all ${viewMode === 'list' ? 'bg-background shadow-lg text-primary translate-y-[-1px]' : 'text-muted-foreground hover:bg-background/40'}`}
+                                    >
+                                        <FiList className="w-4 h-4" />
+                                        List
+                                    </button>
+                                </div>
+                            </div>
 
-                        {/* Time Slots Grid */}
-                        <div className={viewMode === 'calendar' ? 'lg:col-span-3' : 'lg:col-span-4'}>
                             {loading ? (
-                                <div className="flex flex-col items-center justify-center py-16">
-                                    <LoadingSpinner size="lg" />
-                                    <p className="text-muted-foreground mt-4">{t('futsal.loadingSlots')}</p>
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                                    {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+                                        <Skeleton key={i} className="h-64 rounded-[2rem]" />
+                                    ))}
                                 </div>
                             ) : slots.length === 0 ? (
-                                <Card className="p-12 text-center">
-                                    <div className="max-w-md mx-auto">
-                                        <FiCalendar className="w-16 h-16 text-muted-foreground/50 mx-auto mb-4" />
-                                        <h3 className="text-xl font-semibold mb-2">{t('futsal.noSlotsAvailable')}</h3>
-                                        <p className="text-muted-foreground mb-6">
-                                            {t('futsal.noSlotsMessage')}
-                                        </p>
-                                        <Button onClick={() => setSelectedDate(today)} variant="outline">
-                                            <FiCalendar className="w-4 h-4 mr-2" />
-                                            {t('futsal.viewTodaySlots')}
-                                        </Button>
+                                <motion.div
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    className="text-center py-32 bg-muted/20 rounded-[3rem] border-2 border-dashed border-border/50"
+                                >
+                                    <div className="p-8 bg-background rounded-full w-28 h-28 mx-auto mb-8 flex items-center justify-center shadow-2xl">
+                                        <FiCalendar className="w-12 h-12 text-muted-foreground/50" />
                                     </div>
-                                </Card>
+                                    <h4 className="text-2xl font-bold mb-4">No Matches Found</h4>
+                                    <p className="text-muted-foreground max-w-sm mx-auto mb-10 text-lg leading-relaxed">
+                                        There are no available slots for {format(new Date(selectedDate), 'EEEE, MMMM do')}.
+                                    </p>
+                                    <Button
+                                        variant="outline"
+                                        onClick={() => setSelectedDate(today)}
+                                        className="rounded-full px-10 py-7 text-lg h-auto border-2 hover:bg-primary hover:text-white hover:border-primary transition-all font-bold"
+                                    >
+                                        Check Today's Availability
+                                    </Button>
+                                </motion.div>
                             ) : (
-                                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                                    <AnimatePresence mode="wait">
-                                        {slots.map((slot) => (
-                                            <TimeSlotCard
+                                <div className={`grid gap-8 ${viewMode === 'grid' ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4' : 'grid-cols-1 max-w-5xl mx-auto'}`}>
+                                    <AnimatePresence mode="popLayout">
+                                        {slots.map((slot, index) => (
+                                            <SlotCard
                                                 key={slot.id}
                                                 slot={slot}
                                                 onSelect={handleSlotSelect}
-                                                isSelected={selectedSlot?.id === slot.id}
+                                                index={index}
+                                                viewMode={viewMode}
                                             />
                                         ))}
                                     </AnimatePresence>
                                 </div>
                             )}
                         </div>
-                    </div>
+                    )}
                 </div>
             </section>
 
-            {/* Booking History Section */}
-            {isAuthenticated && bookings.length > 0 && (
-                <section className="container mx-auto px-4 py-12">
-                    <div className="max-w-7xl mx-auto">
-                        <div className="flex items-center justify-between mb-6">
-                            <div>
-                                <h2 className="text-2xl md:text-3xl font-bold mb-2">{t('futsal.bookingHistory')}</h2>
-                                <p className="text-muted-foreground">{t('futsal.viewManageBookings')}</p>
-                            </div>
-                            <Button
-                                variant="ghost"
-                                onClick={() => setShowBookingHistory(!showBookingHistory)}
-                                size="sm"
-                            >
-                                {showBookingHistory ? (
-                                    <>
-                                        <FiChevronUp className="w-4 h-4 mr-2" />
-                                        {t('futsal.hideHistory')}
-                                    </>
-                                ) : (
-                                    <>
-                                        <FiChevronDown className="w-4 h-4 mr-2" />
-                                        {t('futsal.showHistory')}
-                                    </>
-                                )}
-                            </Button>
-                        </div>
-
-                        <AnimatePresence>
-                            {showBookingHistory && (
-                                <motion.div
-                                    initial={{ opacity: 0, height: 0 }}
-                                    animate={{ opacity: 1, height: 'auto' }}
-                                    exit={{ opacity: 0, height: 0 }}
-                                    transition={{ duration: 0.3 }}
-                                    className="overflow-hidden"
-                                >
-                                    <BookingHistory bookings={bookings} onRefresh={fetchBookings} />
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
-                    </div>
-                </section>
-            )}
-
-            {/* Booking Modal */}
+            {/* Premium Booking Modal */}
             <Modal
-                open={bookingModalOpen}
+                open={isBookingModalOpen}
                 onClose={() => {
-                    setBookingModalOpen(false);
+                    setIsBookingModalOpen(false);
                     setSelectedSlot(null);
                     setErrors({});
                 }}
@@ -904,262 +882,247 @@ const Futsal = memo(() => {
                 size="lg"
             >
                 {selectedSlot && (
-                    <div className="space-y-6">
-                        {/* {t('futsal.bookingSummary')} */}
-                        <Card className="bg-muted/30 border-primary/20">
-                            <CardContent className="p-6">
-                                <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
-                                    <div className="flex-1">
-                                        <div className="flex items-center gap-3 mb-3">
-                                            <div className="bg-primary/10 rounded-lg p-2">
-                                                <FiClock className="w-6 h-6 text-primary" />
+                    <div className="space-y-8 py-4">
+                        {/* Summary Header */}
+                        <div className="relative overflow-hidden bg-primary rounded-[2rem] p-8 text-white shadow-[0_20px_40px_rgba(var(--primary-rgb),0.3)]">
+                            <IslamicPattern className="opacity-10 scale-150" />
+                            <div className="relative z-10 flex flex-col md:flex-row justify-between items-center gap-6">
+                                <div className="flex items-center gap-6">
+                                    <div className="bg-white/20 backdrop-blur-md rounded-2xl p-4">
+                                        <FiClock className="w-10 h-10 text-white" />
+                                    </div>
+                                    <div>
+                                        <div className="text-4xl font-black mb-1">{selectedSlot.time}</div>
+                                        <div className="text-white/80 font-medium flex items-center gap-2">
+                                            <FiCalendar className="w-4 h-4" />
+                                            {format(new Date(selectedSlot.date || selectedDate), 'EEEE, MMMM do, yyyy')}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="text-center md:text-right bg-black/10 backdrop-blur-md px-8 py-4 rounded-3xl border border-white/20">
+                                    <div className="text-xs uppercase tracking-[0.2em] font-bold text-white/70 mb-1">Price</div>
+                                    <div className="text-4xl font-black">{selectedSlot.price} <span className="text-sm font-bold">ETB</span></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                            <div className="lg:col-span-2 space-y-8">
+                                {/* Recurring Feature Section */}
+                                <div className={`p-6 rounded-[2rem] border-2 transition-all ${isRecurring ? 'border-primary bg-primary/5' : 'border-border/50 bg-muted/20 hover:border-primary/30'}`}>
+                                    <div className="flex items-center justify-between mb-4">
+                                        <div className="flex items-center gap-4">
+                                            <div className={`p-3 rounded-xl ${isRecurring ? 'bg-primary text-white' : 'bg-background border border-border text-muted-foreground'}`}>
+                                                <FiRefreshCw className={`w-6 h-6 ${isRecurring ? 'animate-spin-slow' : ''}`} />
                                             </div>
                                             <div>
-                                                <div className="text-2xl font-bold">{selectedSlot.time}</div>
-                                                <div className="text-sm text-muted-foreground">
-                                                    {new Date(selectedSlot.date || selectedDate).toLocaleDateString(i18n.language === 'am' ? 'am-ET' : i18n.language === 'ar' ? 'ar-SA' : 'en-US', {
-                                                        weekday: 'long',
-                                                        year: 'numeric',
-                                                        month: 'long',
-                                                        day: 'numeric'
-                                                    })}
+                                                <h4 className="font-bold text-lg">Recurring Match Contract</h4>
+                                                <p className="text-sm text-muted-foreground font-medium">Auto-reserve this slot weekly</p>
+                                            </div>
+                                        </div>
+                                        <label className="relative inline-flex items-center cursor-pointer">
+                                            <input
+                                                type="checkbox"
+                                                className="sr-only peer"
+                                                checked={isRecurring}
+                                                onChange={(e) => setIsRecurring(e.target.checked)}
+                                            />
+                                            <div className="w-14 h-7 bg-muted peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-primary shadow-inner"></div>
+                                        </label>
+                                    </div>
+
+                                    {isRecurring && (
+                                        <motion.div
+                                            initial={{ opacity: 0, height: 0 }}
+                                            animate={{ opacity: 1, height: 'auto' }}
+                                            className="mt-6 pt-6 border-t border-primary/20"
+                                        >
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                                <div className="space-y-2">
+                                                    <label className="text-sm font-bold ml-1">MATCH DURATION</label>
+                                                    <select
+                                                        className="w-full bg-background border-2 border-border/50 rounded-2xl px-4 py-3 font-bold focus:border-primary transition-all outline-none"
+                                                        value={recurringDuration.value}
+                                                        onChange={(e) => setRecurringDuration({ type: 'weeks', value: parseInt(e.target.value) })}
+                                                    >
+                                                        <option value={4}>4 Matching Sessions</option>
+                                                        <option value={12}>12 Matching Sessions</option>
+                                                        <option value={24}>24 Matching Sessions</option>
+                                                    </select>
+                                                </div>
+                                                <div className="bg-primary/10 rounded-2xl p-4 border border-primary/20">
+                                                    <div className="text-xs font-bold text-primary/70 uppercase tracking-widest mb-1">Contract Total</div>
+                                                    <div className="text-2xl font-black text-primary">
+                                                        {(parseFloat(selectedSlot.price) * recurringDuration.value).toLocaleString()} ETB
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
-                                            <span className="flex items-center gap-1.5">
-                                                <FiMapPin className="w-4 h-4" />
-                                                {selectedSlot.location || t('futsal.mainCourt')}
-                                            </span>
-                                            <span className="flex items-center gap-1.5">
-                                                <FiUsers className="w-4 h-4" />
-                                                {t('futsal.maxPlayers', { count: selectedSlot.max_players || 12 })}
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div className="bg-background rounded-xl p-5 border border-border/50 min-w-[140px]">
-                                        <div className="text-xs text-muted-foreground uppercase tracking-wide mb-1">{t('futsal.bookingAmount')}</div>
-                                        <div className="text-3xl font-bold text-primary">{selectedSlot.price}</div>
-                                        <div className="text-xs text-muted-foreground">ETB</div>
-                                    </div>
-                                </div>
-                            </CardContent>
-                        </Card>
-
-                        {/* Booking Form */}
-                        <div className="space-y-4">
-
-                            {/* Recurring Options */}
-                            <div className="bg-primary/5 rounded-xl p-4 border border-primary/10">
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-2">
-                                        <FiRefreshCw className={`w-5 h-5 ${isRecurring ? 'text-primary' : 'text-muted-foreground'}`} />
-                                        <div>
-                                            <h4 className="font-medium">Book as Recurring Contract?</h4>
-                                            <p className="text-xs text-muted-foreground">Reserve this slot for multiple weeks</p>
-                                        </div>
-                                    </div>
-                                    <label className="relative inline-flex items-center cursor-pointer">
-                                        <input
-                                            type="checkbox"
-                                            className="sr-only peer"
-                                            checked={isRecurring}
-                                            onChange={(e) => setIsRecurring(e.target.checked)}
-                                        />
-                                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/30 dark:peer-focus:ring-primary/80 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
-                                    </label>
+                                        </motion.div>
+                                    )}
                                 </div>
 
-                                {isRecurring && (
-                                    <motion.div
-                                        initial={{ opacity: 0, height: 0 }}
-                                        animate={{ opacity: 1, height: 'auto' }}
-                                        className="mt-4 pt-4 border-t border-border/50"
-                                    >
-                                        <div className="grid grid-cols-2 gap-4">
-                                            <div>
-                                                <label className="text-sm font-medium mb-1 block">Duration</label>
-                                                <select
-                                                    className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary/50"
-                                                    value={recurringDuration.type === 'weeks' ? recurringDuration.value : recurringDuration.value * 4}
-                                                    onChange={(e) => {
-                                                        const val = parseInt(e.target.value);
-                                                        setRecurringDuration({ type: 'weeks', value: val });
-                                                    }}
-                                                >
-                                                    <option value={4}>1 Month (4 Weeks)</option>
-                                                    <option value={12}>3 Months (12 Weeks)</option>
-                                                    <option value={24}>6 Months (24 Weeks)</option>
-                                                </select>
+                                {/* Booking Information Form */}
+                                <div className="space-y-6">
+                                    <div className="flex items-center justify-between px-2">
+                                        <h3 className="text-xl font-bold flex items-center gap-3">
+                                            Contact Information
+                                            {isAuthenticated ? (
+                                                <Badge className="bg-primary/10 text-primary border-primary/20 px-3 py-1">Member</Badge>
+                                            ) : (
+                                                <Badge className="bg-amber-500/10 text-amber-600 border-amber-500/20 px-3 py-1">Guest</Badge>
+                                            )}
+                                        </h3>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <FormField label="Full Name" required>
+                                            <input
+                                                name="contactName"
+                                                value={form.contactName}
+                                                onChange={handleFormChange}
+                                                placeholder="John Doe"
+                                                className={`w-full bg-muted/30 border-2 rounded-[1.2rem] px-5 py-4 font-medium focus:bg-background focus:border-primary transition-all outline-none ${errors.contactName ? 'border-red-500 bg-red-50/50' : 'border-border/50'}`}
+                                            />
+                                        </FormField>
+
+                                        <FormField label="Email Address" required>
+                                            <input
+                                                type="email"
+                                                name="contactEmail"
+                                                value={form.contactEmail}
+                                                onChange={handleFormChange}
+                                                placeholder="john@example.com"
+                                                className={`w-full bg-muted/30 border-2 rounded-[1.2rem] px-5 py-4 font-medium focus:bg-background focus:border-primary transition-all outline-none ${errors.contactEmail ? 'border-red-500 bg-red-50/50' : 'border-border/50'}`}
+                                            />
+                                        </FormField>
+
+                                        <FormField label="Players Count" required>
+                                            <div className="relative">
+                                                <input
+                                                    type="number"
+                                                    name="playerCount"
+                                                    value={form.playerCount}
+                                                    onChange={handleFormChange}
+                                                    min="1"
+                                                    max={selectedSlot.max_players || 12}
+                                                    className={`w-full bg-muted/30 border-2 rounded-[1.2rem] px-5 py-4 font-medium focus:bg-background focus:border-primary transition-all outline-none ${errors.playerCount ? 'border-red-500' : 'border-border/50'}`}
+                                                />
+                                                <div className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground font-bold">Players</div>
                                             </div>
-                                            <div>
-                                                <label className="text-sm font-medium mb-1 block">Estimated Total</label>
-                                                <div className="text-lg font-bold text-primary">
-                                                    {(parseFloat(selectedSlot.price) * (recurringDuration.type === 'weeks' ? recurringDuration.value : recurringDuration.value * 4)).toFixed(2)} ETB
-                                                </div>
-                                                <p className="text-xs text-muted-foreground">
-                                                    {(recurringDuration.type === 'weeks' ? recurringDuration.value : recurringDuration.value * 4)} sessions
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </motion.div>
-                                )}
-                            </div>
+                                        </FormField>
 
-                            <h3 className="text-lg font-semibold">{t('futsal.bookingSummary')}</h3>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <FormField label={t('futsal.contactName')} required>
-                                    <input
-                                        name="contactName"
-                                        value={form.contactName}
-                                        onChange={handleFormChange}
-                                        placeholder={t('futsal.enterFullName')}
-                                        className={`w-full border rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all ${errors['contactName'] ? 'border-red-500' : 'border-border'
-                                            }`}
-                                    />
-                                    {errors['contactName'] && (
-                                        <div className="text-red-600 text-sm mt-1.5 flex items-center gap-1">
-                                            <FiXCircle className="w-3.5 h-3.5" />
-                                            {errors['contactName']}
-                                        </div>
-                                    )}
-                                </FormField>
-
-                                <FormField label={t('futsal.contactEmail')} required>
-                                    <input
-                                        type="email"
-                                        name="contactEmail"
-                                        value={form.contactEmail}
-                                        onChange={handleFormChange}
-                                        placeholder={t('futsal.emailPlaceholder')}
-                                        className={`w-full border rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all ${errors['contactEmail'] ? 'border-red-500' : 'border-border'
-                                            }`}
-                                    />
-                                    {errors['contactEmail'] && (
-                                        <div className="text-red-600 text-sm mt-1.5 flex items-center gap-1">
-                                            <FiXCircle className="w-3.5 h-3.5" />
-                                            {errors['contactEmail']}
-                                        </div>
-                                    )}
-                                </FormField>
-
-                                <FormField label={t('futsal.numberOfPlayers')} required>
-                                    <input
-                                        type="number"
-                                        name="playerCount"
-                                        value={form.playerCount}
-                                        onChange={handleFormChange}
-                                        min="1"
-                                        max={selectedSlot.max_players || 12}
-                                        placeholder={t('futsal.playersPlaceholder')}
-                                        className={`w-full border rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all ${errors['playerCount'] ? 'border-red-500' : 'border-border'
-                                            }`}
-                                    />
-                                    {errors['playerCount'] && (
-                                        <div className="text-red-600 text-sm mt-1.5 flex items-center gap-1">
-                                            <FiXCircle className="w-3.5 h-3.5" />
-                                            {errors['playerCount']}
-                                        </div>
-                                    )}
-                                </FormField>
-
-                                <FormField label={t('futsal.phoneNumberOptional')}>
-                                    <input
-                                        type="tel"
-                                        name="contactPhone"
-                                        value={form.contactPhone}
-                                        onChange={handleFormChange}
-                                        placeholder={t('futsal.phonePlaceholder')}
-                                        className={`w-full border rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all ${errors['contactPhone'] ? 'border-red-500' : 'border-border'
-                                            }`}
-                                    />
-                                    {errors['contactPhone'] && (
-                                        <div className="text-red-600 text-sm mt-1.5 flex items-center gap-1">
-                                            <FiXCircle className="w-3.5 h-3.5" />
-                                            {errors['contactPhone']}
-                                        </div>
-                                    )}
-                                </FormField>
-                            </div>
-                        </div>
-
-                        {/* Payment Method Selection */}
-                        <div className="pt-2">
-                            <PaymentMethodSelector
-                                selectedMethod={paymentMethod}
-                                onMethodChange={(method) => {
-                                    setPaymentMethod(method);
-                                    if (method !== 'manual_qr') setProofFile(null);
-                                }}
-                                onFileChange={setProofFile}
-                                amount={parseFloat(selectedSlot?.price || 0)}
-                            />
-                        </div>
-
-                        {/* Terms and Conditions */}
-                        <div className={`rounded-lg p-4 border transition-all ${errors['agreeToRules'] ? 'bg-red-50 dark:bg-red-900/10 border-red-200 dark:border-red-800' : 'bg-muted/30 border-border/50'}`}>
-                            <div className="flex items-start gap-3">
-                                <input
-                                    type="checkbox"
-                                    id="agreeToRules"
-                                    name="agreeToRules"
-                                    checked={form.agreeToRules}
-                                    onChange={handleFormChange}
-                                    className={`mt-1 w-4 h-4 rounded border-border text-primary focus:ring-2 focus:ring-primary/50 ${errors['agreeToRules'] ? 'ring-2 ring-red-500 ring-offset-2' : ''}`}
-                                />
-                                <label htmlFor="agreeToRules" className="text-sm text-foreground cursor-pointer flex-1">
-                                    I agree to the booking rules and terms. I understand that payment is required to confirm this booking and the booking may be cancelled if payment is not completed.
-                                </label>
-                            </div>
-                            {errors['agreeToRules'] && (
-                                <div className="text-red-600 text-sm mt-2 ml-7 flex items-center gap-1 font-medium">
-                                    <FiXCircle className="w-3.5 h-3.5" />
-                                    {errors['agreeToRules']}
+                                        <FormField label="Phone Number (Required for confirmation)" required>
+                                            <input
+                                                type="tel"
+                                                name="contactPhone"
+                                                value={form.contactPhone}
+                                                onChange={handleFormChange}
+                                                placeholder="+251 912 345 678"
+                                                className={`w-full bg-muted/30 border-2 rounded-[1.2rem] px-5 py-4 font-medium focus:bg-background focus:border-primary transition-all outline-none ${errors.contactPhone ? 'border-red-500' : 'border-border/50'}`}
+                                            />
+                                        </FormField>
+                                    </div>
                                 </div>
-                            )}
+                            </div>
+
+                            <div className="space-y-8">
+                                {/* Payment Selection Wrapper */}
+                                <div className="bg-card/40 backdrop-blur-md border border-border/50 rounded-[2rem] p-6 shadow-xl">
+                                    <PaymentMethodSelector
+                                        selectedMethod={paymentMethod}
+                                        onMethodChange={(method) => {
+                                            setPaymentMethod(method);
+                                            if (method !== 'manual_qr') setProofFile(null);
+                                        }}
+                                        onFileChange={setProofFile}
+                                        amount={parseFloat(selectedSlot.price) * (isRecurring ? recurringDuration.value : 1)}
+                                    />
+                                </div>
+
+                                {/* Dynamic Rules & Policy from Settings */}
+                                <div className={`p-6 rounded-[2rem] border-2 transition-all ${errors.agreeToRules ? 'bg-red-50 border-red-500 ring-2 ring-red-500/20' : 'bg-primary/5 border-primary/20'}`}>
+                                    <div className="flex items-start gap-4">
+                                        <div className="pt-1">
+                                            <input
+                                                type="checkbox"
+                                                id="agreeToRules"
+                                                name="agreeToRules"
+                                                checked={form.agreeToRules}
+                                                onChange={handleFormChange}
+                                                className="w-6 h-6 rounded-lg border-2 border-primary text-primary focus:ring-primary shadow-sm cursor-pointer"
+                                            />
+                                        </div>
+                                        <label htmlFor="agreeToRules" className="text-sm font-bold flex-1 cursor-pointer">
+                                            Accept Rules & Booking Policies
+                                            <div className="mt-4 p-4 bg-background/80 backdrop-blur-sm rounded-2xl border border-primary/10 text-xs text-muted-foreground space-y-4 max-h-[220px] overflow-y-auto custom-scrollbar">
+                                                {futsalSettings ? (
+                                                    <>
+                                                        <div>
+                                                            <div className="text-primary font-black mb-1 uppercase tracking-tighter">Official Rules</div>
+                                                            <p className="whitespace-pre-line leading-relaxed">{futsalSettings.rules}</p>
+                                                        </div>
+                                                        <div className="pt-2 border-t border-border/50">
+                                                            <div className="text-primary font-black mb-1 uppercase tracking-tighter">Cancellation Policy</div>
+                                                            <p className="leading-relaxed">{futsalSettings.booking_policy}</p>
+                                                        </div>
+                                                    </>
+                                                ) : (
+                                                    <div className="animate-pulse flex space-y-3 flex-col">
+                                                        <div className="h-3 bg-muted rounded w-1/2"></div>
+                                                        <div className="h-2 bg-muted rounded w-full"></div>
+                                                        <div className="h-2 bg-muted rounded w-5/6"></div>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
-                        {/* Error Message */}
-                        {errors['form'] && (
-                            <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 flex items-center gap-2">
-                                <FiAlertCircle className="w-5 h-5 text-red-600" />
-                                <span className="text-sm text-red-600">{errors['form']}</span>
-                            </div>
-                        )}
-
-                        {/* Action Buttons */}
-                        <div className="flex flex-col sm:flex-row justify-end gap-3 pt-4 border-t border-border/50">
-                            <Button
-                                variant="ghost"
+                        {/* Modal Actions */}
+                        <div className="flex flex-col sm:flex-row justify-between items-center gap-6 pt-10 border-t border-border/50">
+                            <button
                                 onClick={() => {
-                                    setBookingModalOpen(false);
+                                    setIsBookingModalOpen(false);
                                     setSelectedSlot(null);
                                     setErrors({});
                                 }}
-                                size="md"
-                                disabled={isBooking}
+                                className="text-muted-foreground font-black hover:text-foreground transition-colors uppercase tracking-widest text-xs"
+                                disabled={isSubmitting}
                             >
-                                Cancel
-                            </Button>
+                                Discard Booking
+                            </button>
                             <Button
                                 onClick={handleBook}
-                                size="md"
-                                className="min-w-[180px]"
-                                disabled={isBooking}
+                                size="lg"
+                                className="w-full sm:w-auto min-w-[320px] h-[72px] rounded-3xl text-xl font-black shadow-[0_20px_40px_rgba(var(--primary-rgb),0.3)] hover:scale-[1.02] active:scale-[0.98] transition-all"
+                                disabled={isSubmitting}
                             >
-                                {isBooking ? (
+                                {isSubmitting ? (
                                     <>
-                                        <FiLoader className="w-4 h-4 mr-2 animate-spin" />
-                                        Processing...
+                                        <FiLoader className="w-6 h-6 mr-3 animate-spin" />
+                                        Creating Your Match...
                                     </>
                                 ) : (
                                     <>
-                                        <FiCheckCircle className="w-4 h-4 mr-2" />
-                                        {t('futsal.payAndBook')} ({selectedSlot.price} ETB)
+                                        <FiCheckCircle className="w-6 h-6 mr-3" />
+                                        Complete Payment
                                     </>
                                 )}
                             </Button>
                         </div>
+
+                        {errors.form && (
+                            <motion.div
+                                initial={{ opacity: 0, scale: 0.95 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                className="p-5 bg-red-500/10 border-2 border-red-500/20 text-red-500 rounded-3xl flex items-center gap-4 mt-6"
+                            >
+                                <FiAlertCircle className="w-6 h-6 shrink-0" />
+                                <p className="font-bold text-sm tracking-tight">{errors.form}</p>
+                            </motion.div>
+                        )}
                     </div>
                 )}
             </Modal>
@@ -1168,4 +1131,5 @@ const Futsal = memo(() => {
 });
 
 Futsal.displayName = 'Futsal';
+
 export default Futsal;

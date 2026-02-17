@@ -538,6 +538,10 @@ class ApiService {
     });
   }
 
+  async getFutsalSettings() {
+    return this.request('/futsal/settings/');
+  }
+
   async getMyFutsalBookings() {
     return this.request('/futsal/my-bookings/');
   }

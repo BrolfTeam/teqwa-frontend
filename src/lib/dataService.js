@@ -324,6 +324,10 @@ class DataService {
     return this.apiCall(() => apiService.bookFutsalContract(bookingData), bookingData, { useCache: false });
   }
 
+  async getFutsalSettings() {
+    return this.apiCall(() => apiService.getFutsalSettings(), null, { useCache: true, cacheTime: 3600000 }); // Cache for 1 hour
+  }
+
   async getMyFutsalBookings() {
     return this.apiCall(() => apiService.getMyFutsalBookings(), {}, { useCache: false });
   }
