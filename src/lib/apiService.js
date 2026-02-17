@@ -531,6 +531,13 @@ class ApiService {
     });
   }
 
+  async bookFutsalContract(bookingData) {
+    return this.request('/futsal/contract/', {
+      method: 'POST',
+      body: JSON.stringify(bookingData),
+    });
+  }
+
   async getMyFutsalBookings() {
     return this.request('/futsal/my-bookings/');
   }

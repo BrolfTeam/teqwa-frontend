@@ -320,6 +320,10 @@ class DataService {
     return this.apiCall(() => apiService.bookFutsalSlot(slotId, bookingData), { slotId, ...bookingData }, { useCache: false });
   }
 
+  async createContractBooking(bookingData) {
+    return this.apiCall(() => apiService.bookFutsalContract(bookingData), bookingData, { useCache: false });
+  }
+
   async getMyFutsalBookings() {
     return this.apiCall(() => apiService.getMyFutsalBookings(), {}, { useCache: false });
   }

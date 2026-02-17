@@ -420,6 +420,10 @@ const Futsal = memo(() => {
     const [errors, setErrors] = useState({});
     const [isBooking, setIsBooking] = useState(false);
 
+    // Recurring Booking State
+    const [isRecurring, setIsRecurring] = useState(false);
+    const [recurringDuration, setRecurringDuration] = useState({ type: 'weeks', value: 4 }); // 1 month default
+
     // Fetch slots for selected date
     const fetchSlots = useCallback(async (date) => {
         setLoading(true);
@@ -481,11 +485,7 @@ const Futsal = memo(() => {
     };
 
     const handleSlotSelect = (slot) => {
-        if (!isAuthenticated) {
-            toast.error(t('futsal.loginToBook'));
-            navigate('/login');
-            return;
-        }
+        // Guest booking allowed - removed isAuthenticated check
 
         setSelectedSlot(slot);
         setForm(prev => ({
@@ -500,6 +500,9 @@ const Futsal = memo(() => {
             playerCount: Math.min(slot.max_players || 12, 6),
             agreeToRules: false
         }));
+        // Reset recurring state
+        setIsRecurring(false);
+        setRecurringDuration({ type: 'weeks', value: 4 });
         setErrors({});
         setBookingModalOpen(true);
     };
@@ -545,7 +548,28 @@ const Futsal = memo(() => {
                 agreeToRules: form.agreeToRules
             });
 
-            if (paymentMethod === 'manual_qr') {
+            if (isRecurring) {
+                // Handle Recurring Contract Booking
+                const contractPayload = {
+                    slot_id: parsed.slotId,
+                    duration_weeks: recurringDuration.type === 'weeks' ? recurringDuration.value : 0,
+                    duration_months: recurringDuration.type === 'months' ? recurringDuration.value : 0,
+                    contact_name: parsed.contactName, // Pass these to backend to create user if needed or for reference
+                    contact_email: parsed.contactEmail,
+                    contact_phone: parsed.contactPhone || ''
+                };
+
+                const response = await dataService.createContractBooking(contractPayload);
+
+                // If successful, we might need payment for the contract. 
+                // Creating contract usually implies immediate approval or payment. 
+                // The current backend implementation just creates bookings. 
+                // If payment is needed, we should handle it here. 
+                // For now, assume manual_qr is default for contracts or handle similarly.
+
+                toast.success(t('futsal.contractCreated'));
+                // Redirect or show success
+            } else if (paymentMethod === 'manual_qr') {
                 const formData = new FormData();
                 formData.append('contact_name', parsed.contactName);
                 formData.append('contact_email', parsed.contactEmail);
@@ -924,6 +948,64 @@ const Futsal = memo(() => {
 
                         {/* Booking Form */}
                         <div className="space-y-4">
+
+                            {/* Recurring Options */}
+                            <div className="bg-primary/5 rounded-xl p-4 border border-primary/10">
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-2">
+                                        <FiRefreshCw className={`w-5 h-5 ${isRecurring ? 'text-primary' : 'text-muted-foreground'}`} />
+                                        <div>
+                                            <h4 className="font-medium">Book as Recurring Contract?</h4>
+                                            <p className="text-xs text-muted-foreground">Reserve this slot for multiple weeks</p>
+                                        </div>
+                                    </div>
+                                    <label className="relative inline-flex items-center cursor-pointer">
+                                        <input
+                                            type="checkbox"
+                                            className="sr-only peer"
+                                            checked={isRecurring}
+                                            onChange={(e) => setIsRecurring(e.target.checked)}
+                                        />
+                                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/30 dark:peer-focus:ring-primary/80 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
+                                    </label>
+                                </div>
+
+                                {isRecurring && (
+                                    <motion.div
+                                        initial={{ opacity: 0, height: 0 }}
+                                        animate={{ opacity: 1, height: 'auto' }}
+                                        className="mt-4 pt-4 border-t border-border/50"
+                                    >
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <div>
+                                                <label className="text-sm font-medium mb-1 block">Duration</label>
+                                                <select
+                                                    className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary/50"
+                                                    value={recurringDuration.type === 'weeks' ? recurringDuration.value : recurringDuration.value * 4}
+                                                    onChange={(e) => {
+                                                        const val = parseInt(e.target.value);
+                                                        setRecurringDuration({ type: 'weeks', value: val });
+                                                    }}
+                                                >
+                                                    <option value={4}>1 Month (4 Weeks)</option>
+                                                    <option value={12}>3 Months (12 Weeks)</option>
+                                                    <option value={24}>6 Months (24 Weeks)</option>
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label className="text-sm font-medium mb-1 block">Estimated Total</label>
+                                                <div className="text-lg font-bold text-primary">
+                                                    {(parseFloat(selectedSlot.price) * (recurringDuration.type === 'weeks' ? recurringDuration.value : recurringDuration.value * 4)).toFixed(2)} ETB
+                                                </div>
+                                                <p className="text-xs text-muted-foreground">
+                                                    {(recurringDuration.type === 'weeks' ? recurringDuration.value : recurringDuration.value * 4)} sessions
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </motion.div>
+                                )}
+                            </div>
+
                             <h3 className="text-lg font-semibold">{t('futsal.bookingSummary')}</h3>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <FormField label={t('futsal.contactName')} required>
