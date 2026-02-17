@@ -44,21 +44,21 @@ const Skeleton = ({ className }) => (
 );
 
 const STATUS_COLORS = {
-    available: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 border-green-200 dark:border-green-800',
-    booked: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 border-red-200 dark:border-red-800',
-    pending: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400 border-yellow-200 dark:border-yellow-800',
-    confirmed: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 border-blue-200 dark:border-blue-800',
-    cancelled: 'bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400 border-gray-200 dark:border-gray-800',
-    completed: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800'
+    available: 'bg-emerald-100/50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400 ring-1 ring-emerald-500/20',
+    booked: 'bg-red-100/50 text-red-700 dark:bg-red-500/10 dark:text-red-400 ring-1 ring-red-500/20',
+    pending: 'bg-amber-100/50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400 ring-1 ring-amber-500/20',
+    confirmed: 'bg-blue-100/50 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400 ring-1 ring-blue-500/20',
+    cancelled: 'bg-gray-100/50 text-gray-700 dark:bg-gray-500/10 dark:text-gray-400 ring-1 ring-gray-500/20',
+    completed: 'bg-primary/10 text-primary ring-1 ring-primary/20'
 };
 
 const STATUS_ICONS = {
     available: FiCheckCircle,
     booked: FiXCircle,
-    pending: FiAlertCircle,
+    pending: FiClock,
     confirmed: FiCheckCircle,
     cancelled: FiXCircle,
-    completed: FiCheckCircle
+    completed: FiAward
 };
 
 // Helper function for safe translations
@@ -241,81 +241,96 @@ const SlotCard = memo(({ slot, onSelect, isSelected, viewMode, index }) => {
         <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            transition={{ duration: 0.2 }}
+            whileHover={slot.available ? { y: -5 } : {}}
+            transition={{ duration: 0.3, delay: index * 0.05 }}
         >
             <Card
                 className={`
-                    cursor-pointer transition-all duration-300
-                    ${isSelected ? 'ring-2 ring-primary shadow-lg' : ''}
-                    ${slot.available
-                        ? 'border-primary/20 hover:border-primary/40 hover:shadow-md'
-                        : 'opacity-75 border-border/30 cursor-not-allowed'
+                    relative overflow-hidden transition-all duration-300 border
+                    ${isSelected
+                        ? 'ring-2 ring-primary border-primary shadow-lg scale-[1.02]'
+                        : 'border-border/40 hover:border-primary/30 hover:shadow-xl'
                     }
+                    ${!slot.available ? 'opacity-80' : 'bg-card/50 backdrop-blur-sm'}
                 `}
                 onClick={() => slot.available && onSelect(slot)}
             >
-                <CardContent className="p-5">
-                    <div className="flex items-start justify-between mb-4">
-                        <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-2">
-                                <div className="bg-primary/10 rounded-lg p-2">
-                                    <FiClock className="w-5 h-5 text-primary" />
-                                </div>
-                                <div>
-                                    <div className="text-2xl font-bold">{slot.time}</div>
-                                    <div className="text-xs text-muted-foreground uppercase tracking-wide">{t('futsal.timeSlot')}</div>
-                                </div>
+                {/* Decorative gradient blob */}
+                {slot.available && (
+                    <div className="absolute -top-12 -right-12 w-24 h-24 bg-primary/5 rounded-full blur-2xl group-hover:bg-primary/10 transition-colors" />
+                )}
+
+                <CardContent className="p-6">
+                    <div className="flex items-start justify-between mb-6">
+                        <div className="space-y-1.5">
+                            <div className="flex items-center gap-2">
+                                <Badge variant="outline" className="px-2.5 py-0.5 h-6 text-xs font-medium border-primary/20 bg-primary/5 text-primary">
+                                    {slot.category || 'Standard Match'}
+                                </Badge>
+                                {!slot.available && (
+                                    <Badge variant="destructive" className="h-6 px-2.5">
+                                        Booked
+                                    </Badge>
+                                )}
                             </div>
 
-                            <div className="flex items-center gap-2 mb-2 text-muted-foreground text-sm">
-                                <FiMapPin className="w-4 h-4" />
-                                <span>{slot.location || t('futsal.mainCourt')}</span>
-                            </div>
+                            <h3 className="text-xl font-bold tracking-tight text-foreground">
+                                {slot.time}
+                            </h3>
 
-                            <div className="flex items-center gap-2 mb-3 text-muted-foreground text-sm">
-                                <FiUsers className="w-4 h-4" />
-                                <span>{t('futsal.maxPlayers', { count: slot.max_players || 12 })}</span>
+                            <div className="flex items-center gap-4 text-sm text-muted-foreground/80">
+                                <span className="flex items-center gap-1.5">
+                                    <FiUsers className="w-4 h-4 text-primary/70" />
+                                    {t('futsal.maxPlayers', { count: slot.max_players || 12 })}
+                                </span>
+                                <span className="flex items-center gap-1.5">
+                                    <FiDollarSign className="w-4 h-4 text-primary/70" />
+                                    {slot.price} ETB
+                                </span>
                             </div>
                         </div>
 
-                        <Badge className={STATUS_COLORS[status]}>
-                            <StatusIcon className="w-3.5 h-3.5 mr-1" />
-                            {slot.available ? t('futsal.available') : t('futsal.booked')}
-                        </Badge>
+                        <div className={`
+                            w-10 h-10 rounded-full flex items-center justify-center transition-colors
+                            ${slot.available
+                                ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
+                                : 'bg-red-500/10 text-red-600 dark:text-red-400'
+                            }
+                        `}>
+                            <StatusIcon className="w-5 h-5" />
+                        </div>
                     </div>
 
-                    <div className="flex items-center justify-between pt-4 border-t border-border/50">
-                        <div>
-                            <div className="text-xs text-muted-foreground mb-1">{t('futsal.price')}</div>
-                            <div className="text-2xl font-bold text-primary">{slot.price}</div>
-                            <div className="text-xs text-muted-foreground">{t('futsal.etb')}</div>
-                        </div>
-
+                    <div className="pt-4 border-t border-border/40">
                         <Button
+                            className={`w-full group relative overflow-hidden ${slot.available
+                                    ? 'bg-primary text-primary-foreground hover:bg-primary/90 shadow-md hover:shadow-primary/25'
+                                    : 'bg-muted text-muted-foreground hover:bg-muted cursor-not-allowed'
+                                }`}
                             disabled={!slot.available}
-                            variant={slot.available ? 'primary' : 'ghost'}
-                            size="sm"
-                            className="min-w-[100px]"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                if (slot.available) onSelect(slot);
+                            }}
                         >
-                            {slot.available ? (
-                                <>
-                                    <FiCheckCircle className="w-4 h-4 mr-2" />
-                                    {t('futsal.bookNow')}
-                                </>
-                            ) : (
-                                <>
-                                    <FiXCircle className="w-4 h-4 mr-2" />
-                                    {t('futsal.unavailable')}
-                                </>
+                            <span className="relative z-10 flex items-center justify-center gap-2 font-semibold">
+                                {slot.available ? (
+                                    <>
+                                        {t('futsal.bookNow')}
+                                        <FiArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                                    </>
+                                ) : (
+                                    <>
+                                        {t('futsal.unavailable')}
+                                        <FiXCircle className="w-4 h-4" />
+                                    </>
+                                )}
+                            </span>
+                            {slot.available && (
+                                <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
                             )}
                         </Button>
                     </div>
-
-                    {!slot.available && (
-                        <div className="absolute bottom-0 left-0 right-0 h-1 bg-red-500" />
-                    )}
                 </CardContent>
             </Card>
         </motion.div>
@@ -586,10 +601,10 @@ const Futsal = memo(() => {
 
                 const response = await dataService.createContractBooking(contractPayload);
 
-                // If successful, we might need payment for the contract. 
-                // Creating contract usually implies immediate approval or payment. 
-                // The current backend implementation just creates bookings. 
-                // If payment is needed, we should handle it here. 
+                // If successful, we might need payment for the contract.
+                // Creating contract usually implies immediate approval or payment.
+                // The current backend implementation just creates bookings.
+                // If payment is needed, we should handle it here.
                 // For now, assume manual_qr is default for contracts or handle similarly.
 
                 toast.success(t('futsal.contractCreated'));
@@ -695,15 +710,15 @@ const Futsal = memo(() => {
 
     return (
         <div className="min-h-screen bg-background pb-20 overflow-x-hidden">
-            {/* Hero Section — uses the shared Hero component */}
+            {/* Hero Section — refined for 'Islamic professional' tone */}
             <Hero
-                title="Futsal Booking"
-                titleHighlight="Premium Sports Experience"
-                description="Experience elite-level futsal at Mujemaa Teqwa. Seamless booking, premium turf, and a vibrant community await."
+                title="Community Futsal"
+                titleHighlight="Strengthen Brotherhood"
+                description="More than just a game. A space to connect, stay active, and build lasting bonds in a premium, private environment."
                 backgroundImage={headerBg}
                 actions={[
                     {
-                        label: 'Book Now',
+                        label: 'Book Your Slot',
                         href: '#booking-section',
                         variant: 'primary',
                     },
@@ -715,58 +730,68 @@ const Futsal = memo(() => {
                 ]}
             />
 
-            {/* Stats Section */}
-            <section className="container container-padding py-12">
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+            {/* Stats Section — aligned with Teqwa values */}
+            <section className="container container-padding py-12 -mt-8 relative z-10">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                     {[
-                        { label: 'Live Available', value: availableSlots.length, icon: FiActivity, color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
-                        { label: 'Weekly Sessions', value: '112+', icon: FiClock, color: 'text-blue-500', bg: 'bg-blue-500/10' },
-                        { label: 'Court Quality', value: 'FIFA Standard', icon: FiAward, color: 'text-amber-500', bg: 'bg-amber-500/10' },
-                        { label: 'Active Players', value: '800+', icon: FiUsers, color: 'text-primary', bg: 'bg-primary/10' },
+                        { label: 'Daily Gatherings', value: 'Active Jamaa\'ah', icon: FiUsers, color: 'text-emerald-600', bg: 'bg-emerald-500/10', border: 'border-emerald-200/50' },
+                        { label: 'Facility Quality', value: 'Premium & Private', icon: FiAward, color: 'text-amber-600', bg: 'bg-amber-500/10', border: 'border-amber-200/50' },
+                        { label: 'Community', value: 'Growing Brotherhood', icon: FiHeart, color: 'text-rose-600', bg: 'bg-rose-500/10', border: 'border-rose-200/50' },
+                        { label: 'Live Slots', value: `${availableSlots.length} Available`, icon: FiActivity, color: 'text-blue-600', bg: 'bg-blue-500/10', border: 'border-blue-200/50' },
                     ].map((stat, idx) => (
                         <motion.div
                             key={idx}
-                            initial={{ opacity: 0, scale: 0.9 }}
-                            whileInView={{ opacity: 1, scale: 1 }}
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ delay: idx * 0.1 }}
-                            className="bg-card border border-border/50 p-6 md:p-8 rounded-2xl hover:border-primary/40 transition-all group relative overflow-hidden"
+                            className={`bg-card/50 backdrop-blur-sm border ${stat.border} p-6 rounded-2xl shadow-sm hover:shadow-md transition-all group`}
                         >
-                            <div className={`absolute top-0 right-0 w-24 h-24 ${stat.bg} blur-3xl -mr-12 -mt-12 group-hover:scale-150 transition-transform duration-500`} />
-                            <stat.icon className={`w-8 h-8 md:w-10 md:h-10 ${stat.color} mb-4 md:mb-6 group-hover:scale-110 transition-transform relative z-10`} />
-                            <h3 className="text-2xl md:text-3xl font-bold mb-1 relative z-10">{stat.value}</h3>
-                            <p className="text-sm text-muted-foreground font-medium relative z-10">{stat.label}</p>
+                            <div className="flex items-start justify-between mb-4">
+                                <div className={`p-3 rounded-xl ${stat.bg} ${stat.color} group-hover:scale-110 transition-transform duration-300`}>
+                                    <stat.icon className="w-6 h-6" />
+                                </div>
+                            </div>
+                            <h3 className="text-xl font-bold tracking-tight mb-1">{stat.value}</h3>
+                            <p className="text-sm text-muted-foreground font-medium">{stat.label}</p>
                         </motion.div>
                     ))}
                 </div>
             </section>
 
             {/* Booking Section */}
-            <section id="booking-section" className="container container-padding pb-16">
-                {/* Date Picker & Toggle Bar */}
-                <div className="bg-card border border-border/50 shadow-lg rounded-2xl p-6 md:p-8 mb-10">
-                    <div className="flex flex-col lg:flex-row gap-8 items-center justify-between">
-                        <div className="flex items-center gap-4">
-                            <div className="h-14 w-14 bg-primary/10 rounded-xl flex items-center justify-center border border-primary/20">
+            <section id="booking-section" className="container container-padding pb-20">
+                {/* Date Picker & Bar */}
+                <div className="bg-card border border-border/50 shadow-sm rounded-2xl p-6 md:p-8 mb-12 relative overflow-hidden">
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -mr-32 -mt-32" />
+
+                    <div className="relative flex flex-col lg:flex-row gap-8 items-center justify-between">
+                        <div className="flex items-center gap-5">
+                            <div className="h-16 w-16 bg-primary/10 rounded-2xl flex items-center justify-center border border-primary/20 shadow-inner">
                                 <FiCalendar className="w-7 h-7 text-primary" />
                             </div>
                             <div>
-                                <h2 className="text-2xl font-bold tracking-tight">Select Match Date</h2>
-                                <p className="text-muted-foreground text-sm">Ready for your next competitive match?</p>
+                                <h2 className="text-2xl font-bold tracking-tight mb-1">Select Schedule</h2>
+                                <p className="text-muted-foreground text-sm flex items-center gap-2">
+                                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                                    Book your session locally
+                                </p>
                             </div>
                         </div>
 
                         <div className="w-full lg:w-auto flex flex-col sm:flex-row gap-4">
-                            <DatePicker
-                                selectedDate={new Date(selectedDate)}
-                                onDateSelect={handleDateSelect}
-                                className="w-full sm:w-[350px]"
-                            />
+                            <div className="relative z-20">
+                                <DatePicker
+                                    selectedDate={new Date(selectedDate)}
+                                    onDateSelect={handleDateSelect}
+                                    className="w-full sm:w-[320px] shadow-sm"
+                                />
+                            </div>
                             {isAuthenticated && (
                                 <Button
                                     variant={showBookingHistory ? "default" : "outline"}
                                     onClick={() => setShowBookingHistory(!showBookingHistory)}
-                                    className="rounded-xl h-[48px] px-6 font-semibold"
+                                    className="rounded-xl h-[48px] px-6 font-semibold border-primary/20 hover:bg-primary/5 hover:text-primary transition-all"
                                 >
                                     <FiClock className="w-4 h-4 mr-2" />
                                     {showBookingHistory ? "View Available Slots" : "My Bookings"}
@@ -783,29 +808,36 @@ const Futsal = memo(() => {
                         animate={{ opacity: 1, y: 0 }}
                     >
                         <div className="flex items-center justify-between mb-8">
-                            <h2 className="text-2xl font-bold">Booking History</h2>
-                            <Badge variant="secondary" className="px-3 py-1 rounded-full">{bookings.length} Sessions</Badge>
+                            <div>
+                                <h2 className="text-2xl font-bold tracking-tight">Booking History</h2>
+                                <p className="text-muted-foreground">Track your upcoming and past matches</p>
+                            </div>
+                            <Badge variant="secondary" className="px-3 py-1 rounded-full h-8 text-sm">
+                                {bookings.length} Sessions
+                            </Badge>
                         </div>
                         <BookingHistory bookings={bookings} onRefresh={fetchBookings} />
                     </motion.div>
                 ) : (
-                    <div className="space-y-10">
-                        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+                    <div className="space-y-8">
+                        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-border/40 pb-6">
                             <div>
-                                <h3 className="text-2xl font-bold mb-1">Available Sessions</h3>
-                                <p className="text-muted-foreground">Pick a time that works for your team</p>
+                                <h3 className="text-2xl font-bold mb-1">Available Times</h3>
+                                <p className="text-muted-foreground">
+                                    {format(new Date(selectedDate), 'EEEE, MMMM do, yyyy')}
+                                </p>
                             </div>
-                            <div className="flex bg-muted/50 p-1 rounded-xl border border-border/50">
+                            <div className="flex bg-muted/30 p-1 rounded-xl border border-border/40">
                                 <button
                                     onClick={() => setViewMode('grid')}
-                                    className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${viewMode === 'grid' ? 'bg-background shadow-md text-primary' : 'text-muted-foreground hover:bg-background/40'}`}
+                                    className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${viewMode === 'grid' ? 'bg-background shadow-sm text-primary' : 'text-muted-foreground hover:bg-background/40'}`}
                                 >
                                     <FiGrid className="w-4 h-4" />
                                     Grid
                                 </button>
                                 <button
                                     onClick={() => setViewMode('list')}
-                                    className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${viewMode === 'list' ? 'bg-background shadow-md text-primary' : 'text-muted-foreground hover:bg-background/40'}`}
+                                    className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${viewMode === 'list' ? 'bg-background shadow-sm text-primary' : 'text-muted-foreground hover:bg-background/40'}`}
                                 >
                                     <FiList className="w-4 h-4" />
                                     List
@@ -816,26 +848,26 @@ const Futsal = memo(() => {
                         {loading ? (
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {[1, 2, 3, 4, 5, 6].map((i) => (
-                                    <Skeleton key={i} className="h-56 rounded-2xl" />
+                                    <Skeleton key={i} className="h-[240px] rounded-2xl" />
                                 ))}
                             </div>
                         ) : slots.length === 0 ? (
                             <motion.div
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
-                                className="text-center py-24 bg-muted/20 rounded-2xl border-2 border-dashed border-border/50"
+                                className="text-center py-24 bg-card/30 rounded-3xl border border-dashed border-border/50"
                             >
-                                <div className="p-6 bg-background rounded-full w-20 h-20 mx-auto mb-6 flex items-center justify-center shadow-xl">
-                                    <FiCalendar className="w-10 h-10 text-muted-foreground/50" />
+                                <div className="p-6 bg-background rounded-full w-20 h-20 mx-auto mb-6 flex items-center justify-center shadow-lg ring-4 ring-primary/5">
+                                    <FiCalendar className="w-10 h-10 text-muted-foreground/40" />
                                 </div>
-                                <h4 className="text-xl font-bold mb-3">No Matches Found</h4>
+                                <h4 className="text-xl font-bold mb-2">No Matches Scheduled</h4>
                                 <p className="text-muted-foreground max-w-sm mx-auto mb-8">
-                                    There are no available slots for {format(new Date(selectedDate), 'EEEE, MMMM do')}.
+                                    All slots are booked for this date. Check another day for an open court, insha'Allah.
                                 </p>
                                 <Button
                                     variant="outline"
                                     onClick={() => setSelectedDate(today)}
-                                    className="rounded-full px-8 py-3 h-auto border-2 hover:bg-primary hover:text-white hover:border-primary transition-all font-semibold"
+                                    className="rounded-full px-8 py-6 h-auto border-primary/20 hover:bg-primary hover:text-white hover:border-primary transition-all font-semibold shadow-sm hover:shadow-md"
                                 >
                                     Check Today's Availability
                                 </Button>
