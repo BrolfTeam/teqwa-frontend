@@ -61,6 +61,16 @@ const Settings = memo(() => {
         cbeAccountName: '',
         telebirrAccountNumber: '',
         telebirrAccountName: '',
+
+        // Ramadan Imams (Backend Synced)
+        ramadanImamFajr: '',
+        ramadanImamDhuhr: '',
+        ramadanImamAsr: '',
+        ramadanImamMaghrib: '',
+        ramadanImamIsha: '',
+
+        // Taraweeh Imams (Backend Synced)
+        taraweehImams: '',
     });
 
     useEffect(() => {
@@ -103,6 +113,12 @@ const Settings = memo(() => {
                             cbeAccountName: data.cbe_account_name || '',
                             telebirrAccountNumber: data.telebirr_account_number || '',
                             telebirrAccountName: data.telebirr_account_name || '',
+                            ramadanImamFajr: data.ramadan_imams?.fajr?.join(', ') || '',
+                            ramadanImamDhuhr: data.ramadan_imams?.dhuhr?.join(', ') || '',
+                            ramadanImamAsr: data.ramadan_imams?.asr?.join(', ') || '',
+                            ramadanImamMaghrib: data.ramadan_imams?.maghrib?.join(', ') || '',
+                            ramadanImamIsha: data.ramadan_imams?.isha?.join(', ') || '',
+                            taraweehImams: data.taraweeh_imams?.join(', ') || '',
                         }));
                     }
                 } catch (apiErr) {
@@ -154,6 +170,14 @@ const Settings = memo(() => {
                     cbe_account_name: settings.cbeAccountName,
                     telebirr_account_number: settings.telebirrAccountNumber,
                     telebirr_account_name: settings.telebirrAccountName,
+                    ramadan_imams: {
+                        fajr: settings.ramadanImamFajr.split(',').map(s => s.trim()).filter(Boolean),
+                        dhuhr: settings.ramadanImamDhuhr.split(',').map(s => s.trim()).filter(Boolean),
+                        asr: settings.ramadanImamAsr.split(',').map(s => s.trim()).filter(Boolean),
+                        maghrib: settings.ramadanImamMaghrib.split(',').map(s => s.trim()).filter(Boolean),
+                        isha: settings.ramadanImamIsha.split(',').map(s => s.trim()).filter(Boolean),
+                    },
+                    taraweeh_imams: settings.taraweehImams.split(',').map(s => s.trim()).filter(Boolean),
                 });
             } catch (apiErr) {
                 console.error('Failed to update site config:', apiErr);
@@ -277,6 +301,28 @@ const Settings = memo(() => {
                 { key: 'cbeAccountName', label: t('settings.cbeAccountName'), type: 'text' },
                 { key: 'telebirrAccountNumber', label: t('settings.telebirrAccountNumber'), type: 'text' },
                 { key: 'telebirrAccountName', label: t('settings.telebirrAccountName'), type: 'text' },
+            ]
+        },
+        {
+            id: 'ramadanImam',
+            title: 'Ramadan Daily Imams',
+            icon: FiUser,
+            color: 'text-orange-500 bg-orange-50',
+            fields: [
+                { key: 'ramadanImamFajr', label: 'Suhoor/Fajr Imams (comma separated)', type: 'text' },
+                { key: 'ramadanImamDhuhr', label: 'Dhuhr Imams (comma separated)', type: 'text' },
+                { key: 'ramadanImamAsr', label: 'Asr Imams (comma separated)', type: 'text' },
+                { key: 'ramadanImamMaghrib', label: 'Iftar/Maghrib Imams (comma separated)', type: 'text' },
+                { key: 'ramadanImamIsha', label: 'Isha Imams (comma separated)', type: 'text' },
+            ]
+        },
+        {
+            id: 'taraweehImam',
+            title: 'Taraweeh Prayer Imams',
+            icon: FiUser,
+            color: 'text-purple-500 bg-purple-50',
+            fields: [
+                { key: 'taraweehImams', label: 'Imams (comma separated)', type: 'text' },
             ]
         }
     ];

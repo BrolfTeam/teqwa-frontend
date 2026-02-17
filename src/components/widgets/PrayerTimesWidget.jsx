@@ -11,6 +11,7 @@ import IslamicPattern from '@/components/ui/IslamicPattern';
 import { prayerTimesService, PRAYER_INFO, formatTimeRemaining, MOSQUE_LOCATION } from '@/lib/prayerTimesService';
 import { format, addDays, subDays } from 'date-fns';
 import { useTranslation } from '@/hooks/useTranslation';
+import { isRamadan, getRamadanDay, getStoredHijriAdjustment } from '@/utils/hijriUtils';
 
 // Helper function to get daily imams from localStorage
 const getDailyImams = () => {
@@ -26,8 +27,14 @@ const getDailyImams = () => {
 };
 
 // Helper function to translate prayer names
-const getPrayerTranslation = (prayerName, t) => {
+const getPrayerTranslation = (prayerName, t, isRamadanMode = false) => {
   const name = prayerName?.toLowerCase();
+
+  if (isRamadanMode) {
+    if (name === 'fajr') return t('prayer.suhoorEnd') || 'Suhoor End';
+    if (name === 'maghrib') return t('prayer.iftar') || 'Iftar';
+  }
+
   const prayerMap = {
     'fajr': t('prayer.fajr'),
     'dhuhr': t('prayer.dhuhr'),
@@ -56,7 +63,22 @@ const PrayerTimesWidget = memo(({ className = '', showNavigation = true, compact
   const [error, setError] = useState(null);
   const [locationStatus, setLocationStatus] = useState('found'); // Assume cached location
   const [dailyImams, setDailyImams] = useState(getDailyImams());
+  const [siteConfig, setSiteConfig] = useState(null);
   const cardRef = useRef(null);
+
+  // Fetch site configuration for Ramadan imams
+  useEffect(() => {
+    const fetchSiteConfig = async () => {
+      try {
+        const response = await apiService.getSiteConfig();
+        const data = response?.data || response;
+        setSiteConfig(data);
+      } catch (err) {
+        console.error('Failed to fetch site config for imams:', err);
+      }
+    };
+    fetchSiteConfig();
+  }, []);
 
   // 3D tilt effect
   const x = useMotionValue(0);
@@ -481,10 +503,19 @@ const PrayerTimesWidget = memo(({ className = '', showNavigation = true, compact
   const isToday = format(selectedDate, 'yyyy-MM-dd') === format(new Date(), 'yyyy-MM-dd');
   const prayers = Object.values(prayerData.prayers || {});
 
-  // Get sun times
-  const sunrise = prayerData.prayers?.sunrise;
-  const sunset = prayerData.prayers?.maghrib; // Maghrib is at sunset
-  const midday = prayerData.prayers?.dhuhr; // Dhuhr is midday
+  // Hijri adjustment and Ramadan detection
+  const hijriAdjustment = getStoredHijriAdjustment();
+  // Hijri day starts at Maghrib (sunset). 
+  // We only shift to the next Hijri day if it's TODAY and we are AFTER Maghrib but BEFORE midnight.
+  const now = new Date();
+  const isAfterMaghrib = isToday && now.getHours() >= 12 && (
+    currentNext?.current?.name === 'Maghrib' ||
+    currentNext?.current?.name === 'Isha' ||
+    (currentNext?.next?.name === 'Fajr' && now.getHours() > 15)
+  );
+
+  const ramadanDay = getRamadanDay(selectedDate, hijriAdjustment, isAfterMaghrib);
+  const isRamadanMode = ramadanDay !== null;
 
   // Calculate end time for current prayer (next prayer time)
   const currentPrayerEndTime = isToday && currentNext?.next?.formatted ? currentNext.next.formatted : '--:--';
@@ -539,11 +570,18 @@ const PrayerTimesWidget = memo(({ className = '', showNavigation = true, compact
                   </button>
                 )}
                 <div className="text-center">
-                  <div className="text-base font-bold text-foreground tracking-wide">
+                  <div className="text-base font-bold text-foreground tracking-wide flex items-center justify-center gap-2">
+                    {isRamadanMode && <FiMoon className="text-primary animate-pulse h-4 w-4" />}
                     {format(selectedDate, 'EEEE, d MMMM')}
                   </div>
-                  <div className="text-sm text-muted-foreground font-medium mt-0.5">
-                    {prayerData?.hijriDate || 'Islamic Date'}
+                  <div className="text-sm text-muted-foreground font-medium mt-0.5 flex items-center justify-center gap-2">
+                    {isRamadanMode ? (
+                      <span className="text-primary font-bold">
+                        {t('islamicCalendar.monthNames.ramadan')} {ramadanDay}, {calculateHijri(selectedDate, hijriAdjustment, isAfterMaghrib).year}H
+                      </span>
+                    ) : (
+                      prayerData?.hijriDate || 'Islamic Date'
+                    )}
                   </div>
                 </div>
                 {showNavigation && (
@@ -561,7 +599,7 @@ const PrayerTimesWidget = memo(({ className = '', showNavigation = true, compact
                       <span className="text-xs uppercase font-extrabold text-primary bg-primary/10 px-2 py-0.5 rounded-md">
                         {t('prayer.next')} {currentNext.next?.name === 'Fajr' && new Date().getHours() > 12 ? `(${t('prayer.tomorrow')})` : ''}
                       </span>
-                      <span className="text-2xl font-black text-foreground">{getPrayerTranslation(currentNext.next?.name, t)}</span>
+                      <span className="text-2xl font-black text-foreground">{getPrayerTranslation(currentNext.next?.name, t, isRamadanMode)}</span>
                     </div>
                     <div className="text-3xl font-light text-foreground/90 leading-none">
                       {currentNext.next?.formatted}
@@ -575,7 +613,7 @@ const PrayerTimesWidget = memo(({ className = '', showNavigation = true, compact
                       </div>
                     )}
                     <div className="text-xs text-muted-foreground/80">
-                      {t('prayer.now')} <span className="font-bold text-foreground">{getPrayerTranslation(currentNext.current?.name, t)}</span>
+                      {t('prayer.now')} <span className="font-bold text-foreground">{getPrayerTranslation(currentNext.current?.name, t, isRamadanMode)}</span>
                     </div>
                   </div>
 
@@ -599,7 +637,15 @@ const PrayerTimesWidget = memo(({ className = '', showNavigation = true, compact
                       const isCurrent = isToday && currentNext?.current?.name === prayer.name;
                       const isNext = isToday && currentNext?.next?.name === prayer.name;
                       const prayerKey = prayer.name.toLowerCase();
-                      const imam = dailyImams[prayerKey];
+                      let imam = dailyImams[prayerKey];
+
+                      // Use Ramadan imams if in Ramadan mode
+                      if (isRamadanMode && siteConfig?.ramadan_imams?.[prayerKey]) {
+                        const ramadanImams = siteConfig.ramadan_imams[prayerKey];
+                        if (Array.isArray(ramadanImams) && ramadanImams.length > 0) {
+                          imam = ramadanImams.join(', ');
+                        }
+                      }
 
                       return (
                         <div
@@ -614,7 +660,7 @@ const PrayerTimesWidget = memo(({ className = '', showNavigation = true, compact
                           <div className="flex items-center gap-4 flex-1 min-w-0">
                             <span className="text-2xl opacity-80 w-8 text-center flex-shrink-0">{prayer.icon || '🕌'}</span>
                             <div className="flex flex-col min-w-0 flex-1">
-                              <span className="text-base">{getPrayerTranslation(prayer.name, t)}</span>
+                              <span className="text-base">{getPrayerTranslation(prayer.name, t, isRamadanMode)}</span>
                               {imam && (
                                 <span className={`text-xs opacity-80 truncate ${isCurrent ? 'text-primary-foreground/90' : 'text-muted-foreground'}`}>
                                   <FiUser className="inline h-3 w-3 mr-1" />
@@ -648,14 +694,16 @@ const PrayerTimesWidget = memo(({ className = '', showNavigation = true, compact
                   <FiSun className="h-4 w-4 text-orange-400" />
                   <div className="flex flex-col">
                     <span className="text-[11px] uppercase font-bold opacity-60 line-height-none mb-0.5">{t('prayer.sunrise')}</span>
-                    <span className="font-bold text-foreground text-sm leading-none">{sunrise?.formatted || '--'}</span>
+                    <span className="font-bold text-foreground text-sm leading-none">{prayerData.prayers?.sunrise?.formatted || '--'}</span>
                   </div>
                 </div>
                 <div className="flex items-center justify-center gap-2">
                   <FiMoon className="h-4 w-4 text-indigo-400" />
                   <div className="flex flex-col">
-                    <span className="text-[11px] uppercase font-bold opacity-60 line-height-none mb-0.5">{t('prayer.maghrib')}</span>
-                    <span className="font-bold text-foreground text-sm leading-none">{sunset?.formatted || '--'}</span>
+                    <span className="text-[11px] uppercase font-bold opacity-60 line-height-none mb-0.5">
+                      {isRamadanMode ? (t('prayer.iftar') || 'Iftar') : t('prayer.maghrib')}
+                    </span>
+                    <span className="font-bold text-foreground text-sm leading-none">{prayerData.prayers?.maghrib?.formatted || '--'}</span>
                   </div>
                 </div>
               </div>

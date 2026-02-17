@@ -1130,7 +1130,9 @@
     "dhuhr": "Dhuhr",
     "asr": "Asr",
     "maghrib": "Maghrib",
-    "isha": "Isha"
+    "isha": "Isha",
+    "suhoorEnd": "Suhoor End",
+    "iftar": "Iftar"
   },
   "notFound": {
     "title": "404",

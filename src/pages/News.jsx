@@ -41,26 +41,22 @@ const News = memo(() => {
     const fetchNews = async () => {
       try {
         setLoading(true);
-        const params = showFeaturedOnly ? { featured: 'true' } : {};
-        const response = await apiService.getAnnouncements(params);
-        setNews(response.data || []);
-      } catch (error) {
-        // Silently handle rate limiting (429)
-        if (error.status === 429) {
-          console.warn('Rate limited, returning empty news list');
-          setNews([]);
-        } else {
-          console.error('Failed to fetch news:', error);
-          toast.error('Failed to load announcements');
-          setNews([]);
-        }
+        console.log('[News] Fetching announcements...');
+        const response = await apiService.getAnnouncements();
+        console.log('[News] API Response:', response);
+        const data = response.data || [];
+        console.log('[News] Announcements count:', data.length);
+        setNews(data);
+      } catch (err) {
+        console.error('[News] Failed to fetch news:', err);
+        toast.error('Failed to load news. Please try again later.');
       } finally {
         setLoading(false);
       }
     };
 
     fetchNews();
-  }, [showFeaturedOnly]);
+  }, []);
 
   // Extract all unique tags from news
   const allTags = useMemo(() => {
@@ -77,13 +73,16 @@ const News = memo(() => {
   const filteredNews = useMemo(() => {
     let filtered = [...news];
 
-    // Search filter
-    if (searchTerm) {
-      const searchLower = searchTerm.toLowerCase();
+    // Status Filter (Published only - redundant if API already filters, but good for safety)
+    filtered = filtered.filter(item => item.published !== false);
+
+    // Search Filter
+    if (searchTerm.trim()) {
+      const query = searchTerm.toLowerCase();
       filtered = filtered.filter(item =>
-        item.title?.toLowerCase().includes(searchLower) ||
-        item.content?.toLowerCase().includes(searchLower) ||
-        item.author_name?.toLowerCase().includes(searchLower)
+        item.title?.toLowerCase().includes(query) ||
+        item.content?.toLowerCase().includes(query) ||
+        item.excerpt?.toLowerCase().includes(query)
       );
     }
 
@@ -95,7 +94,12 @@ const News = memo(() => {
       });
     }
 
-    // Sort
+    // Featured Filter
+    if (showFeaturedOnly) {
+      filtered = filtered.filter(item => item.featured);
+    }
+
+    // Sorting
     filtered.sort((a, b) => {
       const dateA = new Date(a.created_at || a.updated_at || 0);
       const dateB = new Date(b.created_at || b.updated_at || 0);
@@ -119,12 +123,18 @@ const News = memo(() => {
 
   // Separate featured and regular news
   const featuredNews = useMemo(() => {
+    // Only show separate featured section if not filtering for featured only
+    if (showFeaturedOnly) return [];
     return filteredNews.filter(item => item.featured).slice(0, 3);
-  }, [filteredNews]);
+  }, [filteredNews, showFeaturedOnly]);
 
   const regularNews = useMemo(() => {
-    return filteredNews.filter(item => !item.featured);
-  }, [filteredNews]);
+    // If showFeaturedOnly is active, show all filtered items in the main grid
+    if (showFeaturedOnly) return filteredNews;
+    // Otherwise, exclude the ones already shown in the featured section
+    const featuredIds = new Set(featuredNews.map(item => item.id));
+    return filteredNews.filter(item => !featuredIds.has(item.id));
+  }, [filteredNews, featuredNews, showFeaturedOnly]);
 
   const toggleTag = (tag) => {
     setSelectedTags(prev =>

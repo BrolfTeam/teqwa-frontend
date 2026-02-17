@@ -8,10 +8,9 @@ import headerBg from '@/assets/background.png';
 import jumeaImage from '@/assets/jumea.jpg';
 import futsalImage from '@/assets/futsal4.jpg';
 
-// Import Itikaf images - Vite handles special characters in filenames
-// Using direct imports - the apostrophe in the filename should work
 import itikafImage from '@/assets/metakif.jpg';
 import itikafImage2 from '@/assets/mutakif1.jpg';
+import { isRamadan as checkRamadan, getStoredHijriAdjustment } from '@/utils/hijriUtils';
 
 // Helper function to check if today is Friday (Jumu'ah)
 export const isJumuah = () => {
@@ -38,24 +37,10 @@ export const getJumuahKhatib = () => {
   return null; // Default: no khatib info
 };
 
-// Helper function to check if it's Ramadan (simplified - can be enhanced with Hijri calendar)
+// Helper function to check if it's Ramadan
 export const isRamadan = () => {
-  const today = new Date();
-  const month = today.getMonth(); // 0-11
-  const year = today.getFullYear();
-  
-  // Approximate Ramadan dates (this should be replaced with actual Hijri calendar calculation)
-  // For 2024: March 11 - April 9
-  // For 2025: March 1 - March 30
-  // This is a placeholder - implement proper Hijri calendar integration
-  
-  // For now, return false - implement proper calculation
-  return false;
-  
-  // Example implementation (needs proper Hijri calendar):
-  // const ramadanStart = new Date(year, 2, 11); // March 11
-  // const ramadanEnd = new Date(year, 3, 9); // April 9
-  // return today >= ramadanStart && today <= ramadanEnd;
+  const adjustment = getStoredHijriAdjustment();
+  return checkRamadan(new Date(), adjustment);
 };
 
 // Default hero slides - now a function that accepts translation function
@@ -91,10 +76,10 @@ export const getDefaultHeroSlides = (t) => [
 // Jumu'ah (Friday) specific slides - Dynamic with khatib info
 export const getJumuahSlides = (t) => {
   const khatibInfo = getJumuahKhatib();
-  const subtitle = khatibInfo 
+  const subtitle = khatibInfo
     ? t('hero.todayKhutbah', { name: khatibInfo.name || 'Imam' })
     : t('hero.jumuahSubtitle');
-  
+
   return [
     {
       id: 'jumuah',
@@ -106,11 +91,11 @@ export const getJumuahSlides = (t) => {
       titleHighlight: t('hero.friday'),
       subtitle: subtitle,
       cta: { label: t('hero.prayerTimes'), link: "/prayer-times", icon: "calendar" },
-      secondaryCta: { 
-        label: t('hero.readSurahKahf'), 
-        link: "https://quran.com/18", 
+      secondaryCta: {
+        label: t('hero.readSurahKahf'),
+        link: "https://quran.com/18",
         external: true,
-        icon: "book" 
+        icon: "book"
       },
       khatib: khatibInfo,
       priority: 10, // High priority for special days
@@ -120,36 +105,43 @@ export const getJumuahSlides = (t) => {
 };
 
 // Ramadan specific slides - now a function
-export const getRamadanSlides = (t) => [
-  {
-    id: 'ramadan',
-    type: 'occasion',
-    image: headerBg,
-    alt: "Ramadan Kareem",
-    badge: "Ramadan Kareem",
-    title: "Welcome to the Month of",
-    titleHighlight: "Mercy & Quran",
-    subtitle: "May Allah accept our fasting, prayers, and charity in this blessed month. Join us for Taraweeh prayers and community iftars.",
-    cta: { label: t('prayer.prayerTimes'), link: "/prayer-times", icon: "calendar" },
-    secondaryCta: { label: t('events.title'), link: "/events" },
-    priority: 10,
-    occasion: 'ramadan'
-  },
-  {
-    id: 'itikaf-ramadan',
-    type: 'itikaf',
-    image: itikafImage2,
-    alt: "I'tikaf Program",
-    badge: t('itikaf.ramadanSpecial'),
-    title: t('itikaf.experienceSpiritual'),
-    titleHighlight: t('itikaf.itikafRetreat'),
-    subtitle: t('itikaf.ramadanItikafSubtitle'),
-    cta: { label: t('itikaf.registerForItikaf'), link: "/itikaf", icon: "book" },
-    secondaryCta: { label: t('common.learnMore'), link: "/itikaf" },
-    priority: 9,
-    occasion: 'ramadan'
-  }
-];
+export const getRamadanSlides = (t, siteConfig = null) => {
+  const taraweehImams = siteConfig?.taraweeh_imams || [];
+  const imamsText = taraweehImams.length > 0
+    ? `Taraweeh imams: ${taraweehImams.join(', ')}`
+    : "Join us for Taraweeh prayers and community iftars.";
+
+  return [
+    {
+      id: 'ramadan',
+      type: 'occasion',
+      image: headerBg,
+      alt: "Ramadan Kareem",
+      badge: "Ramadan Kareem",
+      title: "Welcome to the Month of",
+      titleHighlight: "Mercy & Quran",
+      subtitle: `May Allah accept our fasting, prayers, and charity in this blessed month. ${imamsText}`,
+      cta: { label: t('prayer.prayerTimes'), link: "/prayer-times", icon: "calendar" },
+      secondaryCta: { label: t('events.title'), link: "/events" },
+      priority: 10,
+      occasion: 'ramadan'
+    },
+    {
+      id: 'itikaf-ramadan',
+      type: 'itikaf',
+      image: itikafImage2,
+      alt: "I'tikaf Program",
+      badge: t('itikaf.ramadanSpecial'),
+      title: t('itikaf.experienceSpiritual'),
+      titleHighlight: t('itikaf.itikafRetreat'),
+      subtitle: t('itikaf.ramadanItikafSubtitle'),
+      cta: { label: t('itikaf.registerForItikaf'), link: "/itikaf", icon: "book" },
+      secondaryCta: { label: t('common.learnMore'), link: "/itikaf" },
+      priority: 9,
+      occasion: 'ramadan'
+    }
+  ];
+};
 
 // Service-specific slides - now a function
 export const getServiceSlides = (t) => [
@@ -199,20 +191,21 @@ export const getServiceSlides = (t) => [
  * @param {Array} events - Featured events from API
  * @param {Array} campaigns - Active donation campaigns from API
  * @param {Function} t - Translation function from i18next
+ * @param {Object} siteConfig - Site configuration from API
  * @returns {Array} Array of hero slides
  */
-export const getHeroSlides = (events = [], campaigns = [], t) => {
+export const getHeroSlides = (events = [], campaigns = [], t, siteConfig = null) => {
   const slides = [];
-  
+
   // Add occasion-specific slides first (highest priority)
   if (isJumuah()) {
     slides.push(...getJumuahSlides(t));
   }
-  
+
   if (isRamadan()) {
-    slides.push(...getRamadanSlides(t));
+    slides.push(...getRamadanSlides(t, siteConfig));
   }
-  
+
   // Add featured events as slides
   const eventSlides = events
     .filter(e => e.featured)
@@ -234,7 +227,7 @@ export const getHeroSlides = (events = [], campaigns = [], t) => {
       priority: 7
     }));
   slides.push(...eventSlides);
-  
+
   // Add donation campaigns as slides
   const campaignSlides = campaigns
     .filter(c => c.status === 'active')
@@ -255,13 +248,13 @@ export const getHeroSlides = (events = [], campaigns = [], t) => {
       priority: 8
     }));
   slides.push(...campaignSlides);
-  
+
   // Add service slides
   slides.push(...getServiceSlides(t));
-  
+
   // Add default slides
   slides.push(...getDefaultHeroSlides(t));
-  
+
   // Sort by priority (higher first) and return top 6 slides
   return slides
     .sort((a, b) => (b.priority || 0) - (a.priority || 0))

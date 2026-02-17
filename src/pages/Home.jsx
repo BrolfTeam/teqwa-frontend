@@ -6,12 +6,17 @@ import { Button } from '@/components/ui/Button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/Card';
 import PrayerTimesWidget from '@/components/widgets/PrayerTimesWidget';
 import LazyImage from '@/components/ui/LazyImage';
+import Hero from '@/components/ui/Hero';
+import QuickLinks from '@/components/widgets/QuickLinks';
+import ContentSection from '@/components/ui/ContentSection';
+import DonationProgressWidget from '@/components/widgets/DonationProgressWidget';
+import { Badge } from '@/components/ui/Badge';
 import { useEffect, useState, useMemo, memo, useCallback } from 'react';
 import { dataService } from '@/lib/dataService';
 import { apiService } from '@/lib/apiService';
 import { DEFAULT_PRAYER_TIMES } from '@/config/constants';
 import { useAuth } from '@/context/AuthContext';
-import { getHeroSlides } from '@/data/heroContent';
+import { getHeroSlides, isRamadan as checkRamadan } from '@/data/heroContent';
 import mesjidBg from '@/assets/mesjid2.jpg';
 import futsalImage from '@/assets/futsal4.jpg';
 import itikafImage from '@/assets/metakif.jpg';
@@ -230,6 +235,7 @@ const Home = memo(() => {
   const [upcomingEvents, setUpcomingEvents] = useState([]);
   const [donationCauses, setDonationCauses] = useState([]);
   const [itikafPrograms, setItikafPrograms] = useState([]);
+  const [siteConfig, setSiteConfig] = useState(null);
   const [loading, setLoading] = useState(true);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
@@ -239,10 +245,10 @@ const Home = memo(() => {
   const getIslamicOccasion = () => {
     const today = new Date();
     const day = today.getDay();
-    const isRamadan = false;
+    const isRamadan = checkRamadan();
 
-    if (day === 5) return 'jumuah';
     if (isRamadan) return 'ramadan';
+    if (day === 5) return 'jumuah';
     return 'default';
   };
 
@@ -253,8 +259,8 @@ const Home = memo(() => {
   const heroSlides = useMemo(() => {
     const featuredEvents = upcomingEvents.filter(e => e.featured);
     const activeCampaigns = donationCauses.filter(c => c.status === 'active');
-    return getHeroSlides(featuredEvents, activeCampaigns, t);
-  }, [upcomingEvents, donationCauses, t]);
+    return getHeroSlides(featuredEvents, activeCampaigns, t, siteConfig);
+  }, [upcomingEvents, donationCauses, t, siteConfig]);
 
   // Listen for khatib updates from admin settings
   useEffect(() => {
@@ -344,14 +350,16 @@ const Home = memo(() => {
       try {
         setLoading(true);
 
-        const [homeData, causesResponse] = await Promise.all([
+        const [homeData, causesResponse, configResponse] = await Promise.all([
           dataService.getHomePageData().catch(() => ({ events: [], announcements: [] })),
-          apiService.getDonationCauses({ active: 'true' }).catch(() => ({ data: [] }))
+          apiService.getDonationCauses({ active: 'true' }).catch(() => ({ data: [] })),
+          apiService.getSiteConfig().catch(() => ({ data: null }))
         ]);
 
         if (isMounted) {
           setAnnouncements(homeData.announcements || []);
           setUpcomingEvents(homeData.events || []);
+          setSiteConfig(configResponse?.data || configResponse);
 
           const causes = causesResponse?.data || causesResponse || [];
           setDonationCauses(Array.isArray(causes) ? causes : []);
