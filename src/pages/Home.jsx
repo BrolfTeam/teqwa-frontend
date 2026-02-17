@@ -9,7 +9,6 @@ import LazyImage from '@/components/ui/LazyImage';
 import Hero from '@/components/ui/Hero';
 import QuickLinks from '@/components/widgets/QuickLinks';
 import ContentSection from '@/components/ui/ContentSection';
-import DonationProgressWidget from '@/components/widgets/DonationProgressWidget';
 import { Badge } from '@/components/ui/Badge';
 import { useEffect, useState, useMemo, memo, useCallback } from 'react';
 import { dataService } from '@/lib/dataService';
