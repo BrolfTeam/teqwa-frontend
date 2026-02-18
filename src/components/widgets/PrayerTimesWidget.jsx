@@ -11,7 +11,7 @@ import IslamicPattern from '@/components/ui/IslamicPattern';
 import { prayerTimesService, PRAYER_INFO, formatTimeRemaining, MOSQUE_LOCATION } from '@/lib/prayerTimesService';
 import { format, addDays, subDays } from 'date-fns';
 import { useTranslation } from '@/hooks/useTranslation';
-import { isRamadan, getRamadanDay, getStoredHijriAdjustment } from '@/utils/hijriUtils';
+import { isRamadan, getRamadanDay, getStoredHijriAdjustment, calculateHijri } from '@/utils/hijriUtils';
 import siteService from '@/services/siteService';
 
 // Helper function to get daily imams from localStorage
