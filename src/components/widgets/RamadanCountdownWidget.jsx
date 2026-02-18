@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { FiMoon, FiStar } from 'react-icons/fi';
 import { Card, CardContent } from '@/components/ui/Card';
 import { getRamadanDay, getStoredHijriAdjustment } from '@/utils/hijriUtils';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
 const RamadanCountdownWidget = ({ className = '' }) => {
     const { t, i18n } = useTranslation();
