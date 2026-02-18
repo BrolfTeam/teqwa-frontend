@@ -1154,24 +1154,8 @@
     "updating": "በማዘመን ላይ..."
   },
   "islamicCalendar": {
-    "title": "ኢስላማዊ",
-    "titleHighlight": "የቀን መቁጠሪያ",
-    "description": "ኢስላማዊ (ሂጅራ) የቀን መቁጠሪያን ከግሪጎርያን የቀን መቁጠሪያ ጎን ለጎን ይመልከቱ።",
-    "todayGregorian": "ዛሬ (ግሪጎርያን)",
-    "todayHijri": "ዛሬ (ሂጅራ)",
-    "gregorianCalendar": "ግሪጎርያን የቀን መቁጠሪያ",
-    "selectedDate": "የተመረጠ ቀን",
     "hijriDate": "የሂጅራ ቀን",
-    "gregorianDate": "የግሪጎርያን ቀን",
-    "dayNamesShort": {
-      "sun": "እሁድ",
-      "mon": "ሰኞ",
-      "tue": "ማክሰ",
-      "wed": "ረቡዕ",
-      "thu": "ሐሙስ",
-      "fri": "አርብ",
-      "sat": "ቅዳሜ"
-    },
+    "gregorianDate": "የግريጎርያን ቀን",
     "monthNames": {
       "muharram": "ሙሃረም",
       "safar": "ሰፈር",
@@ -1179,7 +1163,7 @@
       "rabiAlThani": "ረቢዓል ሳኒ",
       "jumadaAlAwwal": "ጁማደል አወል",
       "jumadaAlThani": "ጁማደል ሳኒ",
-      "rajab": "ረጀብ",
+      "rajab": "ረጀب",
       "shaban": "ሻዕባን",
       "ramadan": "ረመዷን",
       "shawwal": "ሸዋል",
@@ -1198,7 +1182,7 @@
       "november": "ኖቬምበር",
       "december": "ዲሴምበር"
     },
-    "weekDays": {
+    "dayNamesShort": {
       "sun": "እሁድ",
       "mon": "ሰኞ",
       "tue": "ማክሰኞ",
@@ -1207,36 +1191,13 @@
       "fri": "አርብ",
       "sat": "ቅዳሜ"
     },
-    "gregorianMonthNames": {
-      "january": "ጃንዋሪ",
-      "february": "ፌብሩዋሪ",
-      "march": "ማርች",
-      "april": "ኤፕሪል",
-      "may": "ሜይ",
-      "june": "ጁን",
-      "july": "ጁላይ",
-      "august": "ኦገስት",
-      "september": "ሴፕቴምበር",
-      "october": "ኦክቶበር",
-      "november": "ኖቬምበር",
-      "december": "ዲሴምበር"
-    },
-    "dayNamesShort": {
-      "sun": "እሑድ",
-      "mon": "ሰኞ",
-      "tue": "ማክሰኞ",
-      "wed": "ረቡዕ",
-      "thu": "ሐሙስ",
-      "fri": "ዓርብ",
-      "sat": "ቅዳሜ"
-    },
     "dayNamesFull": {
-      "sunday": "እሑድ",
+      "sunday": "እሁድ",
       "monday": "ሰኞ",
       "tuesday": "ማክሰኞ",
       "wednesday": "ረቡዕ",
       "thursday": "ሐሙስ",
-      "friday": "ዓርብ",
+      "friday": "አርብ",
       "saturday": "ቅዳሜ"
     }
   },

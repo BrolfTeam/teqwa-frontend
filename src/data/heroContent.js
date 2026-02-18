@@ -107,24 +107,22 @@ export const getJumuahSlides = (t) => {
 // Ramadan specific slides - now a function
 export const getRamadanSlides = (t, siteConfig = null) => {
   const taraweehImams = siteConfig?.taraweeh_imams || [];
-  const imamsText = taraweehImams.length > 0
-    ? t('ramadan.taraweehImams', { imams: taraweehImams.join(', ') })
-    : t('ramadan.defaultTaraweehDesc');
 
   return [
     {
       id: 'ramadan',
       type: 'occasion',
-      image: headerBg,
+      image: jumeaImage,
       alt: t('hero.ramadanKareem'),
       badge: t('hero.ramadanKareem'),
       title: t('hero.ramadanWelcome'),
       titleHighlight: t('hero.ramadanHighlight'),
-      subtitle: `${t('hero.ramadanSubtitle')} ${imamsText}`,
+      subtitle: t('hero.ramadanSubtitle'),
       cta: { label: t('prayer.prayerTimes'), link: "/prayer-times", icon: "calendar" },
       secondaryCta: { label: t('events.title'), link: "/events" },
       priority: 10,
-      occasion: 'ramadan'
+      occasion: 'ramadan',
+      taraweehImams: taraweehImams
     },
     {
       id: 'itikaf-ramadan',

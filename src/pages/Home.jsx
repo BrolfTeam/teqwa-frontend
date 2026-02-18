@@ -526,13 +526,52 @@ const Home = memo(() => {
                   {currentSlideData?.subtitle || "Join us in our daily prayers, educational programs, and community events."}
                 </motion.p>
 
+                {/* Taraweeh Imams Info */}
+                {currentSlideData?.taraweehImams && currentSlideData.taraweehImams.length > 0 && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1], delay: 0.2 }}
+                    className="mb-8 flex flex-col gap-3 bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 max-w-xl mx-auto lg:mx-0 shadow-2xl relative overflow-hidden group"
+                  >
+                    <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                      <FiMoon className="w-12 h-12 text-accent" />
+                    </div>
+
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="p-1.5 rounded-lg bg-accent/20 text-accent">
+                        <FiUsers className="w-5 h-5" />
+                      </div>
+                      <span className="text-xs font-black uppercase tracking-[0.2em] text-accent/90">
+                        {t('ramadan.ledBy', 'Taraweeh Led By')}
+                      </span>
+                    </div>
+
+                    <div className="flex flex-wrap gap-2">
+                      {currentSlideData.taraweehImams.map((imam, idx) => (
+                        <div
+                          key={idx}
+                          className="px-4 py-2 rounded-xl bg-white/10 border border-white/10 text-white font-bold text-sm hover:bg-white/20 transition-colors shadow-sm"
+                        >
+                          {imam}
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="mt-2 text-[10px] text-white/50 italic flex items-center gap-1">
+                      <FiStar className="w-3 h-3 text-accent" />
+                      {t('ramadan.joiningInstructions', 'Join us every night after Isha prayer')}
+                    </div>
+                  </motion.div>
+                )}
+
                 {/* Khatib/Imam Info for Jumuah */}
                 {currentSlideData?.khatib && currentSlideData.khatib.name && (
                   <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
-                    className="mb-6 flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20 max-w-md mx-auto lg:mx-0"
+                    className="mb-8 flex items-center gap-4 bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 max-w-md mx-auto lg:mx-0 shadow-xl"
                   >
                     <div className="flex-shrink-0 w-16 h-16 rounded-full bg-accent/20 flex items-center justify-center overflow-hidden border-2 border-white/30 relative">
                       {currentSlideData.khatib.photo ? (
@@ -811,15 +850,8 @@ const Home = memo(() => {
 
       {/* Donation Progress & Stats Section - Desktop */}
       <section className="container container-padding mb-20 hidden lg:block">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-2">
-              <DonationProgressWidget />
-            </div>
-            <div className="lg:col-span-1">
-              <PrayerTimesWidget />
-            </div>
-          </div>
+        <div className="max-w-5xl mx-auto">
+          <DonationProgressWidget />
         </div>
       </section>
 
