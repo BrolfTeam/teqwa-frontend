@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiCalendar, FiClock, FiMapPin, FiArrowRight, FiHeart, FiUsers, FiBookOpen, FiTrendingUp, FiTarget, FiDollarSign, FiCheckCircle, FiMoon, FiCoffee, FiShield, FiActivity, FiSun, FiGrid, FiCompass } from 'react-icons/fi';
+import { FiCalendar, FiClock, FiMapPin, FiArrowRight, FiHeart, FiUsers, FiBookOpen, FiTrendingUp, FiTarget, FiDollarSign, FiCheckCircle, FiMoon, FiCoffee, FiShield, FiActivity, FiSun, FiGrid, FiCompass, FiStar } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/Button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/Card';
