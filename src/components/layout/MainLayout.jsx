@@ -4,8 +4,7 @@ import Navbar from './Navbar';
 import Footer from './Footer';
 import { LoadingSpinner } from '@/components/ui';
 import ServiceFAB from '@/components/widgets/ServiceFAB';
-import ScrollToTopFAB from '@/components/widgets/ScrollToTopFAB';
-import MobileBottomNav from './MobileBottomNav';
+import RamadanCountdownWidget from '../widgets/RamadanCountdownWidget';
 
 const MainLayout = memo(({ children }) => {
   return (
@@ -24,6 +23,7 @@ const MainLayout = memo(({ children }) => {
       <MobileBottomNav />
       <ServiceFAB />
       <ScrollToTopFAB />
+      <RamadanCountdownWidget />
     </div>
   );
 });
