@@ -32,7 +32,7 @@ const RamadanCountdownWidget = ({ className = '' }) => {
 
     return (
         <motion.div
-            initial={{ opacity: 0, scale: 0.8, x: isRTL ? -100 : 100 }}
+            initial={{ opacity: 0, scale: 0.8, x: isRTL ? 100 : -100 }}
             animate={{
                 opacity: 1,
                 scale: 1,
@@ -52,7 +52,7 @@ const RamadanCountdownWidget = ({ className = '' }) => {
                     ease: "easeInOut"
                 }
             }}
-            className={`fixed bottom-24 md:bottom-8 ${isRTL ? 'left-4 md:left-8' : 'right-4 md:right-8'} z-[100] w-[280px] md:w-[320px] group ${className}`}
+            className={`fixed bottom-24 md:bottom-8 ${isRTL ? 'right-4 md:right-8' : 'left-4 md:left-8'} z-[100] w-[280px] md:w-[320px] group ${className}`}
         >
             {/* Main Outer Glow - Pulsing */}
             <motion.div
