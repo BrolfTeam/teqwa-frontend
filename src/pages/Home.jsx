@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/Button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/Card';
 import PrayerTimesWidget from '@/components/widgets/PrayerTimesWidget';
+import RamadanCountdownWidget from '@/components/widgets/RamadanCountdownWidget';
 import { Badge } from '@/components/ui/Badge';
 import { useEffect, useState, useMemo, memo, useCallback } from 'react';
 import { dataService } from '@/lib/dataService';
@@ -736,6 +737,13 @@ const Home = memo(() => {
           </>
         )}
       </section>
+
+      {/* Ramadan Countdown Widget - Visible only during Ramadan */}
+      {occasion === 'ramadan' && (
+        <div className="container container-padding -mt-12 relative z-30">
+          <RamadanCountdownWidget />
+        </div>
+      )}
 
       {/* Quick Links Section - Enhanced */}
       <section className="bg-gray-50 dark:bg-background py-12">

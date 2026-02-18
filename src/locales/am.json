@@ -174,7 +174,11 @@
     "jumuahSubtitle": "ዛሬ ሱራ አል-ከህፍን ማንበብ እና በመልእክተኛው (ﷺ) ላይ ሶለዋት ማውረድን አይርሱ። የጁሙዐ ሶላትን ከኛ ጋር ይስገዱ።",
     "todayKhutbah": "የዛሬው ኹጥባ በ{{name}} ይቀርባል። ዛሬ ሱራ አል-ከህፍን ማንበብ እና በመልእክተኛው (ﷺ) ላይ ሶለዋት ማውረድን አይርሱ። የጁሙዐ ሶላትን ከኛ ጋር ይስገዱ።",
     "prayerTimes": "የሶላት ሰዓቶች",
-    "readSurahKahf": "ሱራ ከህፍን አንብብ"
+    "readSurahKahf": "ሱራ ከህፍን አንብብ",
+    "ramadanKareem": "ረመዷን ከሪም",
+    "ramadanWelcome": "እንኳን ወደ በረከቱ ወር",
+    "ramadanHighlight": "በሰላም መጣችሁ",
+    "ramadanSubtitle": "አላህ በዚህ በተባረከ ወር ጾማችንን፣ ሶላታችንን እና ምጽዋታችንን ይቀበለን።"
   },
   "footer": {
     "quickLinks": "ፈጣን አገናኞች",
@@ -228,7 +232,9 @@
     "now": "አሁን:",
     "schedule": "መርሐግብር",
     "qibla": "ቂብላ",
-    "noDataAvailable": "ውሂብ አልተገኘም"
+    "noDataAvailable": "ምንም መረጃ የለም",
+    "suhoorEnd": "የሱሁር ማብቂያ",
+    "iftar": "ኢፍጣር"
   },
   "qibla": {
     "title": "የእርስዎን",
@@ -624,6 +630,13 @@
     "registrationInitiated": "ምዝገባ ተጀምሯል! ወደ ክፍያ አቅጣጫ በመምራት ላይ...",
     "registrationSuccessPaymentFailed": "ምዝገባ ተሳክቷል ነገር ግን ክፍያ አልተሳካም።",
     "registrationSubmitted": "ምዝገባ ለግምገማ ቀርቧል! አንዴ ከተረጋገጠ እናሳውቃለን።"
+  },
+  "ramadan": {
+    "dayCount": "የረመዷን ቀን {{day}}",
+    "taraweehImams": "የተራዊህ ኢማሞች: {{imams}}",
+    "defaultTaraweehDesc": "ለተራዊህ ሶላት እና ለማህበረሰብ ኢፍታር ይቀላቀሉን.",
+    "crescentMoon": "የረመዷን ጨረቃ",
+    "progress": "የረመዷን ሂደት"
   },
   "auth": {
     "login": "ግባ",
@@ -1141,36 +1154,57 @@
     "updating": "በማዘመን ላይ..."
   },
   "islamicCalendar": {
-    "title": "የእስላም",
+    "title": "ኢስላማዊ",
     "titleHighlight": "የቀን መቁጠሪያ",
-    "description": "የእስላም (ሂጅሪ) የቀን መቁጠሪያን ከግሪጎሪያን የቀን መቁጠሪያ ጋር ይመልከቱ።",
-    "todayGregorian": "ዛሬ (ግሪጎሪያን)",
-    "todayHijri": "ዛሬ (ሂጅሪ)",
-    "gregorianCalendar": "ግሪጎሪያን የቀን መቁጠሪያ",
+    "description": "ኢስላማዊ (ሂጅራ) የቀን መቁጠሪያን ከግሪጎርያን የቀን መቁጠሪያ ጎን ለጎን ይመልከቱ።",
+    "todayGregorian": "ዛሬ (ግሪጎርያን)",
+    "todayHijri": "ዛሬ (ሂጅራ)",
+    "gregorianCalendar": "ግሪጎርያን የቀን መቁጠሪያ",
     "selectedDate": "የተመረጠ ቀን",
-    "hijriDate": "ሂጅሪ ቀን",
-    "gregorianDate": "ግሪጎሪያን ቀን",
+    "hijriDate": "የሂጅራ ቀን",
+    "gregorianDate": "የግሪጎርያን ቀን",
+    "dayNamesShort": {
+      "sun": "እሁድ",
+      "mon": "ሰኞ",
+      "tue": "ማክሰ",
+      "wed": "ረቡዕ",
+      "thu": "ሐሙስ",
+      "fri": "አርብ",
+      "sat": "ቅዳሜ"
+    },
     "monthNames": {
-      "muharram": "ሙሀረም",
-      "safar": "ሳፋር",
-      "rabiAlAwwal": "ራቢእ አል-አውዋል",
-      "rabiAlThani": "ራቢእ አል-ታኒ",
-      "jumadaAlAwwal": "ጁማዳ አል-አውዋል",
-      "jumadaAlThani": "ጁማዳ አል-ታኒ",
-      "rajab": "ራጀብ",
+      "muharram": "ሙሃረም",
+      "safar": "ሰፈር",
+      "rabiAlAwwal": "ረቢዓል አወል",
+      "rabiAlThani": "ረቢዓል ሳኒ",
+      "jumadaAlAwwal": "ጁማደል አወል",
+      "jumadaAlThani": "ጁማደል ሳኒ",
+      "rajab": "ረጀብ",
       "shaban": "ሻዕባን",
-      "ramadan": "ረመዳን",
-      "shawwal": "ሻውዋል",
-      "dhuAlQidah": "ዱ አል-ቂድህ",
-      "dhuAlHijjah": "ዱ አል-ሂጅህ"
+      "ramadan": "ረመዷን",
+      "shawwal": "ሸዋል",
+      "dhuAlQidah": "ዙልቂዳህ",
+      "dhuAlHijjah": "ዙልሂጃ",
+      "january": "ጃንዋሪ",
+      "february": "ፌብሩዋሪ",
+      "march": "ማርች",
+      "april": "ኤፕሪል",
+      "may": "ሜይ",
+      "june": "ጁን",
+      "july": "ጁላይ",
+      "august": "ኦገስት",
+      "september": "ሴፕቴምበር",
+      "october": "ኦክቶበር",
+      "november": "ኖቬምበር",
+      "december": "ዲሴምበር"
     },
     "weekDays": {
-      "sun": "እሑድ",
+      "sun": "እሁድ",
       "mon": "ሰኞ",
       "tue": "ማክሰኞ",
       "wed": "ረቡዕ",
       "thu": "ሐሙስ",
-      "fri": "ዓርብ",
+      "fri": "አርብ",
       "sat": "ቅዳሜ"
     },
     "gregorianMonthNames": {

@@ -19,7 +19,8 @@ import {
     FiInfo,
     FiGrid,
     FiList,
-    FiAward
+    FiAward,
+    FiHeart
 } from 'react-icons/fi';
 import { PaymentMethodSelector } from '@/components/payment/PaymentMethodSelector';
 import Hero from '@/components/ui/Hero';
@@ -304,8 +305,8 @@ const SlotCard = memo(({ slot, onSelect, isSelected, viewMode, index }) => {
                     <div className="pt-4 border-t border-border/40">
                         <Button
                             className={`w-full group relative overflow-hidden ${slot.available
-                                    ? 'bg-primary text-primary-foreground hover:bg-primary/90 shadow-md hover:shadow-primary/25'
-                                    : 'bg-muted text-muted-foreground hover:bg-muted cursor-not-allowed'
+                                ? 'bg-primary text-primary-foreground hover:bg-primary/90 shadow-md hover:shadow-primary/25'
+                                : 'bg-muted text-muted-foreground hover:bg-muted cursor-not-allowed'
                                 }`}
                             disabled={!slot.available}
                             onClick={(e) => {

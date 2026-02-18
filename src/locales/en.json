@@ -208,7 +208,11 @@
     "jumuahSubtitle": "Don't forget to read Surah Al-Kahf and send Salawat upon the Prophet (ﷺ) today. Join us for the blessed Jumu'ah prayer.",
     "todayKhutbah": "Today's Khutbah will be delivered by {{name}}. Don't forget to read Surah Al-Kahf and send Salawat upon the Prophet (ﷺ) today. Join us for the blessed Jumu'ah prayer.",
     "prayerTimes": "Prayer Times",
-    "readSurahKahf": "Read Surah Kahf"
+    "readSurahKahf": "Read Surah Kahf",
+    "ramadanKareem": "Ramadan Kareem",
+    "ramadanWelcome": "Welcome to the Month of",
+    "ramadanHighlight": "Mercy & Quran",
+    "ramadanSubtitle": "May Allah accept our fasting, prayers, and charity in this blessed month."
   },
   "footer": {
     "quickLinks": "Quick Links",
@@ -262,7 +266,9 @@
     "now": "Now:",
     "schedule": "Schedule",
     "qibla": "Qibla",
-    "noDataAvailable": "No data available"
+    "noDataAvailable": "No data available",
+    "suhoorEnd": "Suhoor End",
+    "iftar": "Iftar"
   },
   "qibla": {
     "title": "Find Your",
@@ -664,6 +670,13 @@
     "registrationInitiated": "Registration initiated! Redirecting to payment...",
     "registrationSuccessPaymentFailed": "Registration successful but payment failed.",
     "registrationSubmitted": "Registration submitted for review! You will be notified once confirmed."
+  },
+  "ramadan": {
+    "dayCount": "Day {{day}} of Ramadan",
+    "taraweehImams": "Taraweeh imams: {{imams}}",
+    "defaultTaraweehDesc": "Join us for Taraweeh prayers and community iftars.",
+    "crescentMoon": "Crescent Moon",
+    "progress": "Ramadan Progress"
   },
   "auth": {
     "login": "Login",
@@ -1180,6 +1193,15 @@
     "selectedDate": "Selected Date",
     "hijriDate": "Hijri Date",
     "gregorianDate": "Gregorian Date",
+    "dayNamesShort": {
+      "sun": "Sun",
+      "mon": "Mon",
+      "tue": "Tue",
+      "wed": "Wed",
+      "thu": "Thu",
+      "fri": "Fri",
+      "sat": "Sat"
+    },
     "monthNames": {
       "muharram": "Muharram",
       "safar": "Safar",
@@ -1192,7 +1214,19 @@
       "ramadan": "Ramadan",
       "shawwal": "Shawwal",
       "dhuAlQidah": "Dhu al-Qi'dah",
-      "dhuAlHijjah": "Dhu al-Hijjah"
+      "dhuAlHijjah": "Dhu al-Hijjah",
+      "january": "January",
+      "february": "February",
+      "march": "March",
+      "april": "April",
+      "may": "May",
+      "june": "June",
+      "july": "July",
+      "august": "August",
+      "september": "September",
+      "october": "October",
+      "november": "November",
+      "december": "December"
     },
     "weekDays": {
       "sun": "Sun",

@@ -581,7 +581,7 @@ const PrayerTimesWidget = memo(({ className = '', showNavigation = true, compact
                         {t('islamicCalendar.monthNames.ramadan')} {ramadanDay}, {calculateHijri(selectedDate, hijriAdjustment, isAfterMaghrib).year}H
                       </span>
                     ) : (
-                      prayerData?.hijriDate || 'Islamic Date'
+                      prayerData?.hijriDate || t('islamicCalendar.hijriDate') || 'Islamic Date'
                     )}
                   </div>
                 </div>

@@ -108,19 +108,19 @@ export const getJumuahSlides = (t) => {
 export const getRamadanSlides = (t, siteConfig = null) => {
   const taraweehImams = siteConfig?.taraweeh_imams || [];
   const imamsText = taraweehImams.length > 0
-    ? `Taraweeh imams: ${taraweehImams.join(', ')}`
-    : "Join us for Taraweeh prayers and community iftars.";
+    ? t('ramadan.taraweehImams', { imams: taraweehImams.join(', ') })
+    : t('ramadan.defaultTaraweehDesc');
 
   return [
     {
       id: 'ramadan',
       type: 'occasion',
       image: headerBg,
-      alt: "Ramadan Kareem",
-      badge: "Ramadan Kareem",
-      title: "Welcome to the Month of",
-      titleHighlight: "Mercy & Quran",
-      subtitle: `May Allah accept our fasting, prayers, and charity in this blessed month. ${imamsText}`,
+      alt: t('hero.ramadanKareem'),
+      badge: t('hero.ramadanKareem'),
+      title: t('hero.ramadanWelcome'),
+      titleHighlight: t('hero.ramadanHighlight'),
+      subtitle: `${t('hero.ramadanSubtitle')} ${imamsText}`,
       cta: { label: t('prayer.prayerTimes'), link: "/prayer-times", icon: "calendar" },
       secondaryCta: { label: t('events.title'), link: "/events" },
       priority: 10,
@@ -130,7 +130,7 @@ export const getRamadanSlides = (t, siteConfig = null) => {
       id: 'itikaf-ramadan',
       type: 'itikaf',
       image: itikafImage2,
-      alt: "I'tikaf Program",
+      alt: t('itikaf.aboutItikaf'),
       badge: t('itikaf.ramadanSpecial'),
       title: t('itikaf.experienceSpiritual'),
       titleHighlight: t('itikaf.itikafRetreat'),

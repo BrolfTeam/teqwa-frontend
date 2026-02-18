@@ -174,7 +174,11 @@
     "jumuahSubtitle": "لا تنس قراءة سورة الكهف وإرسال الصلاة على النبي (ﷺ) اليوم. انضم إلينا لصلاة الجمعة المباركة.",
     "todayKhutbah": "سيتم إلقاء خطبة اليوم من قبل {{name}}. لا تنس قراءة سورة الكهف وإرسال الصلاة على النبي (ﷺ) اليوم. انضم إلينا لصلاة الجمعة المباركة.",
     "prayerTimes": "أوقات الصلاة",
-    "readSurahKahf": "اقرأ سورة الكهف"
+    "readSurahKahf": "اقرأ سورة الكهف",
+    "ramadanKareem": "رمضان كريم",
+    "ramadanWelcome": "مرحباً بكم في شهر",
+    "ramadanHighlight": "الرحمة والقرآن",
+    "ramadanSubtitle": "تقبل الله منا ومنكم الصيام والقيام وصالح الأعمال في هذا الشهر الفضيل."
   },
   "footer": {
     "quickLinks": "روابط سريعة",
@@ -228,7 +232,9 @@
     "now": "الآن:",
     "schedule": "الجدول",
     "qibla": "القبلة",
-    "noDataAvailable": "لا توجد بيانات متاحة"
+    "noDataAvailable": "لا توجد بيانات متاحة",
+    "suhoorEnd": "انتهاء السحور",
+    "iftar": "إفطار"
   },
   "events": {
     "title": "الفعاليات",
@@ -607,6 +613,13 @@
     "registrationInitiated": "تم بدء التسجيل! جاري التوجيه للدفع...",
     "registrationSuccessPaymentFailed": "تم التسجيل بنجاح ولكن فشل الدفع.",
     "registrationSubmitted": "تم إرسال التسجيل للمراجعة! سيتم إخطارك بمجرد التأكيد."
+  },
+  "ramadan": {
+    "dayCount": "اليوم {{day}} من رمضان",
+    "taraweehImams": "أئمة التراويح: {{imams}}",
+    "defaultTaraweehDesc": "انضم إلينا في صلاة التراويح ووجبات الإفطار الجماعية.",
+    "crescentMoon": "هلال رمضان",
+    "progress": "تقدم شهر رمضان"
   },
   "auth": {
     "login": "تسجيل الدخول",
@@ -1133,6 +1146,15 @@
     "selectedDate": "التاريخ المحدد",
     "hijriDate": "التاريخ الهجري",
     "gregorianDate": "التاريخ الميلادي",
+    "dayNamesShort": {
+      "sun": "حد",
+      "mon": "إثن",
+      "tue": "ثلاث",
+      "wed": "أربع",
+      "thu": "خميس",
+      "fri": "جمعة",
+      "sat": "سبت"
+    },
     "monthNames": {
       "muharram": "محرم",
       "safar": "صفر",
@@ -1145,18 +1167,7 @@
       "ramadan": "رمضان",
       "shawwal": "شوال",
       "dhuAlQidah": "ذو القعدة",
-      "dhuAlHijjah": "ذو الحجة"
-    },
-    "weekDays": {
-      "sun": "أحد",
-      "mon": "اثنين",
-      "tue": "ثلاثاء",
-      "wed": "أربعاء",
-      "thu": "خميس",
-      "fri": "جمعة",
-      "sat": "سبت"
-    },
-    "gregorianMonthNames": {
+      "dhuAlHijjah": "ذو الحجة",
       "january": "يناير",
       "february": "فبراير",
       "march": "مارس",
