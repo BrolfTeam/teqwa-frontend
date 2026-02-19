@@ -532,9 +532,10 @@ class ApiService {
   }
 
   async bookFutsalContract(bookingData) {
+    const isFormData = bookingData instanceof FormData;
     return this.request('/futsal/contract/', {
       method: 'POST',
-      body: JSON.stringify(bookingData),
+      body: isFormData ? bookingData : JSON.stringify(bookingData),
     });
   }
 

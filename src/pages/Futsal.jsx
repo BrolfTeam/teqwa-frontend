@@ -378,75 +378,77 @@ const WeeklyTimetable = memo(({ slots, selectedSlots, onSlotClick, startDate, lo
     }
 
     return (
-        <div className="overflow-x-auto rounded-2xl border border-border/40 bg-card/30 backdrop-blur-sm">
-            <div className="min-w-[800px]">
-                {/* Header */}
-                <div className="grid grid-cols-8 border-b border-border/40 bg-muted/30">
-                    <div className="p-4 border-r border-border/40 font-semibold text-center text-sm text-muted-foreground uppercase tracking-widest">
-                        Time
-                    </div>
-                    {weekDays.map((day, i) => (
-                        <div key={i} className="p-4 text-center border-r border-border/40 last:border-r-0">
-                            <div className="text-xs text-muted-foreground uppercase mb-1">{format(day, 'EEE')}</div>
-                            <div className="text-lg font-bold">{format(day, 'dd')}</div>
+        <div className="w-full overflow-hidden border border-border/40 bg-card/30 backdrop-blur-sm shadow-xl rounded-2xl">
+            <div className="overflow-x-auto scrollbar-hide">
+                <div className="min-w-[800px] md:min-w-full">
+                    {/* Header */}
+                    <div className="grid grid-cols-8 border-b border-border/40 bg-muted/30">
+                        <div className="p-4 border-r border-border/40 font-semibold text-center text-sm text-muted-foreground uppercase tracking-widest">
+                            Time
                         </div>
-                    ))}
-                </div>
-
-                {/* Body */}
-                <div className="relative">
-                    {timeRows.map((time, rowIdx) => (
-                        <div key={time} className="grid grid-cols-8 border-b border-border/20 last:border-b-0 hover:bg-primary/5 transition-colors group">
-                            <div className="p-4 border-r border-border/40 flex items-center justify-center font-bold text-sm text-primary group-hover:scale-110 transition-transform">
-                                {time}
+                        {weekDays.map((day, i) => (
+                            <div key={i} className="p-4 text-center border-r border-border/40 last:border-r-0">
+                                <div className="text-xs text-muted-foreground uppercase mb-1">{format(day, 'EEE')}</div>
+                                <div className="text-lg font-bold">{format(day, 'dd')}</div>
                             </div>
-                            {weekDays.map((day, colIdx) => {
-                                const slot = getSlotAt(day, time);
-                                const isSelected = selectedSlots.some(s => s.id === slot?.id);
+                        ))}
+                    </div>
 
-                                return (
-                                    <div key={colIdx} className="p-1 border-r border-border/20 last:border-r-0 min-h-[80px]">
-                                        {slot ? (
-                                            <button
-                                                disabled={!slot.available && !isSelected}
-                                                onClick={() => onSlotClick(slot)}
-                                                className={`
+                    {/* Body */}
+                    <div className="relative">
+                        {timeRows.map((time, rowIdx) => (
+                            <div key={time} className="grid grid-cols-8 border-b border-border/20 last:border-b-0 hover:bg-primary/5 transition-colors group">
+                                <div className="p-3 md:p-4 border-r border-border/40 flex items-center justify-center font-bold text-xs md:text-sm text-primary group-hover:scale-110 transition-transform bg-muted/20">
+                                    {time}
+                                </div>
+                                {weekDays.map((day, colIdx) => {
+                                    const slot = getSlotAt(day, time);
+                                    const isSelected = selectedSlots.some(s => s.id === slot?.id);
+
+                                    return (
+                                        <div key={colIdx} className="p-1 border-r border-border/20 last:border-r-0 min-h-[80px]">
+                                            {slot ? (
+                                                <button
+                                                    disabled={!slot.available && !isSelected}
+                                                    onClick={() => onSlotClick(slot)}
+                                                    className={`
                                                     w-full h-full rounded-xl p-2 text-left transition-all duration-300 flex flex-col justify-between
                                                     ${!slot.available
-                                                        ? 'bg-red-500/10 text-red-700/60 cursor-not-allowed border border-red-200/20'
-                                                        : isSelected
-                                                            ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/20 scale-[0.98] border-2 border-white'
-                                                            : 'bg-emerald-500/10 text-emerald-700 hover:bg-emerald-500/20 hover:scale-[1.02] border border-emerald-500/20'
-                                                    }
+                                                            ? 'bg-red-500/10 text-red-700/60 cursor-not-allowed border border-red-200/20'
+                                                            : isSelected
+                                                                ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/20 scale-[0.98] border-2 border-white'
+                                                                : 'bg-emerald-500/10 text-emerald-700 hover:bg-emerald-500/20 hover:scale-[1.02] border border-emerald-500/20'
+                                                        }
                                                 `}
-                                            >
-                                                <div className="flex justify-between items-start">
-                                                    <span className="text-[10px] font-bold uppercase opacity-80">
-                                                        {slot.location.substring(0, 10)}
-                                                    </span>
-                                                    {slot.available && !isSelected && <FiCheckCircle className="w-3 h-3 text-emerald-500" />}
-                                                    {isSelected && <FiCheckCircle className="w-4 h-4 text-white" />}
-                                                    {!slot.available && <FiXCircle className="w-3 h-3 text-red-500 opacity-50" />}
+                                                >
+                                                    <div className="flex justify-between items-start">
+                                                        <span className="text-[10px] font-bold uppercase opacity-80">
+                                                            {slot.location.substring(0, 10)}
+                                                        </span>
+                                                        {slot.available && !isSelected && <FiCheckCircle className="w-3 h-3 text-emerald-500" />}
+                                                        {isSelected && <FiCheckCircle className="w-4 h-4 text-white" />}
+                                                        {!slot.available && <FiXCircle className="w-3 h-3 text-red-500 opacity-50" />}
+                                                    </div>
+                                                    <div className="font-bold text-sm">
+                                                        {slot.available ? (isSelected ? 'Selected' : `${slot.price} ETB`) : 'Booked'}
+                                                    </div>
+                                                </button>
+                                            ) : (
+                                                <div className="w-full h-full flex items-center justify-center text-muted-foreground/20 text-[10px] italic">
+                                                    N/A
                                                 </div>
-                                                <div className="font-bold text-sm">
-                                                    {slot.available ? (isSelected ? 'Selected' : `${slot.price} ETB`) : 'Booked'}
-                                                </div>
-                                            </button>
-                                        ) : (
-                                            <div className="w-full h-full flex items-center justify-center text-muted-foreground/20 text-[10px] italic">
-                                                N/A
-                                            </div>
-                                        )}
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    ))}
-                    {loading && (
-                        <div className="absolute inset-0 bg-background/40 backdrop-blur-[1px] flex items-center justify-center z-50">
-                            <LoadingSpinner />
-                        </div>
-                    )}
+                                            )}
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        ))}
+                        {loading && (
+                            <div className="absolute inset-0 bg-background/40 backdrop-blur-[1px] flex items-center justify-center z-50">
+                                <LoadingSpinner />
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
         </div>
@@ -529,7 +531,8 @@ const BookingHistory = memo(({ bookings, onRefresh }) => {
             })}
         </div>
     );
-});
+}
+);
 BookingHistory.displayName = 'BookingHistory';
 
 const Futsal = memo(() => {
@@ -719,33 +722,26 @@ const Futsal = memo(() => {
             };
 
             if (isRecurring) {
-                // Multi-Slot Recurring Contract
-                const contractPayload = {
-                    slot_ids: selectedSlots.map(s => s.id),
-                    duration_months: recurringDuration.value,
-                    contact_name: baseInfo.contactName,
-                    contact_email: baseInfo.contactEmail,
-                    contact_phone: baseInfo.contactPhone || '',
-                    payment_method: paymentMethod
-                };
+                const formData = new FormData();
+                formData.append('slot_ids', JSON.stringify(selectedSlots.map(s => s.id)));
+                formData.append('duration_months', recurringDuration.value);
+                formData.append('contact_name', baseInfo.contactName);
+                formData.append('contact_email', baseInfo.contactEmail);
+                formData.append('contact_phone', baseInfo.contactPhone || '');
+                formData.append('payment_method', paymentMethod);
+                if (paymentMethod === 'manual_qr' && proofFile) {
+                    formData.append('proof_image', proofFile);
+                }
 
-                const response = await dataService.createContractBooking(contractPayload);
+                const response = await dataService.createContractBooking(formData);
                 const contractId = response?.contract_id;
 
                 if (paymentMethod === 'card' && contractId) {
-                    // Logic for card payment subscription would go here
-                    // For now, redirect to history or handle similarly
                     toast.success("Contract created. Redirecting to payment...");
                 } else {
                     toast.success(t('futsal.contractCreated'));
                 }
             } else {
-                // One-time booking for potentially multiple slots
-                // We'll book each slot individually or update backend to handle multi-booking
-                // Current backend handles one by one or via contract. 
-                // Let's loop for now if not recurring, or use contract with 0 duration?
-                // Actually, let's just loop for single matches as per current backend.
-
                 for (const slot of selectedSlots) {
                     const formData = new FormData();
                     formData.append('contact_name', baseInfo.contactName);
@@ -754,13 +750,12 @@ const Futsal = memo(() => {
                     formData.append('player_count', slot.max_players || 12);
                     formData.append('agree_to_rules', baseInfo.agreeToRules);
                     formData.append('payment_method', paymentMethod);
-                    if (paymentMethod === 'manual_qr') {
+                    if (paymentMethod === 'manual_qr' && proofFile) {
                         formData.append('proof_image', proofFile);
                     }
 
                     await dataService.bookFutsalSlot(slot.id, formData);
                 }
-
                 toast.success(t('futsal.bookingSubmitted'));
             }
 
