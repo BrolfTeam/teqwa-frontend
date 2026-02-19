@@ -92,25 +92,25 @@ export const PaymentMethodSelector = ({
                     {t('payment.selectMethod')}
                 </label>
 
-                <div className="grid md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {/* Card / Chapa Option (Frozen) */}
                     <div
                         onClick={() => toast.info(t('payment.onlineComingSoon') || 'Online payment coming soon!')}
-                        className="relative p-4 rounded-xl border-2 border-border bg-muted/50 opacity-70 cursor-not-allowed transition-all duration-200 flex items-start gap-4"
+                        className="relative p-4 rounded-xl border-2 border-border bg-muted/50 opacity-70 cursor-not-allowed transition-all duration-200 flex items-start gap-3 sm:gap-4"
                     >
-                        <div className="mt-1 p-2 rounded-lg bg-muted text-muted-foreground">
+                        <div className="mt-1 p-2 rounded-lg bg-muted text-muted-foreground flex-shrink-0">
                             <FiCreditCard className="w-5 h-5" />
                         </div>
-                        <div className="flex-1">
-                            <div className="flex justify-between items-start">
-                                <h4 className="font-semibold text-muted-foreground">
+                        <div className="flex-1 min-w-0">
+                            <div className="flex justify-between items-start gap-2">
+                                <h4 className="font-semibold text-muted-foreground truncate text-sm sm:text-base">
                                     {t('payment.onlinePayment')}
                                 </h4>
-                                <div className="bg-amber-500/20 text-amber-600 text-[10px] font-bold px-1.5 py-0.5 rounded uppercase">
+                                <div className="bg-amber-500/20 text-amber-600 text-[9px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded uppercase whitespace-nowrap">
                                     {t('common.comingSoon') || 'Coming Soon'}
                                 </div>
                             </div>
-                            <p className="text-xs text-muted-foreground mt-1">
+                            <p className="text-[11px] sm:text-xs text-muted-foreground mt-1 line-clamp-2">
                                 {t('payment.onlineDisabledDesc') || 'Card payments will be available soon.'}
                             </p>
                         </div>
@@ -121,7 +121,7 @@ export const PaymentMethodSelector = ({
                         onClick={() => onMethodChange('manual_qr')}
                         className={`
               relative p-4 rounded-xl border-2 cursor-pointer transition-all duration-200
-              flex items-start gap-4 hover:border-primary/50 hover:bg-primary/5
+              flex items-start gap-3 sm:gap-4 hover:border-primary/50 hover:bg-primary/5
               ${selectedMethod === 'manual_qr'
                                 ? 'border-primary bg-primary/5 ring-1 ring-primary'
                                 : 'border-border bg-background'
@@ -129,27 +129,27 @@ export const PaymentMethodSelector = ({
             `}
                     >
                         <div className={`
-              mt-1 p-2 rounded-lg transition-colors
+              mt-1 p-2 rounded-lg transition-colors flex-shrink-0
               ${selectedMethod === 'manual_qr' ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'}
             `}>
                             <FiSmartphone className="w-5 h-5" />
                         </div>
-                        <div className="flex-1">
-                            <div className="flex justify-between items-start">
-                                <h4 className="font-semibold text-foreground">
+                        <div className="flex-1 min-w-0">
+                            <div className="flex justify-between items-start gap-2">
+                                <h4 className="font-semibold text-foreground text-sm sm:text-base">
                                     {t('payment.manualTransfer')}
                                 </h4>
                                 {selectedMethod === 'manual_qr' && (
                                     <motion.div
                                         initial={{ scale: 0 }}
                                         animate={{ scale: 1 }}
-                                        className="bg-primary text-primary-foreground rounded-full p-0.5"
+                                        className="bg-primary text-primary-foreground rounded-full p-0.5 flex-shrink-0"
                                     >
                                         <FiCheck className="w-3 h-3" />
                                     </motion.div>
                                 )}
                             </div>
-                            <p className="text-sm text-muted-foreground mt-1">
+                            <p className="text-[11px] sm:text-sm text-muted-foreground mt-1 line-clamp-2">
                                 {t('payment.scanQrDesc')}
                             </p>
                         </div>
@@ -200,35 +200,35 @@ export const PaymentMethodSelector = ({
                             {/* Bank Details & QR Code */}
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
                                 <div className="space-y-4">
-                                    <h4 className="font-semibold text-foreground flex items-center gap-2">
+                                    <h4 className="font-semibold text-foreground flex items-center gap-2 text-sm sm:text-base">
                                         <FiInfo className="w-4 h-4 text-primary" />
                                         {manualSubMethod === 'cbe' ? t('payment.cbeDetails') : t('payment.telebirrDetails')}
                                     </h4>
-                                    <div className="space-y-3 text-sm">
+                                    <div className="space-y-3">
                                         {manualSubMethod === 'cbe' ? (
                                             <div className="bg-background p-4 rounded-xl border border-border shadow-sm">
                                                 <div className="flex justify-between items-start mb-2">
                                                     <span className="block text-[10px] text-muted-foreground uppercase font-bold tracking-wider">{t('payment.bankName')}</span>
-                                                    <span className="text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded-full font-bold">ACTIVE</span>
+                                                    <span className="text-[9px] sm:text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded-full font-bold">ACTIVE</span>
                                                 </div>
-                                                {loadingConfig ? <div className="h-6 w-32 bg-muted animate-pulse rounded" /> : <span className="font-mono text-base md:text-lg font-bold block mb-1 break-all">{config.cbe_account_number}</span>}
-                                                {loadingConfig ? <div className="h-4 w-48 bg-muted animate-pulse rounded" /> : <span className="block text-xs font-medium text-foreground/80">{config.cbe_account_name}</span>}
+                                                {loadingConfig ? <div className="h-6 w-32 bg-muted animate-pulse rounded" /> : <span className="font-mono text-base sm:text-lg md:text-xl font-bold block mb-1 break-all tracking-tight">{config.cbe_account_number}</span>}
+                                                {loadingConfig ? <div className="h-4 w-48 bg-muted animate-pulse rounded" /> : <span className="block text-xs font-medium text-foreground/80 leading-snug">{config.cbe_account_name}</span>}
                                             </div>
                                         ) : (
                                             <div className="bg-background p-4 rounded-xl border border-border shadow-sm">
                                                 <div className="flex justify-between items-start mb-2">
                                                     <span className="block text-[10px] text-muted-foreground uppercase font-bold tracking-wider">{t('payment.telebirr')}</span>
-                                                    <span className="text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded-full font-bold">ACTIVE</span>
+                                                    <span className="text-[9px] sm:text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded-full font-bold">ACTIVE</span>
                                                 </div>
-                                                {loadingConfig ? <div className="h-6 w-32 bg-muted animate-pulse rounded" /> : <span className="font-mono text-base md:text-lg font-bold block mb-1 break-all">{config.telebirr_account_number}</span>}
-                                                {loadingConfig ? <div className="h-4 w-48 bg-muted animate-pulse rounded" /> : <span className="block text-xs font-medium text-foreground/80">{config.telebirr_account_name}</span>}
+                                                {loadingConfig ? <div className="h-6 w-32 bg-muted animate-pulse rounded" /> : <span className="font-mono text-base sm:text-lg md:text-xl font-bold block mb-1 break-all tracking-tight">{config.telebirr_account_number}</span>}
+                                                {loadingConfig ? <div className="h-4 w-48 bg-muted animate-pulse rounded" /> : <span className="block text-xs font-medium text-foreground/80 leading-snug">{config.telebirr_account_name}</span>}
                                             </div>
                                         )}
                                     </div>
                                 </div>
 
-                                <div className="flex flex-col items-center justify-center space-y-3">
-                                    <div className="w-32 h-32 md:w-40 md:h-40 bg-white p-3 rounded-2xl shadow-lg border border-border/40 flex items-center justify-center overflow-hidden relative group">
+                                <div className="flex flex-col items-center justify-center space-y-3 bg-white/50 p-4 rounded-2xl border border-border/50 md:bg-transparent md:p-0 md:border-0">
+                                    <div className="w-28 h-28 sm:w-32 sm:h-32 md:w-40 md:h-40 bg-white p-3 rounded-2xl shadow-lg border border-border/40 flex items-center justify-center overflow-hidden relative group">
                                         {loadingConfig ? (
                                             <FiLoader className="w-8 h-8 text-primary animate-spin" />
                                         ) : (
@@ -241,8 +241,8 @@ export const PaymentMethodSelector = ({
                                         <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                                     </div>
                                     <div className="flex flex-col items-center">
-                                        <span className="text-[11px] font-bold text-primary uppercase tracking-widest">{t('payment.scanToPay')}</span>
-                                        <span className="text-[10px] text-muted-foreground text-center">{manualSubMethod === 'cbe' ? 'Commercial Bank of Ethiopia' : 'Telebirr Mobile Payment'}</span>
+                                        <span className="text-[10px] sm:text-[11px] font-bold text-primary uppercase tracking-widest">{t('payment.scanToPay')}</span>
+                                        <span className="text-[9px] sm:text-[10px] text-muted-foreground text-center">{manualSubMethod === 'cbe' ? 'Commercial Bank of Ethiopia' : 'Telebirr Mobile Payment'}</span>
                                     </div>
                                 </div>
                             </div>

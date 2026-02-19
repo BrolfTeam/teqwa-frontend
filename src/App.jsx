@@ -11,59 +11,58 @@ import AuthLayout from '@/components/layout/AuthLayout';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import ScrollToTop from '@/components/layout/ScrollToTop';
 import { LoadingSpinner } from '@/components/ui';
+import { lazyRetry } from '@/utils/lazyRetry';
 
 // Lazy load pages for better performance
-const Home = lazy(() => import('@/pages/Home'));
-const About = lazy(() => import('@/pages/About'));
-const Events = lazy(() => import('@/pages/Events'));
-const Gallery = lazy(() => import('@/pages/Gallery'));
-const PrayerTimes = lazy(() => import('@/pages/PrayerTimes'));
-const Contact = lazy(() => import('@/pages/Contact'));
-const News = lazy(() => import('@/pages/News'));
-const NewsDetail = lazy(() => import('@/pages/NewsDetail'));
-const EventDetail = lazy(() => import('@/pages/EventDetail'));
-const Education = lazy(() => import('@/pages/Education'));
-const Donations = lazy(() => import('@/pages/Donations'));
-const Futsal = lazy(() => import('@/pages/Futsal'));
-const Membership = lazy(() => import('@/pages/Membership'));
-const Itikaf = lazy(() => import('@/pages/Itikaf'));
-const Ders = lazy(() => import('@/pages/Ders'));
-const Qibla = lazy(() => import('@/pages/Qibla'));
-const IslamicCalendar = lazy(() => import('@/pages/IslamicCalendar'));
-const PaymentSuccess = lazy(() => import('@/pages/PaymentSuccess'));
-const NotFound = lazy(() => import('@/pages/NotFound'));
+const Home = lazy(() => lazyRetry(() => import('@/pages/Home')));
+const About = lazy(() => lazyRetry(() => import('@/pages/About')));
+const Events = lazy(() => lazyRetry(() => import('@/pages/Events')));
+const Gallery = lazy(() => lazyRetry(() => import('@/pages/Gallery')));
+const PrayerTimes = lazy(() => lazyRetry(() => import('@/pages/PrayerTimes')));
+const Contact = lazy(() => lazyRetry(() => import('@/pages/Contact')));
+const News = lazy(() => lazyRetry(() => import('@/pages/News')));
+const NewsDetail = lazy(() => lazyRetry(() => import('@/pages/NewsDetail')));
+const EventDetail = lazy(() => lazyRetry(() => import('@/pages/EventDetail')));
+const Education = lazy(() => lazyRetry(() => import('@/pages/Education')));
+const Donations = lazy(() => lazyRetry(() => import('@/pages/Donations')));
+const Futsal = lazy(() => lazyRetry(() => import('@/pages/Futsal')));
+const Membership = lazy(() => lazyRetry(() => import('@/pages/Membership')));
+const Itikaf = lazy(() => lazyRetry(() => import('@/pages/Itikaf')));
+const Ders = lazy(() => lazyRetry(() => import('@/pages/Ders')));
+const Qibla = lazy(() => lazyRetry(() => import('@/pages/Qibla')));
+const IslamicCalendar = lazy(() => lazyRetry(() => import('@/pages/IslamicCalendar')));
+const PaymentSuccess = lazy(() => lazyRetry(() => import('@/pages/PaymentSuccess')));
+const NotFound = lazy(() => lazyRetry(() => import('@/pages/NotFound')));
 
 // Auth pages
-const RoleSelection = lazy(() => import('@/pages/auth/RoleSelection'));
-const Login = lazy(() => import('@/pages/auth/Login'));
-const Register = lazy(() => import('@/pages/auth/Register'));
-const ForgotPassword = lazy(() => import('@/pages/auth/ForgotPassword'));
-const ResetPassword = lazy(() => import('@/pages/auth/ResetPassword'));
+const RoleSelection = lazy(() => lazyRetry(() => import('@/pages/auth/RoleSelection')));
+const Login = lazy(() => lazyRetry(() => import('@/pages/auth/Login')));
+const Register = lazy(() => lazyRetry(() => import('@/pages/auth/Register')));
+const ForgotPassword = lazy(() => lazyRetry(() => import('@/pages/auth/ForgotPassword')));
+const ResetPassword = lazy(() => lazyRetry(() => import('@/pages/auth/ResetPassword')));
 
 // Protected pages
-const Dashboard = lazy(() => import('@/pages/Dashboard'));
-const Profile = lazy(() => import('@/pages/Profile'));
-const Services = lazy(() => import('@/pages/Services'));
-
-// ... (keep existing code)
+const Dashboard = lazy(() => lazyRetry(() => import('@/pages/Dashboard')));
+const Profile = lazy(() => lazyRetry(() => import('@/pages/Profile')));
+const Services = lazy(() => lazyRetry(() => import('@/pages/Services')));
 
 // Booking & Staff pages
-const BookingList = lazy(() => import('@/pages/bookings/BookingList'));
-const UserBookings = lazy(() => import('@/pages/bookings/UserBookings'));
-const StaffList = lazy(() => import('@/pages/staff/StaffList'));
-const Attendance = lazy(() => import('@/pages/staff/Attendance'));
-const WorkingHours = lazy(() => import('@/pages/staff/WorkingHours'));
-const StaffTasks = lazy(() => import('@/pages/staff/Tasks'));
-const StaffReports = lazy(() => import('@/pages/staff/Reports'));
+const BookingList = lazy(() => lazyRetry(() => import('@/pages/bookings/BookingList')));
+const UserBookings = lazy(() => lazyRetry(() => import('@/pages/bookings/UserBookings')));
+const StaffList = lazy(() => lazyRetry(() => import('@/pages/staff/StaffList')));
+const Attendance = lazy(() => lazyRetry(() => import('@/pages/staff/Attendance')));
+const WorkingHours = lazy(() => lazyRetry(() => import('@/pages/staff/WorkingHours')));
+const StaffTasks = lazy(() => lazyRetry(() => import('@/pages/staff/Tasks')));
+const StaffReports = lazy(() => lazyRetry(() => import('@/pages/staff/Reports')));
 
 // Admin pages
-const UserManagement = lazy(() => import('@/pages/admin/UserManagement'));
-const AdminSettings = lazy(() => import('@/pages/admin/Settings'));
-const DonationManagement = lazy(() => import('@/pages/admin/DonationManagement'));
+const UserManagement = lazy(() => lazyRetry(() => import('@/pages/admin/UserManagement')));
+const AdminSettings = lazy(() => lazyRetry(() => import('@/pages/admin/Settings')));
+const DonationManagement = lazy(() => lazyRetry(() => import('@/pages/admin/DonationManagement')));
 
 // Student pages
-const StudentTimetable = lazy(() => import('@/pages/student/StudentTimetable'));
-const StudentSubmissions = lazy(() => import('@/pages/student/StudentSubmissions'));
+const StudentTimetable = lazy(() => lazyRetry(() => import('@/pages/student/StudentTimetable')));
+const StudentSubmissions = lazy(() => lazyRetry(() => import('@/pages/student/StudentSubmissions')));
 
 const LoadingFallback = memo(() => (
   <div className="min-h-[60vh] flex items-center justify-center bg-background">

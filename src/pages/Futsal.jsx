@@ -933,37 +933,37 @@ const Futsal = memo(() => {
                                         initial={{ opacity: 0, y: 100 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         exit={{ opacity: 0, y: 100 }}
-                                        className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-4xl"
+                                        className="fixed bottom-4 sm:bottom-8 left-1/2 -translate-x-1/2 z-50 w-[95%] sm:w-[90%] max-w-4xl"
                                     >
-                                        <div className="bg-primary text-primary-foreground rounded-2xl shadow-2xl p-4 md:p-6 flex flex-col md:flex-row items-center justify-between gap-4 border-2 border-white/20 backdrop-blur-md">
-                                            <div className="flex items-center gap-4">
-                                                <div className="h-12 w-12 bg-white/20 rounded-xl flex items-center justify-center font-bold text-xl">
+                                        <div className="bg-primary text-primary-foreground rounded-2xl shadow-2xl p-3 sm:p-4 md:p-6 flex flex-col md:flex-row items-center justify-between gap-3 sm:gap-4 border-2 border-white/20 backdrop-blur-md">
+                                            <div className="flex items-center gap-3 sm:gap-4 w-full md:w-auto">
+                                                <div className="h-10 w-10 sm:h-12 sm:w-12 bg-white/20 rounded-xl flex items-center justify-center font-bold text-lg sm:text-xl flex-shrink-0">
                                                     {selectedSlots.length}
                                                 </div>
-                                                <div>
-                                                    <div className="font-bold text-lg leading-tight">
+                                                <div className="min-w-0">
+                                                    <div className="font-bold text-base sm:text-lg leading-tight truncate">
                                                         {selectedSlots.length === 1 ? 'Slot Selected' : 'Slots Selected'}
                                                     </div>
-                                                    <div className="text-primary-foreground/80 text-sm">
-                                                        Total Price: {selectedSlots.reduce((acc, s) => acc + (parseFloat(s.price) || 0), 0)} ETB
+                                                    <div className="text-primary-foreground/80 text-xs sm:text-sm">
+                                                        Total: {selectedSlots.reduce((acc, s) => acc + (parseFloat(s.price) || 0), 0)} ETB
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div className="flex items-center gap-3 w-full md:w-auto">
+                                            <div className="flex items-center gap-2 sm:gap-3 w-full md:w-auto">
                                                 <Button
                                                     variant="secondary"
-                                                    className="flex-1 md:flex-none h-12 px-8 font-bold"
+                                                    className="flex-1 md:flex-none h-11 sm:h-12 px-4 sm:px-8 font-bold text-sm sm:text-base"
                                                     onClick={handleBookingReady}
                                                 >
-                                                    Continue to Booking
-                                                    <FiArrowRight className="ml-2 w-5 h-5" />
+                                                    Continue
+                                                    <FiArrowRight className="ml-2 w-4 h-4 sm:w-5 sm:h-5" />
                                                 </Button>
                                                 <Button
                                                     variant="ghost"
-                                                    className="h-12 w-12 p-0 hover:bg-white/10"
+                                                    className="h-11 w-11 sm:h-12 sm:w-12 p-0 hover:bg-white/10 flex-shrink-0"
                                                     onClick={() => setSelectedSlots([])}
                                                 >
-                                                    <FiXCircle className="w-6 h-6" />
+                                                    <FiXCircle className="w-5 h-5 sm:w-6 sm:h-6" />
                                                 </Button>
                                             </div>
                                         </div>
@@ -1019,24 +1019,24 @@ const Futsal = memo(() => {
 
                     {/* Recurring Option */}
                     <div className={`p-5 rounded-2xl border-2 transition-all ${isRecurring ? 'border-primary bg-primary/5 shadow-inner' : 'border-border/50 hover:border-primary/30'}`}>
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-4">
-                                <div className={`p-3 rounded-xl ${isRecurring ? 'bg-primary text-white shadow-lg' : 'bg-muted text-muted-foreground'}`}>
-                                    <FiRefreshCw className={`w-6 h-6 ${isRecurring ? 'animate-spin-slow' : ''}`} />
+                        <div className="flex items-center justify-between gap-3">
+                            <div className="flex items-center gap-3 sm:gap-4 flex-1">
+                                <div className={`p-2.5 sm:p-3 rounded-xl flex-shrink-0 ${isRecurring ? 'bg-primary text-white shadow-lg' : 'bg-muted text-muted-foreground'}`}>
+                                    <FiRefreshCw className={`w-5 h-5 sm:w-6 sm:h-6 ${isRecurring ? 'animate-spin-slow' : ''}`} />
                                 </div>
-                                <div>
-                                    <h4 className="font-bold text-lg">Multi-match Subscription</h4>
-                                    <p className="text-sm text-muted-foreground">Lock these slots for weeks/months</p>
+                                <div className="min-w-0">
+                                    <h4 className="font-bold text-base sm:text-lg truncate">Multi-match Subscription</h4>
+                                    <p className="text-[11px] sm:text-sm text-muted-foreground line-clamp-1">Lock these slots for weeks/months</p>
                                 </div>
                             </div>
-                            <label className="relative inline-flex items-center cursor-pointer scale-110">
+                            <label className="relative inline-flex items-center cursor-pointer scale-100 sm:scale-110 flex-shrink-0">
                                 <input
                                     type="checkbox"
                                     className="sr-only peer"
                                     checked={isRecurring}
                                     onChange={(e) => setIsRecurring(e.target.checked)}
                                 />
-                                <div className="w-12 h-6 bg-muted rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary shadow-sm"></div>
+                                <div className="w-11 h-6 sm:w-12 bg-muted rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary shadow-sm"></div>
                             </label>
                         </div>
 
@@ -1100,19 +1100,20 @@ const Futsal = memo(() => {
                         </FormField>
                     </div>
 
-                    {/* Payment Method Selector */}
-                    <div className="space-y-4 pt-4">
-                        <h4 className="font-bold flex items-center gap-2">
-                            <FiDollarSign className="w-5 h-5" />
+                    <div className="space-y-4 pt-4 border-t border-border/10">
+                        <h4 className="font-bold flex items-center gap-2 text-base sm:text-lg">
+                            <FiDollarSign className="w-5 h-5 text-primary" />
                             Payment Selection
                         </h4>
-                        <PaymentMethodSelector
-                            selected={paymentMethod}
-                            onChange={setPaymentMethod}
-                            onFileSelect={setProofFile}
-                            amount={selectedSlots.reduce((acc, s) => acc + (parseFloat(s.price) || 0), 0) * (isRecurring ? recurringDuration.value * 4 : 1)}
-                            showManualOptions={true}
-                        />
+                        <div className="bg-card rounded-2xl border border-border/30 p-1 sm:p-2">
+                            <PaymentMethodSelector
+                                selectedMethod={paymentMethod}
+                                onMethodChange={setPaymentMethod}
+                                onFileChange={setProofFile}
+                                amount={selectedSlots.reduce((acc, s) => acc + (parseFloat(s.price) || 0), 0) * (isRecurring ? recurringDuration.value * 4 : 1)}
+                                showManualOptions={true}
+                            />
+                        </div>
                     </div>
 
                     {/* Agreement */}

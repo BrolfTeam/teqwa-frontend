@@ -5,6 +5,10 @@
       "destination": "https://api.mujemaateqwa.org/api/:path*"
     },
     {
+      "source": "/assets/(.*)",
+      "destination": "/assets/$1"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
